@@ -1,7 +1,6 @@
 from flask import render_template, request, json, send_file, jsonify
 import openpyxl
 from flask_login import login_user, login_required, logout_user, current_user
-from waitress import serve
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import app
@@ -117,15 +116,20 @@ def delete_table_row():
 def delete_row(base_table):
     name = request.form['json']
     id = int(json.loads(name)["id"])
+    db_obj = ""
     if base_table == "ma_add_modules":
-        unit = ma_add_modules.query.get_or_404(id)
-        try:
-            db.session.delete(unit)
-            db.session.commit()
-            return jsonify("SUCCESS")
-        except Exception as err:
-            print(f"Unexpected {err=}, {type(err)=}")
-            return json.dumps(f"Unexpected {err=}, {type(err)=}")
+        db_obj = ma_add_modules.query.get_or_404(id)
+    if base_table == "Units":
+        db_obj = Unit.query.get_or_404(id)
+    if base_table == "MA_Unit":
+        db_obj = MA_Unit.query.get_or_404(id)
+    try:
+        db.session.delete(db_obj)
+        db.session.commit()
+        return jsonify("SUCCESS")
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
+        return json.dumps(f"Unexpected {err=}, {type(err)=}")
 
 
 @app.route('/download/<file>/<name_PON>', methods=['GET', 'POST'])
@@ -232,10 +236,10 @@ def save_data(db_name):
         return save_sostav_data(req_dict)
     if db_name == 'Buhuchet':
         return save_buhuchet_data(req_dict)
-    if db_name == 'new_units':
+    if db_name == 'Unit':
         return add_new_unit(req_dict)
-    if db_name == 'ma_units':
-        return save_ma_unit_data(req_dict)
+    if db_name == 'MA_Unit_new':
+        return add_ma_unit_data(req_dict)
     if db_name == 'ma_add_modules':
         return save_ma_add_modules(req_dict)
 
@@ -286,6 +290,28 @@ def add_new_unit(req_dict):
     else:
         return json.dumps("NOT 'POST' REQUEST")
 
+
+# def add_new_ma_unit(req_dict):
+#     user = Users.query.filter_by(id=current_user.get_id()).first()
+#     if request.method == 'POST':
+#         ma_unit = MA_Unit(ud_punkt=req_dict["ud_punkt"],
+#                     name_PON=req_dict["name_PON"],
+#                     name_unit=req_dict["name_unit"],
+#                     inv_number=req_dict["inv_number"],
+#                     serial_number=req_dict["serial_number"],
+#                     row_mesto=req_dict["row_mesto"],
+#                     plata_mesto=req_dict["plata_mesto"],
+#                     creator=user.FIO)
+#         try:
+#             app.app_context()
+#             db.session.add(ma_unit)
+#             db.session.commit()
+#             return jsonify("SUCCESS")
+#         except Exception as err:
+#             print(f"Unexpected {err=}, {type(err)=}")
+#             return json.dumps(f"Unexpected {err=}, {type(err)=}")
+#     else:
+#         return json.dumps("NOT 'POST' REQUEST")
 
 def save_kts_data(req_dict):
     kts_data = Data_for_KTS.query.all()
