@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+
+    <title>Оборудование</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script type=text/javascript src="{{ url_for('static', filename='js/jquery-3.7.1.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bad_scripts.js') }}"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        {#document.getElementById(JSON.parse(localStorage.getItem("radio_check"))).click()#}
+        document.getElementById("myInput").value = JSON.parse(localStorage.getItem("serch"));
+        myFunction()
+        localStorage.clear()
+
+});
+</script>
+
+<!--    Заполнение в модульное окно Инвентарного номера-->
+
+<!--    заполнение модульного окна для редактирования записи UNITS-->
+
+<!--    Сохранить изменение в таблице UNITS-->
+
+<!--    Сохранить изменения в таблицу BuchUch-->
+
+<!--    Удалить запись в таблице UNITS-->
+
+<!--    Заполнить таблицу в модульном окне Соства оборудования-->
+
+    <style>
+            #myInput {
+              background-position: 10px 10px;
+              background-repeat: no-repeat;
+              width: 100%;
+              font-size: 16px;
+              padding: 12px 20px 12px 40px;
+              border: 1px solid #ddd;
+              margin-bottom: 12px;
+            }
+            .table-condensed{
+              font-size: 12px;
+            }
+            .castom-white{
+                color: #f6fafa;
+            }
+            .clip {
+                width: 100px;
+
+                white-space: nowrap; /* Запрещаем перенос строк */
+                overflow: hidden; /* Обрезаем все, что не помещается в область */
+                text-overflow: ellipsis; /* Добавляем многоточие */
+            }
+
+    </style>
+
+
+</head>
+<body>
+    <div class="modal fade" id="SostavModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Состав Оборудования</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"  ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="container">
+                  <div class="row">
+                    <div class="col-sm">
+                      <div class="mb-3">
+                        <label class="col-form-label">Место расположения:</label>
+                        <input type="text" readonly class="form-control" id="Ud_id" >
+                      </div>
+                    </div>
+                    <div class="col-sm">
+                      <div class="mb-3">
+                        <label class="col-form-label">IP  адрес:</label>
+                        <input type="text"  class="form-control" id="ip_id">
+                      </div>
+                    </div>
+                    <div class="col-sm">
+                      <div class="mb-3">
+                        <label class="col-form-label">№ OLT:</label>
+                        <input type="text"  class="form-control" id="olt_id" >
+                      </div>
+                    </div>
+                    <div class="col-sm">
+                      <div class="mb-3">
+                        <label class="col-form-label">Инвентарный номер:</label>
+                        <input type="text"  class="form-control" id="inv_id" >
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="container">
+              <div class="row">
+                <div class="col-sm">
+                   <div class="mb-3">
+                       <label class="col-form-label">Устройство:</label>
+                       <input type="text" readonly class="form-control" id="PON_id" >
+                   </div>
+                </div>
+                <div class="col-sm">
+                  <div class="mb-3">
+                        <label class="col-form-label">Заводской номер:</label>
+                        <input type="text"  class="form-control" id="serial_id" >
+                      </div>
+                </div>
+                <div class="col-sm">
+                  <div class="mb-3">
+                        <label class="col-form-label">Дата выпуска:</label>
+                        <input type="text"  class="form-control" id="date_pr_id"  >
+                      </div>
+                </div>
+                <div class="col-sm">
+                  <div class="mb-3">
+                        <label class="col-form-label">Дата ввода в экспуатацию:</label>
+                        <input type="text"  class="form-control"  id="date_exp_id">
+                      </div>
+                </div>
+              </div>
+              </div>
+              <div class="container">
+              <div class="row">
+                <div class="col-sm">
+                   <div class="mb-3">
+                       <label class="col-form-label">Наименование:</label>
+                       <input type="text"  class="form-control" id="full_name_id" name="name2">
+                   </div>
+                </div>
+                <div class="col-sm">
+                  <div class="mb-3">
+                        <label class="col-form-label">Ряд/Шкаф/Полка:</label>
+                        <input type="text"  class="form-control" id="mesto_id" >
+                      </div>
+                </div>
+                <div class="col-sm">
+                  <div class="mb-3">
+                        <label class="col-form-label">Завод изготовитель:</label>
+                        <input type="text"  class="form-control" id="zavod_id" >
+                      </div>
+                </div>
+                <div class="col-sm d-flex">
+                  <div class="mb-3 d-flex" >
+
+                      </div>
+                </div>
+              </div>
+              </div>
+              <div class="table-responsive small">
+                <table class="table table-striped table-sm table-bordered" id="Sostav_Modal_table">
+                  <thead>
+                    <tr>
+                      <th scope="col">П/М</th>
+                      <th scope="col">Инвентарный номер</th>
+                      <th scope="col">Наименование оборудования</th>
+                      <th scope="col">Заводской номер</th>
+                      <th scope="col">Примечание</th>
+                    </tr>
+                    <tr>
+                      <th scope="col">1</th>
+                      <th scope="col">2</th>
+                      <th scope="col">3</th>
+                      <th scope="col">4</th>
+                      <th scope="col">5</th>
+                    </tr>
+                  </thead>
+                    <tbody id="t_body"></tbody>
+                </table>
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-primary" id = "save_kts" onclick="save_kts_data(this.id)">
+                  <i class="bi bi-floppy"></i>
+              </button>
+            <button type="button" class="btn btn-primary" id = "kts" onclick="downloadFile(this.id)">КТС</button>
+            <button type="button" class="btn btn-primary" id = "sostav" onclick="downloadFile(this.id)">Состав оборудования</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="reload_page()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="inventModal" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="inventModalLabel">Карточка устройства</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <form>
+                <label class="col-form-label" id="id_buh"></label>
+              <div class="container">
+                  <div class="row">
+                    <div class="col-sm">
+                      <div class="mb-3">
+                        <label class="col-form-label">Инвентарный номер:</label>
+                        <input type="text" readonly class="form-control" name="name" id = "In_num">
+                      </div>
+                    </div>
+                    <div class="col-sm">
+                      <div class="mb-3">
+                        <label class="col-form-label">МОЛ:</label>
+                        <input type="text"  class="form-control" id="mol_id">
+                      </div>
+                    </div>
+                  </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="col-form-label">Краткое описание:</label>
+                <input type="text"  class="form-control" id="description_id">
+              </div>
+              <div class="mb-3">
+                <label  class="col-form-label">Характеристика:</label>
+                <textarea  class="form-control" id="char_id" cols="30" rows="7"></textarea>
+              </div>
+              <div class="mb-3">
+                <label  class="col-form-label">Примечание:</label>
+                <textarea  class="form-control" id="note_id" cols="30" rows="3"></textarea>
+              </div>
+                  </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id = "button_for_save_edit_buh_data" onclick="save_edit_buh_data()">Сохранить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="EditModal" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="EditModalLabel">Изменение данных об устройстве   </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+                <label class="col-form-label" id="id_for_edit"></label>
+               <div class="container">
+                  <div class="row">
+                      <div class="col-sm">
+              <div class="mb-3">
+                  <label class="col-form-label">Место нахождения:</label>
+                   <input type="text"  class="form-control"  id = "edit_UD_id">
+              </div>
+                      </div>
+                      <div class="col-sm">
+              <div class="mb-3">
+                <label class="col-form-label">Устройство/ЗИП/Склад:</label>
+                <input type="text"  class="form-control" id="edit_COD_id">
+              </div>
+                      </div>
+                  </div>
+               </div>
+                <div class="container">
+                   <div class="row">
+                       <div class="col-sm">
+              <div class="mb-3">
+                <label class="col-form-label">Наименование:</label>
+                <input type="text"  class="form-control" id="edit_Name_id">
+              </div>
+                       </div>
+                       <div class="col-sm">
+              <div class="mb-3">
+                <label class="col-form-label">Инвентарный номер:</label>
+                <input type="text"  class="form-control" id="edit_Inv_id">
+              </div>
+                       </div>
+                   </div>
+                </div>
+                <div class="container">
+                   <div class="row">
+                       <div class="col-sm">
+              <div class="mb-3">
+                <label class="col-form-label">Серийный номер:</label>
+                <input type="text"  class="form-control" id="edit_Serial_id">
+              </div>
+                       </div>
+                       <div class="col-sm">
+              <div class="mb-3">
+                <label class="col-form-label">Ряд/Шкаф/Полка:</label>
+                <input type="text"  class="form-control" id="edit_Riad_id">
+              </div>
+                       </div>
+                       <div class="col-sm">
+              <div class="mb-3">
+                <label class="col-form-label">Плата-место:</label>
+                <input type="text"  class="form-control" id="edit_Mesto_id">
+              </div>
+                   </div>
+                   </div>
+                    <div class="mb-3">
+                <label  class="col-form-label">Примечание:</label>
+                <textarea  class="form-control" id="unit_note_id" cols="30" rows="3"></textarea>
+              </div>
+             </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="button_for_save_edit_row" name="button_for_save_edit_row" onclick="save_edit_table_row()">Сохранить</button>
+            <button type="button" class="btn btn-primary" id="button_for_delete_row" onclick="delete_table_row()">Удалить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="reload_page()">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="add_new_units_Modal" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="AddNewUnits">Добавление новых устройств   </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped table-sm table-bordered" id="Table_for_add_new_units">
+                  <thead>
+                    <tr>
+                      <th   scope="col">Узел доступа</th>
+                      <th   scope="col">Оборудование</th>
+                      <th   scope="col">Описание</th>
+                      <th  scope="col">Инвентарный номер</th>
+                      <th scope="col">Серийный номер</th>
+                      <th scope="col">Ряд/Шкаф/Полка</th>
+                      <th scope="col">Плата место</th>
+                    </tr>
+                  </thead>
+                  <tbody id = "new_units_table_id">
+                    <tr >
+                      <td contenteditable="true" ></td>
+                      <td contenteditable="true"></td>
+                      <td contenteditable="true"></td>
+                      <td contenteditable="true"></td>
+                      <td contenteditable="true"></td>
+                      <td contenteditable="true" style="width: 65px"></td>
+                      <td contenteditable="true" style="width: 55px"></td>
+
+                    </tr>
+                  </tbody>
+                </table>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="button_add_new_row" onclick="add_new_row('new_units_table_id', 7)">
+                <i class="bi bi-plus-lg"></i>
+            </button>
+              <button type="button" class="btn btn-primary" id="button_del_row" onclick="del_row('new_units_table_id')">
+                  <i class="bi bi-dash-lg"></i>
+              </button>
+            <button type="button" class="btn btn-primary" id="button_for_save_new_units" onclick="add_new_units()">Сохранить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="reload_page()" >Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal" id="Change_pass"  data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Изменить пароль</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div class="mb-3">
+                <input type="password"  class="form-control"  id = "old_pass_id" placeholder="Старый пароль">
+              </div>
+              <div class="mb-3">
+                <input type="password"  class="form-control" id="new_pass_id" placeholder="Новый пароль, не менее 6 символов">
+              </div>
+              <div class="mb-3">
+                <input type="password"  class="form-control" id="new_pass_2_id" placeholder="Новый пароль павторно">
+              </div>
+              <div class="mb-3">
+                  <label class="col-form-label" id="raport_chang_pass"></label>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="change_password();">Изменить пароль</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <script type="text/javascript">
+                                      $('#inventModal').on('show.bs.modal', function (e) {
+                                      $(this).find('form').trigger('reset');
+                                      document.getElementById("In_num").value = $(e.relatedTarget).data('id');
+                                      document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
+                                      var data = new FormData();
+                                      data.append('json', JSON.stringify(document.getElementById("In_num").value))
+                                      fetch("/get_data_from_db/BuhUch",
+                                            {
+                                                method: "POST",
+                                                body: data
+                                            })
+                                            .then(function(res){ return res.json(); })
+                                            .then(function(data){
+                                                console.log(data)
+                                                if (data === null){alert("Нет данных по этому номеру")}
+                                                else {
+                                                    document.getElementById("description_id").value = data['name'];
+                                                    document.getElementById("mol_id").value = data['MOL'];
+                                                    document.getElementById("char_id").value = data['charracter'];
+                                                    document.getElementById("note_id").value = data['note'];
+                                                }
+                                        })
+                                        })
+                                        </script>
+    <script type="text/javascript">
+                                     $('#SostavModal').on('show.bs.modal', function (e) {
+                                      $(this).find('form').trigger('reset');
+                                      var dataPon = $(e.relatedTarget).data('pon');
+                                      var dataUd = $(e.relatedTarget).data('ud');
+                                      document.getElementById("PON_id").value = dataPon;
+                                      document.getElementById("Ud_id").value = dataUd;
+                                      document.getElementById("t_body").remove();
+                                      var units = {{ units | tojson }};
+                                      var kts_data = {{ kts_data | tojson }};
+                                      const list_id  = ["ip_id","olt_id","inv_id","serial_id","date_pr_id","date_exp_id","full_name_id",
+                                                        "mesto_id","zavod_id","kts","save_kts"];
+                                      kts_data.forEach(item =>{
+                                            if (dataPon === item.cod_name){
+                                                console.log(item);
+                                                document.getElementById("ip_id").value = item['IP'];
+                                                document.getElementById("olt_id").value = item['OLT'];
+                                                document.getElementById("inv_id").value = item['inv_number'];
+                                                document.getElementById("serial_id").value = item['Serial'];
+                                                document.getElementById("date_pr_id").value = item['date_of_production'];
+                                                document.getElementById("date_exp_id").value = item['date_of_entry'];
+                                                document.getElementById("full_name_id").value = item['full_name'];
+                                                document.getElementById("mesto_id").value = item['mesto'];
+                                                document.getElementById("zavod_id").value = item['zavod'];
+                                            }
+                                         })
+                                        if ((dataPon.toUpperCase().includes("A5GM")) || (dataPon.toUpperCase().includes("P5GM")) || (dataPon.toUpperCase().includes("I5GM"))){
+                                            list_id.forEach(id => {document.getElementById(id).disabled = false;})
+                                            document.getElementById("sostav").disabled = !((dataPon.toUpperCase().includes("OL")) || (dataPon.toUpperCase().includes("UL")));
+                                        }
+                                        else {
+                                            list_id.forEach(id => {document.getElementById(id).disabled = true;
+                                            document.getElementById("sostav").disabled = true;})
+                                        }
+                                        var table = document.getElementById("Sostav_Modal_table");
+                                        const tbody = document.createElement('tbody');
+                                        tbody.setAttribute("id", "t_body");
+                                        table.appendChild(tbody);
+                                        units.forEach(item => {
+                                            if (dataPon === item.name_PON){
+                                                const tr = document.createElement('tr');
+                                                const td1 = document.createElement('td');
+                                                const td2 = document.createElement('td');
+                                                const td3 = document.createElement('td');
+                                                const td4 = document.createElement('td');
+                                                const td5 = document.createElement('td');
+                                                td1.textContent = item['plata_mesto'];
+                                                td2.textContent = item['inv_number'];
+                                                td3.textContent = item['name_unit'];
+                                                td4.textContent = item['serial_number'];
+                                                td5.textContent = item['note'];
+                                                tr.appendChild(td1);
+                                                tr.appendChild(td2);
+                                                tr.appendChild(td3);
+                                                tr.appendChild(td4);
+                                                tr.appendChild(td5);
+                                                tbody.appendChild(tr);}});});
+    </script>
+    <script type="text/javascript">
+                                    $('#EditModal').on('show.bs.modal', function (e) {
+                                      $(this).find('form').trigger('reset');
+                                      var id = $(e.relatedTarget).data('id');
+                                      const units = {{ units | tojson }}
+                                      document.getElementById("id_for_edit").value = id;
+                                      console.log(document.getElementById("id_for_edit").value)
+                                      units.forEach((unit) => {
+                                      if ( id === unit.id){
+                                        document.getElementById("edit_UD_id").value = unit.ud_punkt;
+                                        document.getElementById("edit_COD_id").value = unit.name_PON;
+                                        document.getElementById("edit_Name_id").value = unit.name_unit;
+                                        document.getElementById("edit_Inv_id").value = unit.inv_number;
+                                        document.getElementById("edit_Serial_id").value = unit.serial_number;
+                                        document.getElementById("edit_Riad_id").value = unit.row_mesto;
+                                        document.getElementById("edit_Mesto_id").value = unit.plata_mesto;
+                                        document.getElementById("unit_note_id").value = unit.note;
+                                        }})
+                                    });
+    </script>
+{#    //копирование в таблицу из Excel 1#}
+    <script type="text/javascript">
+        document.getElementById('new_units_table_id').addEventListener('paste', (e) => {
+              e.preventDefault(); // Отменяем дефолтное поведение вставки
+              let data = (e.clipboardData || window.clipboardData).getData('text');
+              // Преобразуем в формат CSV для удобства
+              let start_row= e.target.closest(`tr`).rowIndex-1;
+              let start_cell =e.target.closest(`td`).cellIndex
+              console.log(start_row, start_cell);
+              paste_to_cells_like_excel('new_units_table_id', data, start_row, start_cell, 7);
+            });
+    </script>
+
+
+
+    <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+
+        <div class="d-grid gap-2 d-md-flex ">
+       <div class="float-end">
+        <a href="" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions" style="display: inline-block;" class="icon-link">
+            <i class="bi bi-list h2 castom-white"></i>
+        </a></div>
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Гомельский ЗУЭС</a>
+
+        </div>
+        <li class="nav-item dropdown nav justify-content-end">
+              <a class="nav-link dropdown-toggle text-white nav justify-content-end" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user_name }}    </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Change_pass" href="#">Изменить пароль</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/logout">Выйти</a></li>
+              </ul>
+        </li>
+    </header>
+
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+        <div class="offcanvas-header">
+        </div>
+
+        <div class="offcanvas-body">
+             <form>
+
+            <div class="d-grid gap-3">
+            <button class="btn btn-secondary" type="submit" disabled >Оборудование PON</button>
+
+             <button class="btn btn-primary" type="submit"  formaction="/multiple_access">Многопортовые устройства доступа</button>
+
+                <button class="btn btn-primary" type="submit" disabled formaction="/other_property">Прочее имущество</button>
+            </div>
+
+
+                </form>
+        </div>
+    </div>
+    <div class="container-fluid">
+    <div class="row">
+        <main class="col-md-auto ms-sm-auto col-lg-12 px-md-5">
+              <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Список оборудования</h1>
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                  <button type="button" class="btn btn-primary btn-lg"  data-bs-toggle="modal" data-bs-target="#add_new_units_Modal" >
+                      <i class="bi bi-plus-square-fill"></i> Добавить</button>
+                  <button type="button" class="btn btn-primary btn-lg" onclick="save_main_table_in_file()">
+                      <i class="bi bi-download"></i> Сохранить а Excel</button>
+                </div></div>
+              <div class="table-responsive small">
+
+                    <div class="container-fluid">
+                         <div class="form-check form-check-inline">
+                      <input class="form-check-input" checked type="radio" name="radio_serch" id="inlineRadio1" value="option1">
+                      <label class="form-check-label" for="inlineRadio1">Поиск "И"</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="radio_serch" id="inlineRadio2" value="option2">
+                      <label class="form-check-label" for="inlineRadio2"  >Поиск "ИЛИ"</label>
+                    </div>
+                            <input type="text" id="myInput" onkeyup="myFunction()"  placeholder="Поиск по таблице..">
+                    </div>
+              </div>
+                   <table class="table table-striped table-sm table-bordered" id="myTable">
+                  <thead>
+                    <tr>
+                      <th onclick="sortTable(0)"  scope="col">id</th>
+                      <th onclick="sortTable(1)" style="cursor:pointer" scope="col">Узел доcтупа</th>
+                      <th onclick="sortTable(2)" style="cursor:pointer" scope="col">Оборудование</th>
+                      <th onclick="sortTable(3)" style="cursor:pointer" scope="col">Описание</th>
+                      <th onclick="sortTable(4)" style="cursor:pointer" scope="col">Инвентарный номер</th>
+                      <th scope="col">Серийный номер</th>
+                      <th class="th.sm"  scope="col">Ряд/Шкаф/Полка</th>
+                      <th class="th.sm" scope="col">Плата место</th>
+                      <th class="th.sm"  scope="col">Примечание</th>
+                      <th class="th.sm" scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody class="table-condensed " id="tbody_main_table">
+                    {% for un in units %}
+                    <tr>
+                      <td>{{ un.id }}</td>
+                      <td>{{ un.ud_punkt }}</td>
+                      <td><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"   data-ud ="{{ un.ud_punkt }}" data-pon ="{{ un.name_PON }}"  >{{ un.name_PON }}</a></td>
+                      <td>{{ un.name_unit }}</td>
+                      <td><a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-id = "{{ un.inv_number }}" >{{ un.inv_number }}</a></td>
+                      <td>{{ un.serial_number }}</td>
+                      <td style="width: 65px">{{ un.row_mesto }}</td>
+                      <td style="width: 55px">{{ un.plata_mesto }}</td>
+                        <td style="width:70px"><div class="clip">{{ un.note }}</div></td>
+                      <td><a href="" data-bs-toggle="modal" data-bs-target="#EditModal"  data-id = "{{ un.id }}" >
+                          <i class="bi bi-pencil-square h5"></i>
+                      </a></td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+        </main>
+    </div>
+<!--   редактировать ячейки таблицы двойным кликом-->
+    <script>
+                    document.querySelectorAll('td').forEach(td => {
+                      td.ondblclick = function() {
+                        this.contentEditable = true;
+                      };
+                    });
+                  </script>
+    </div>
+</body>
+
