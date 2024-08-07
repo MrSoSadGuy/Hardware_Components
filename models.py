@@ -25,6 +25,7 @@ class Unit(db.Model):
     def __repr__(self):
         return '<Unit %r>' % self.id
 
+
 @dataclass
 class MA_Unit(db.Model):
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)

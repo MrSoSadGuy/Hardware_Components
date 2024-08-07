@@ -39,7 +39,7 @@ function create_tables(dataPon){
                         const tr = document.createElement('tr');
                         for (let i = 0; i < column_name.length; i++) {
                             const td = document.createElement('td');
-                            td.contentEditable;
+                            td.contentEditable = true;
                             td.textContent = item[column_name[i]];
                             tr.appendChild(td);
                         }

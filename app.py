@@ -2,6 +2,7 @@ from flask import Flask
 from flask_login import LoginManager
 from models import db
 from waitress import serve
+
 app = Flask(__name__)
 app.secret_key = 'some secret salt'
 app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///sostav_PON.db'
@@ -10,7 +11,7 @@ manager = LoginManager(app)
 
 
 from routes import *
-from  models import *
+from models import *
 
 
 @manager.user_loader
