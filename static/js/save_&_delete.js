@@ -32,30 +32,8 @@ function change_password(){
             document.getElementById("raport_chang_pass").textContent = "Новый пароль задан не верно"}
 
     }
- // function delete_table_row() {
- //            var id = {
- //            id: document.getElementById("id_for_edit").value
- //            }
- //            console.log(id)
- //            var data = new FormData();
- //            data.append( "json", JSON.stringify( id ) );
- //            fetch("/delete_table_row",
- //            {
- //                method: "POST",
- //                body: data
- //            })
- //            .then(function(res){ return res.json(); })
- //            .then(function(data){
- //                if (data === 'SUCCESS'){
- //                    document.getElementById("button_for_delete_row").setAttribute("class", "btn btn-success");
- //                }
- //                else {
- //                    document.getElementById("button_for_delete_row").setAttribute("class", "btn btn-danger");
- //                }
- //                console.log(data)
- //            })
- //
- //            }
+
+
 
 function delete_row(db, id, bt_id)  {
     var id_val = {id: id}
@@ -158,6 +136,21 @@ function delete_row(db, id, bt_id)  {
             if (confirm("Сохранить изменнения?")){
             fetch_data_to_save(kts_data, "KTS", "save_kts")
             }}
+function reset_tbodys(tbody, db_table, bt_id, add_param){
+    add_new_units(tbody, db_table, bt_id, add_param);
+    console.log("sdasddas")
+    setTimeout(function (){create_tables(add_param)}, 1000);
+
+}
+function reset_table(db, id, bt_id, tbody, row_index ){
+    console.log(tbody, row_index)
+    delete_row(db, id, bt_id);
+    console.log(tbody, row_index)
+    var rows = document.getElementById(tbody).getElementsByTagName('tr');
+    setTimeout(function (){rows[row_index-1].style.display = "none";}, 1000);
+
+
+}
 function add_new_units(tbody, db_table, bt_id, add_param){
         var oTable = document.getElementById(tbody);
             //gets rows of table
@@ -178,31 +171,7 @@ function add_new_units(tbody, db_table, bt_id, add_param){
             }
         }
 
-function save_ma_add_modules(){
-        var oTable = document.getElementById('new_MA_modules_tbody_id');
-            //gets rows of table
-        var rowLength = oTable.rows.length;
-            //loops through rows
-    if (confirm("Сохранить изменнения?")){
-        for (i = 0; i < rowLength; i++){
-           //gets cells of current row
-            var oCells = oTable.rows.item(i).cells;
-           //gets amount of cells of current row
-            var new_unit = {
-                cod_name: document.getElementById('cod_id').value,
-                type: oCells[0].textContent,
-                modules_name: oCells[1].textContent,
-                inv_number: oCells[2].textContent,
-                serial_number: oCells[3].textContent,
-                port: oCells[4].textContent,
-                size: oCells[5].textContent,
-                note: oCells[6].textContent,
-                };
-                console.log(new_unit);
-                fetch_data_to_save(new_unit, "ma_add_modules", "btn_to_add_new_ma_modules")
-           }
-            }
-        }
+
  function fetch_data_to_save(data_to_save, db, btn_id) {
      var data = new FormData();
      data.append("json", JSON.stringify(data_to_save));
