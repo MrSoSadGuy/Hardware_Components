@@ -14,6 +14,7 @@
     <script src="{{ url_for('static', filename='js/bad_scripts.js') }}"></script>
     <script src="{{ url_for('static', filename='js/save_&_delete.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/to_fill_modals.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
         {#document.getElementById(JSON.parse(localStorage.getItem("radio_check"))).click()#}
@@ -38,12 +39,8 @@
              .castom-white{
                 color: #f6fafa;
             }
-            .castom-red{
-                color: #f30d0d;
-            }
-            .castom-green{
-                color: #279c03;
-            }
+
+
              .clip {
                 width: 100px;
 
@@ -235,7 +232,7 @@
               <button type="button" class="btn btn-primary" id="button_del_row" onclick="del_row('new_ma_tbody_id')">
                   <i class="bi bi-dash-lg"></i>
               </button>
-            <button type="button" class="btn btn-primary" id="button_for_save_new_units" onclick="add_new_units('new_ma_tbody_id','MA_Unit')">Сохранить</button>
+            <button type="button" class="btn btn-primary" id="button_for_save_new_units" onclick="add_new_units('new_ma_tbody_id','MA_Unit',this.id)">Сохранить</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="reload_page()" >Закрыть</button>
           </div>
         </div>
@@ -319,8 +316,7 @@
                       <th scope="col">Порт:</th>
                       <th scope="col">Емкость</th>
                       <th scope="col">Примечание</th>
-                        <th></th>
-                        <th></th>
+                        <th style="width:70px"></th>
                     </tr>
 
                   </thead>
@@ -341,7 +337,7 @@
               <button type="button" class="btn btn-primary" id="button_del_row" onclick="del_row('new_MA_modules_tbody_id')">
                   <i class="bi bi-dash-lg"></i>
               </button>
-              <button type="button" class="btn btn-primary"  onclick="add_new_units('new_MA_modules_tbody_id', 'ma_add_modules')" id="btn_to_add_new_ma_modules">
+              <button type="button" class="btn btn-primary"  onclick="add_new_units('new_MA_modules_tbody_id', 'ma_add_modules',this.id,this.name)" id="btn_to_add_new_ma_modules">
                   <i class="bi bi-floppy"></i>
               </button>
 
@@ -353,26 +349,8 @@
         <script type="text/javascript">
                                       $('#inventModal').on('show.bs.modal', function (e) {
                                       $(this).find('form').trigger('reset');
-                                      document.getElementById("In_num").value = $(e.relatedTarget).data('inv');
-                                      document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
-                                      var data = new FormData();
-                                      data.append('json', JSON.stringify(document.getElementById("In_num").value))
-                                      fetch("/get_data_from_db/BuhUch",
-                                            {
-                                                method: "POST",
-                                                body: data
-                                            })
-                                            .then(function(res){ return res.json(); })
-                                            .then(function(data){
-                                                console.log(data)
-                                                if (data === null){alert("Нет данных по этому номеру")}
-                                                else {
-                                                    document.getElementById("description_id").value = data['name'];
-                                                    document.getElementById("mol_id").value = data['MOL'];
-                                                    document.getElementById("char_id").value = data['charracter'];
-                                                    document.getElementById("note_id").value = data['note'];
-                                                }
-                                        })
+                                      const param = $(e.relatedTarget).data('inv');
+                                      invent_modal(param);
                                         })
                                         </script>
         <script type="text/javascript">
@@ -415,84 +393,8 @@
                                       $(this).find('form').trigger('reset');
                                       var dataPon = $(e.relatedTarget).data('cod');
                                       document.getElementById("cod_id").value = dataPon;
-                                      document.getElementById("current_MA_modules_tbody_id").remove();
-                                      document.getElementById("new_MA_modules_tbody_id").remove();
-                                      document.getElementById("btn_to_add_new_ma_modules").setAttribute("class", "btn btn-primary");
                                       var units = {{ ma_units | tojson }};
-                                      units.forEach((unit) => {
-                                      if (dataPon === unit.cod_name){
-
-                                        document.getElementById("type_id").value = unit.type_equipment;
-                                        document.getElementById("Serial_id").value = unit.serial_number;
-                                        console.log(unit.serial_number)
-                                        document.getElementById("ip_id").value = unit.IP;
-                                        }})
-                                     var table = document.getElementById("Sostav_Modal_table");
-                                        const tbody_new = document.createElement('tbody');
-                                        const tbody_current = document.createElement('tbody');
-                                        tbody_new.setAttribute("id", "new_MA_modules_tbody_id");
-                                        tbody_current.setAttribute("id", "current_MA_modules_tbody_id");
-                                        table.appendChild(tbody_current);
-                                        table.appendChild(tbody_new);
-                                        var data = new FormData();
-                                        data.append('json', JSON.stringify(dataPon))
-                                        fetch("/get_data_from_db/ma_add_modules",
-                                            {
-                                                method: "POST",
-                                                body: data
-                                            })
-                                            .then(function(res){ return res.json(); })
-                                            .then(function(data){
-                                                console.log(data)
-                                                if (data === null){ }
-                                                else {
-                                                data.forEach(item => {
-                                                    const tr = document.createElement('tr');
-                                                    const td1 = document.createElement('td');
-                                                    const td2 = document.createElement('td');
-                                                    const td3 = document.createElement('td');
-                                                    const td4 = document.createElement('td');
-                                                    const td5 = document.createElement('td');
-                                                    const td6 = document.createElement('td');
-                                                    const td7 = document.createElement('td');
-                                                    const td8 = document.createElement('td');
-                                                    const td9 = document.createElement('td');
-                                                    const a1 = document.createElement('a');
-                                                    const a2 = document.createElement('a');
-                                                    const i1 = document.createElement('i');
-                                                    const i2 = document.createElement('i');
-                                                    a1.setAttribute('id','btn_edit_ma_mod_'+item['id']);
-                                                    a2.setAttribute('id','btn_del_ma_mod_'+item['id']);
-                                                    a1.onclick = function (){edit_row('ma_add_modules', item['id'],'btn_del_ma_mod_'+item['id'],'current_MA_modules_tbody_id',
-                                                    this.closest("tr").rowIndex,7)}
-                                                    a2.onclick = function (){delete_row('ma_add_modules', item['id'],'btn_del_ma_mod_'+item['id'])}
-                                                    i1.setAttribute('class', "bi bi-pencil-square h5");
-                                                    i2.setAttribute('class', "bi bi-trash3 h5");
-                                                    td1.textContent = item['type'];
-                                                    td2.textContent = item['modules_name'];
-                                                    td3.textContent = item['inv_number'];
-                                                    td4.textContent = item['serial_number'];
-                                                    td5.textContent = item['port'];
-                                                    td6.textContent = item['size'];
-                                                    td7.textContent = item['note'];
-                                                    a1.appendChild(i1)
-                                                    a2.appendChild(i2)
-                                                    td8.appendChild(a1)
-                                                    td9.appendChild(a2)
-                                                    tr.appendChild(td1);
-                                                    tr.appendChild(td2);
-                                                    tr.appendChild(td3);
-                                                    tr.appendChild(td4);
-                                                    tr.appendChild(td5);
-                                                    tr.appendChild(td6);
-                                                    tr.appendChild(td7);
-                                                    tr.appendChild(td8);
-                                                    tr.appendChild(td9);
-                                                    tbody_current.appendChild(tr);
-                                                })
-
-                                                }
-                                        })
+                                      sostav_ma_unit(units, dataPon);
                                      })
 
     </script>

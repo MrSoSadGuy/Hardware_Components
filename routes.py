@@ -98,18 +98,6 @@ def get_data_from_db(db):
         return None
 
 
-@app.route('/delete_table_row', methods=['GET', 'POST'])
-@login_required
-def delete_table_row():
-    name = request.form['json']
-    id = int(json.loads(name)["id"])
-    unit = Unit.query.get_or_404(id)
-    try:
-        db.session.delete(unit)
-        db.session.commit()
-        return jsonify("SUCCESS")
-    except:
-        return jsonify("ERROR")
 
 @app.route('/delete_row/<base_table>', methods=['GET', 'POST'])
 @login_required
@@ -119,7 +107,7 @@ def delete_row(base_table):
     db_obj = ""
     if base_table == "ma_add_modules":
         db_obj = ma_add_modules.query.get_or_404(id)
-    if base_table == "Units":
+    if base_table == "Unit":
         db_obj = Unit.query.get_or_404(id)
     if base_table == "MA_Unit":
         db_obj = MA_Unit.query.get_or_404(id)
@@ -238,46 +226,26 @@ def save_data(db_name):
         return save_buhuchet_data(req_dict)
     if db_name == 'Unit':
         return add_new_unit(req_dict)
-    if db_name == 'MA_Unit_new':
+    if db_name == 'Ma_Units_edit':
+        return save_ma_unit_data(req_dict)
+    if db_name == 'MA_Unit':
         return add_ma_unit_data(req_dict)
     if db_name == 'ma_add_modules':
+        return add_ma_add_modules(req_dict)
+    if db_name == 'ma_add_modules_edited':
         return save_ma_add_modules(req_dict)
-
-
-def save_ma_add_modules(req_dict):
-    user = Users.query.filter_by(id=current_user.get_id()).first()
-    if request.method == 'POST':
-        ma_modules = ma_add_modules(cod_name=req_dict["cod_name"],
-                    type=req_dict["type"],
-                    modules_name=req_dict["modules_name"],
-                    inv_number=req_dict["inv_number"],
-                    serial_number=req_dict["serial_number"],
-                    port=req_dict["port"],
-                    size=req_dict["size"],
-                    note=req_dict["note"],
-                    creator=user.FIO)
-        try:
-            app.app_context()
-            db.session.add(ma_modules)
-            db.session.commit()
-            return jsonify("SUCCESS")
-        except Exception as err:
-            print(f"Unexpected {err=}, {type(err)=}")
-            return json.dumps(f"Unexpected {err=}, {type(err)=}")
-    else:
-        return json.dumps("NOT 'POST' REQUEST")
 
 
 def add_new_unit(req_dict):
     user = Users.query.filter_by(id=current_user.get_id()).first()
     if request.method == 'POST':
-        unit = Unit(ud_punkt=req_dict["ud_punkt"],
-                    name_PON=req_dict["name_PON"],
-                    name_unit=req_dict["name_unit"],
-                    inv_number=req_dict["inv_number"],
-                    serial_number=req_dict["serial_number"],
-                    row_mesto=req_dict["row_mesto"],
-                    plata_mesto=req_dict["plata_mesto"],
+        unit = Unit(ud_punkt=req_dict["0"],
+                    name_PON=req_dict["1"],
+                    name_unit=req_dict["2"],
+                    inv_number=req_dict["3"],
+                    serial_number=req_dict["4"],
+                    row_mesto=req_dict["5"],
+                    plata_mesto=req_dict["6"],
                     creator=user.FIO)
         try:
             app.app_context()
@@ -291,27 +259,53 @@ def add_new_unit(req_dict):
         return json.dumps("NOT 'POST' REQUEST")
 
 
-# def add_new_ma_unit(req_dict):
-#     user = Users.query.filter_by(id=current_user.get_id()).first()
-#     if request.method == 'POST':
-#         ma_unit = MA_Unit(ud_punkt=req_dict["ud_punkt"],
-#                     name_PON=req_dict["name_PON"],
-#                     name_unit=req_dict["name_unit"],
-#                     inv_number=req_dict["inv_number"],
-#                     serial_number=req_dict["serial_number"],
-#                     row_mesto=req_dict["row_mesto"],
-#                     plata_mesto=req_dict["plata_mesto"],
-#                     creator=user.FIO)
-#         try:
-#             app.app_context()
-#             db.session.add(ma_unit)
-#             db.session.commit()
-#             return jsonify("SUCCESS")
-#         except Exception as err:
-#             print(f"Unexpected {err=}, {type(err)=}")
-#             return json.dumps(f"Unexpected {err=}, {type(err)=}")
-#     else:
-#         return json.dumps("NOT 'POST' REQUEST")
+def add_ma_unit_data(req_dict):
+    user = Users.query.filter_by(id=current_user.get_id()).first()
+    if request.method == 'POST':
+        ma_unit = MA_Unit(cod_name=req_dict["0"],
+                    type_equipment=req_dict["1"],
+                    organization=req_dict["2"],
+                    address=req_dict["3"],
+                    IP=req_dict["4"],
+                    inv_number=req_dict["5"],
+                    naklodnaja=req_dict["6"],
+                    ORSH=req_dict["7"],
+                    creator=user.FIO)
+        try:
+            app.app_context()
+            db.session.add(ma_unit)
+            db.session.commit()
+            return jsonify("SUCCESS")
+        except Exception as err:
+            print(f"Unexpected {err=}, {type(err)=}")
+            return json.dumps(f"Unexpected {err=}, {type(err)=}")
+    else:
+        return json.dumps("NOT 'POST' REQUEST")
+
+
+def add_ma_add_modules(req_dict):
+    user = Users.query.filter_by(id=current_user.get_id()).first()
+    if request.method == 'POST':
+        ma_modules = ma_add_modules(cod_name=req_dict["add_p"],
+                    type=req_dict["0"],
+                    modules_name=req_dict["1"],
+                    inv_number=req_dict["2"],
+                    serial_number=req_dict["3"],
+                    port=req_dict["4"],
+                    size=req_dict["5"],
+                    note=req_dict["6"],
+                    creator=user.FIO)
+        try:
+            app.app_context()
+            db.session.add(ma_modules)
+            db.session.commit()
+            return jsonify("SUCCESS")
+        except Exception as err:
+            print(f"Unexpected {err=}, {type(err)=}")
+            return json.dumps(f"Unexpected {err=}, {type(err)=}")
+    else:
+        return json.dumps("NOT 'POST' REQUEST")
+
 
 def save_kts_data(req_dict):
     kts_data = Data_for_KTS.query.all()
@@ -394,6 +388,28 @@ def save_buhuchet_data(req_dict):
         return json.dumps("NOT 'POST' REQUEST")
 
 
+def save_ma_add_modules(req_dict):
+    ma_add_mod = ma_add_modules.query.get_or_404(int(req_dict["id"]))
+    user = Users.query.filter_by(id=current_user.get_id()).first()
+    if request.method == 'POST':
+        ma_add_mod.type = req_dict["0"]
+        ma_add_mod.modules_name = req_dict["1"]
+        ma_add_mod.inv_number = req_dict["2"]
+        ma_add_mod.serial_number = req_dict["3"]
+        ma_add_mod.port = req_dict["4"]
+        ma_add_mod.size = req_dict["5"]
+        ma_add_mod.note = req_dict["6"]
+        ma_add_mod.editor = user.FIO
+        ma_add_mod.last_date_edit = datetime.now()
+        try:
+            db.session.commit()
+            return jsonify("SUCCESS")
+        except Exception as err:
+            return json.dumps(f"Unexpected {err=}, {type(err)=}")
+    else:
+        return json.dumps("NOT 'POST' REQUEST")
+
+
 def save_sostav_data(req_dict):
     unit = Unit.query.get_or_404(int(req_dict["id"]))
     user = Users.query.filter_by(id=current_user.get_id()).first()
@@ -437,6 +453,7 @@ def save_ma_unit_data(req_dict):
             db.session.commit()
             return jsonify("SUCCESS")
         except Exception as err:
+            print(f"Unexpected {err=}, {type(err)=}")
             return json.dumps(f"Unexpected {err=}, {type(err)=}")
     else:
         return json.dumps("NOT 'POST' REQUEST")

@@ -32,30 +32,30 @@ function change_password(){
             document.getElementById("raport_chang_pass").textContent = "Новый пароль задан не верно"}
 
     }
- function delete_table_row() {
-            var id = {
-            id: document.getElementById("id_for_edit").value
-            }
-            console.log(id)
-            var data = new FormData();
-            data.append( "json", JSON.stringify( id ) );
-            fetch("/delete_table_row",
-            {
-                method: "POST",
-                body: data
-            })
-            .then(function(res){ return res.json(); })
-            .then(function(data){
-                if (data === 'SUCCESS'){
-                    document.getElementById("button_for_delete_row").setAttribute("class", "btn btn-success");
-                }
-                else {
-                    document.getElementById("button_for_delete_row").setAttribute("class", "btn btn-danger");
-                }
-                console.log(data)
-            })
-
-            }
+ // function delete_table_row() {
+ //            var id = {
+ //            id: document.getElementById("id_for_edit").value
+ //            }
+ //            console.log(id)
+ //            var data = new FormData();
+ //            data.append( "json", JSON.stringify( id ) );
+ //            fetch("/delete_table_row",
+ //            {
+ //                method: "POST",
+ //                body: data
+ //            })
+ //            .then(function(res){ return res.json(); })
+ //            .then(function(data){
+ //                if (data === 'SUCCESS'){
+ //                    document.getElementById("button_for_delete_row").setAttribute("class", "btn btn-success");
+ //                }
+ //                else {
+ //                    document.getElementById("button_for_delete_row").setAttribute("class", "btn btn-danger");
+ //                }
+ //                console.log(data)
+ //            })
+ //
+ //            }
 
 function delete_row(db, id, bt_id)  {
     var id_val = {id: id}
@@ -71,10 +71,10 @@ function delete_row(db, id, bt_id)  {
                 .then(function(res){ return res.json(); })
             .then(function(data){
                 if (data === 'SUCCESS'){
-                    document.getElementById(bt_id).setAttribute("class", "castom-green");
+                    document.getElementById(bt_id).setAttribute("class", "btn btn-success");
                 }
                 else {
-                    document.getElementById(bt_id).setAttribute("class", "castom-red");
+                    document.getElementById(bt_id).setAttribute("class", "btn btn-danger");
                 }
                 console.log(data)
             })
@@ -89,26 +89,11 @@ function delete_row(db, id, bt_id)  {
          edit_data[i] = oCells[i].textContent;
      }
      console.log(edit_data)
-     var data = new FormData();
-     data.append( "json", JSON.stringify( edit_data ) );
-            if (confirm('Изменить запись?')){
-                fetch("/edit_row/"+db,
-            {
-                method: "POST",
-                body: data
-            })
-                .then(function(res){ return res.json(); })
-            .then(function(data){
-                if (data === 'SUCCESS'){
-                    document.getElementById(bt_id).setAttribute("class", "castom-green");
-                }
-                else {
-                    document.getElementById(bt_id).setAttribute("class", "castom-red");
-                }
-                console.log(data)
-            })
-            }
- }
+     if (confirm("Сохранить изменнения?")){
+            fetch_data_to_save(edit_data , db, bt_id)
+            }}
+
+
  function save_edit_buh_data() {
             var edited_buh_data = {
                 id: document.getElementById("id_buh").value,
@@ -153,7 +138,7 @@ function delete_row(db, id, bt_id)  {
             }
             console.log(edited_row)
             if (confirm("Сохранить изменнения?")){
-            fetch_data_to_save(edited_row , "ma_units", "button_for_save_edit_row")
+            fetch_data_to_save(edited_row , "Ma_Units_edit", "button_for_save_edit_row")
             }}
  function save_kts_data() {
             var kts_data = {
@@ -173,27 +158,22 @@ function delete_row(db, id, bt_id)  {
             if (confirm("Сохранить изменнения?")){
             fetch_data_to_save(kts_data, "KTS", "save_kts")
             }}
-function add_new_units(tbody, db_table){
+function add_new_units(tbody, db_table, bt_id, add_param){
         var oTable = document.getElementById(tbody);
             //gets rows of table
         var rowLength = oTable.rows.length;
             //loops through rows
-    if (confirm("Сохранить изменнения?")){
+        if (confirm("Сохранить изменнения?")){
         for (i = 0; i < rowLength; i++){
-           //gets cells of current row
+            var new_unit ={add_p :add_param};
+
             var oCells = oTable.rows.item(i).cells;
            //gets amount of cells of current row
-            var new_unit = {
-                ud_punkt: oCells[0].textContent,
-                name_PON: oCells[1].textContent,
-                name_unit: oCells[2].textContent,
-                inv_number: oCells[3].textContent,
-                serial_number: oCells[4].textContent,
-                row_mesto: oCells[5].textContent,
-                plata_mesto: oCells[6].textContent,
-                };
+            for (let j = 0; j < oCells.length; j++) {
+               new_unit[j] = oCells[j].textContent;
+            }
                 console.log(new_unit);
-                fetch_data_to_save(new_unit, db_table, "button_for_save_new_units")
+                fetch_data_to_save(new_unit, db_table, bt_id)
            }
             }
         }
@@ -243,6 +223,7 @@ function save_ma_add_modules(){
              }
              else {
                  document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
+                 alert(data);
              }
              }
          )

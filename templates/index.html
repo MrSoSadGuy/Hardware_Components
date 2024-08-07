@@ -14,6 +14,8 @@
     <script type=text/javascript src="{{ url_for('static', filename='js/jquery-3.7.1.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bad_scripts.js') }}"></script>
     <script src="{{ url_for('static', filename='js/save_&_delete.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/to_fill_modals.js') }}"></script>
+
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         {#document.getElementById(JSON.parse(localStorage.getItem("radio_check"))).click()#}
@@ -311,7 +313,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" id="button_for_save_edit_row" name="button_for_save_edit_row" onclick="save_edit_table_row()">Сохранить</button>
-            <button type="button" class="btn btn-primary" id="button_for_delete_row" onclick="delete_row('Units',this.name,this.id)">Удалить</button>
+            <button type="button" class="btn btn-primary" id="button_for_delete_row" onclick="delete_row('Unit',this.name,this.id)">Удалить</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="reload_page()">Закрыть</button>
           </div>
         </div>
@@ -359,7 +361,7 @@
               <button type="button" class="btn btn-primary" id="button_del_row" onclick="del_row('new_units_table_id')">
                   <i class="bi bi-dash-lg"></i>
               </button>
-            <button type="button" class="btn btn-primary" id="button_for_save_new_units" onclick="add_new_units('new_units_table_id', 'Unit')">Сохранить</button>
+            <button type="button" class="btn btn-primary" id="button_for_save_new_units" onclick="add_new_units('new_units_table_id', 'Unit', this.id)">Сохранить</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="reload_page()" >Закрыть</button>
           </div>
         </div>
@@ -398,26 +400,8 @@
     <script type="text/javascript">
                                       $('#inventModal').on('show.bs.modal', function (e) {
                                       $(this).find('form').trigger('reset');
-                                      document.getElementById("In_num").value = $(e.relatedTarget).data('id');
-                                      document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
-                                      var data = new FormData();
-                                      data.append('json', JSON.stringify(document.getElementById("In_num").value))
-                                      fetch("/get_data_from_db/BuhUch",
-                                            {
-                                                method: "POST",
-                                                body: data
-                                            })
-                                            .then(function(res){ return res.json(); })
-                                            .then(function(data){
-                                                console.log(data)
-                                                if (data === null){alert("Нет данных по этому номеру")}
-                                                else {
-                                                    document.getElementById("description_id").value = data['name'];
-                                                    document.getElementById("mol_id").value = data['MOL'];
-                                                    document.getElementById("char_id").value = data['charracter'];
-                                                    document.getElementById("note_id").value = data['note'];
-                                                }
-                                        })
+                                      const param = $(e.relatedTarget).data('id');
+                                      invent_modal(param);
                                         })
                                         </script>
     <script type="text/javascript">
