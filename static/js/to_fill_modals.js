@@ -56,7 +56,7 @@ function create_tables(dataPon){
                         a2.setAttribute('class','btn btn-primary');
                         a1.onclick = function (){edit_row('ma_add_modules_edited', item['id'],'btn_edit_ma_mod_'+item['id'],'current_MA_modules_tbody_id',
                         this.closest("tr").rowIndex,7)}
-                        a2.onclick = function (){reset_table('ma_add_modules', item['id'],'btn_del_ma_mod_'+item['id'],'current_MA_modules_tbody_id',
+                        a2.onclick = function (){delete_row('ma_add_modules', item['id'],'btn_del_ma_mod_'+item['id'],'current_MA_modules_tbody_id',
                         this.closest("tr").rowIndex)}
                         i1.setAttribute('class', "bi bi-pencil-square h7");
                         i2.setAttribute('class', "bi bi-trash3 h7");

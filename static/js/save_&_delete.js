@@ -35,7 +35,7 @@ function change_password(){
 
 
 
-function delete_row(db, id, bt_id)  {
+function delete_row(db, id, bt_id, tbody, row_index)  {
     var id_val = {id: id}
             console.log(id)
      var data = new FormData();
@@ -48,16 +48,20 @@ function delete_row(db, id, bt_id)  {
             })
                 .then(function(res){ return res.json(); })
             .then(function(data){
-                if (data === 'SUCCESS'){
+                console.log(data)
+                if ((data === 'SUCCESS')&&(typeof(data) === "string")){
                     document.getElementById(bt_id).setAttribute("class", "btn btn-success");
+                    setTimeout(function (){document.getElementById(tbody).deleteRow(row_index-1)}, 500);
+                    return data;
                 }
                 else {
                     document.getElementById(bt_id).setAttribute("class", "btn btn-danger");
                 }
-                console.log(data)
             })
             }
  }
+
+
  function edit_row(db, id, bt_id, tbody, row_index, cells)  {
     console.log(row_index)
     var edit_data = {id: id}
@@ -142,19 +146,19 @@ function reset_tbodys(tbody, db_table, bt_id, add_param){
     setTimeout(function (){create_tables(add_param)}, 1000);
 
 }
-function reset_table(db, id, bt_id, tbody, row_index ){
-    console.log(tbody, row_index)
-    delete_row(db, id, bt_id);
-    console.log(tbody, row_index)
-    var rows = document.getElementById(tbody).getElementsByTagName('tr');
-    setTimeout(function (){rows[row_index-1].style.display = "none";}, 1000);
-}
-function reset_main_table(db, id, bt_id, tbody, row_index){
-    console.log(tbody, row_index)
-     delete_row(db, id, bt_id);
-    document.getElementById(tbody).deleteRow(row_index-1)
-    // setTimeout(function (){rows[row_index-1].style.display = "none";}, 1000);
-}
+
+// function reset_table(db, id, bt_id, tbody, row_index ){
+//     console.log(tbody, row_index)
+//     const server_answer = delete_row(db, id, bt_id);
+//         var rows = document.getElementById(tbody).getElementsByTagName('tr');
+//         setTimeout(function (){
+//             console.log(server_answer)
+//             if (server_answer === "SUCCESS"){
+//             rows[row_index-1].style.display = "none";}}, 1000);
+
+
+
+
 function add_new_units(tbody, db_table, bt_id, add_param){
         var oTable = document.getElementById(tbody);
             //gets rows of table
