@@ -148,8 +148,12 @@ function reset_table(db, id, bt_id, tbody, row_index ){
     console.log(tbody, row_index)
     var rows = document.getElementById(tbody).getElementsByTagName('tr');
     setTimeout(function (){rows[row_index-1].style.display = "none";}, 1000);
-
-
+}
+function reset_main_table(db, id, bt_id, tbody, row_index){
+    console.log(tbody, row_index)
+     delete_row(db, id, bt_id);
+    document.getElementById(tbody).deleteRow(row_index-1)
+    // setTimeout(function (){rows[row_index-1].style.display = "none";}, 1000);
 }
 function add_new_units(tbody, db_table, bt_id, add_param){
         var oTable = document.getElementById(tbody);

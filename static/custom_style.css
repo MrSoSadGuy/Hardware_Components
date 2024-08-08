@@ -1,0 +1,21 @@
+#myInput {
+              background-position: 10px 10px;
+              background-repeat: no-repeat;
+              width: 100%;
+              font-size: 16px;
+              padding: 12px 20px 12px 40px;
+              border: 1px solid #ddd;
+              margin-bottom: 12px;
+            }
+            .table-condensed{
+              font-size: 12px;
+            }
+            .castom-white{
+                color: #f6fafa;
+            }
+            .clip {
+                width: 100px;
+                white-space: nowrap; /* Запрещаем перенос строк */
+                overflow: hidden; /* Обрезаем все, что не помещается в область */
+                text-overflow: ellipsis; /* Добавляем многоточие */
+            }

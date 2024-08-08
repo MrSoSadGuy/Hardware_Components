@@ -87,7 +87,7 @@ def change_password():
 # @login_required
 def get_data_from_db(db):
     req = request.form['json']
-    print(db, json.loads(req))
+    print("запрос на получение данных -- ", db, json.loads(req))
     if db == 'BuhUch':
         buh = BuhUch.query.filter_by(inv_number=json.loads(req)).first()
         return jsonify(buh)
@@ -104,6 +104,7 @@ def get_data_from_db(db):
 def delete_row(base_table):
     name = request.form['json']
     id = int(json.loads(name)["id"])
+    print("запрос на удаление -- ", base_table, name)
     db_obj = ""
     if base_table == "ma_add_modules":
         db_obj = ma_add_modules.query.get_or_404(id)
@@ -114,6 +115,7 @@ def delete_row(base_table):
     try:
         db.session.delete(db_obj)
         db.session.commit()
+        print("SUCCESS")
         return jsonify("SUCCESS")
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
@@ -215,9 +217,8 @@ def create_file_KTS(name_PON):
 @app.route('/save_data/<db_name>', methods=['GET', 'POST'])
 @login_required
 def save_data(db_name):
-    print(db_name)
     req_dict = json.loads(request.form['json'])
-    print(req_dict)
+    print("запрос на внесение изменений или добавление новых записей -- ", db_name, req_dict)
     if db_name == 'KTS':
         return save_kts_data(req_dict)
     if db_name == 'sostav':
@@ -236,6 +237,30 @@ def save_data(db_name):
         return save_ma_add_modules(req_dict)
 
 
+
+def add_data_to_db(data):
+    try:
+        app.app_context()
+        db.session.add(data)
+        db.session.commit()
+        print("SUCCESS")
+        return jsonify("SUCCESS")
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
+        return json.dumps(f"Unexpected {err=}, {type(err)=}")
+
+
+def save_data_to_db():
+    try:
+        app.app_context()
+        db.session.commit()
+        print("SUCCESS")
+        return jsonify("SUCCESS")
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
+        return json.dumps(f"Unexpected {err=}, {type(err)=}")
+
+
 def add_new_unit(req_dict):
     user = Users.query.filter_by(id=current_user.get_id()).first()
     if request.method == 'POST':
@@ -247,14 +272,7 @@ def add_new_unit(req_dict):
                     row_mesto=req_dict["5"],
                     plata_mesto=req_dict["6"],
                     creator=user.FIO)
-        try:
-            app.app_context()
-            db.session.add(unit)
-            db.session.commit()
-            return jsonify("SUCCESS")
-        except Exception as err:
-            print(f"Unexpected {err=}, {type(err)=}")
-            return json.dumps(f"Unexpected {err=}, {type(err)=}")
+        return add_data_to_db(unit)
     else:
         return json.dumps("NOT 'POST' REQUEST")
 
@@ -271,14 +289,7 @@ def add_ma_unit_data(req_dict):
                     naklodnaja=req_dict["6"],
                     ORSH=req_dict["7"],
                     creator=user.FIO)
-        try:
-            app.app_context()
-            db.session.add(ma_unit)
-            db.session.commit()
-            return jsonify("SUCCESS")
-        except Exception as err:
-            print(f"Unexpected {err=}, {type(err)=}")
-            return json.dumps(f"Unexpected {err=}, {type(err)=}")
+        return add_data_to_db(ma_unit)
     else:
         return json.dumps("NOT 'POST' REQUEST")
 
@@ -295,14 +306,7 @@ def add_ma_add_modules(req_dict):
                     size=req_dict["5"],
                     note=req_dict["6"],
                     creator=user.FIO)
-        try:
-            app.app_context()
-            db.session.add(ma_modules)
-            db.session.commit()
-            return jsonify("SUCCESS")
-        except Exception as err:
-            print(f"Unexpected {err=}, {type(err)=}")
-            return json.dumps(f"Unexpected {err=}, {type(err)=}")
+        return add_data_to_db(ma_modules)
     else:
         return json.dumps("NOT 'POST' REQUEST")
 
@@ -323,13 +327,7 @@ def save_kts_data(req_dict):
                 kts.full_name = req_dict["full_name"].strip()
                 kts.mesto = req_dict["mesto"].strip()
                 kts.zavod = req_dict["zavod"].strip()
-                try:
-                    app.app_context()
-                    db.session.commit()
-                    return jsonify("SUCCESS")
-                except Exception as err:
-                    print(f"Unexpected {err=}, {type(err)=}")
-                    return json.dumps(f"Unexpected {err=}, {type(err)=}")
+                return save_data_to_db()
         kts_data = Data_for_KTS(cod_name=req_dict["cod_name"].strip().upper(),
                                 IP=req_dict["IP"].strip(),
                                 OLT=req_dict["OLT"].strip(),
@@ -340,14 +338,7 @@ def save_kts_data(req_dict):
                                 full_name=req_dict["full_name"].strip(),
                                 mesto=req_dict["mesto"].strip(),
                                 zavod=req_dict["zavod"].strip())
-        try:
-            app.app_context()
-            db.session.add(kts_data)
-            db.session.commit()
-            return jsonify("SUCCESS")
-        except Exception as err:
-            print(f"Unexpected {err=}, {type(err)=}" + " ")
-            return json.dumps(f"Unexpected {err=}, {type(err)=}")
+        return add_data_to_db(kts_data)
     else:
         return json.dumps("NOT 'POST' REQUEST")
 
@@ -364,26 +355,13 @@ def save_buhuchet_data(req_dict):
                 b.editor = user.FIO
                 print(user.FIO, datetime.now())
                 b.last_edit_date = datetime.now()
-                try:
-                    app.app_context()
-                    db.session.commit()
-                    return jsonify("SUCCESS")
-                except Exception as err:
-                    print(f"Unexpected {err=}, {type(err)=}")
-                    return json.dumps(f"Unexpected {err=}, {type(err)=}")
+                return save_data_to_db()
         buh = BuhUch(inv_number=req_dict["inv_number"].strip(),
                      MOL=req_dict["MOL"].strip(),
                      charracter=req_dict["charracter"],
                      note=req_dict["note"],
                      creator=user.FIO)
-        try:
-            app.app_context()
-            db.session.add(buh)
-            db.session.commit()
-            return jsonify("SUCCESS")
-        except Exception as err:
-            print(f"Unexpected {err=}, {type(err)=}" + " ")
-            return json.dumps(f"Unexpected {err=}, {type(err)=}")
+        return add_data_to_db(buh)
     else:
         return json.dumps("NOT 'POST' REQUEST")
 
@@ -401,11 +379,7 @@ def save_ma_add_modules(req_dict):
         ma_add_mod.note = req_dict["6"]
         ma_add_mod.editor = user.FIO
         ma_add_mod.last_date_edit = datetime.now()
-        try:
-            db.session.commit()
-            return jsonify("SUCCESS")
-        except Exception as err:
-            return json.dumps(f"Unexpected {err=}, {type(err)=}")
+        return save_data_to_db()
     else:
         return json.dumps("NOT 'POST' REQUEST")
 
@@ -424,11 +398,7 @@ def save_sostav_data(req_dict):
         unit.note = req_dict["note"]
         unit.editor = user.FIO
         unit.last_date_edit = datetime.now()
-        try:
-            db.session.commit()
-            return jsonify("SUCCESS")
-        except Exception as err:
-            return json.dumps(f"Unexpected {err=}, {type(err)=}")
+        return save_data_to_db()
     else:
         return json.dumps("NOT 'POST' REQUEST")
 
@@ -449,11 +419,6 @@ def save_ma_unit_data(req_dict):
         ma_unit.note = req_dict["note"]
         ma_unit.editor = user.FIO
         ma_unit.last_date_edit = datetime.now()
-        try:
-            db.session.commit()
-            return jsonify("SUCCESS")
-        except Exception as err:
-            print(f"Unexpected {err=}, {type(err)=}")
-            return json.dumps(f"Unexpected {err=}, {type(err)=}")
+        return save_data_to_db()
     else:
         return json.dumps("NOT 'POST' REQUEST")
