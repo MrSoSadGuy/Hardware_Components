@@ -11,7 +11,7 @@
             console.log(login_data)
             var data = new FormData();
             data.append( "json", JSON.stringify( login_data) );
-            fetch("/login",
+            fetch("/login/check_user",
             {
                 method: "POST",
                 body: data

@@ -88,7 +88,7 @@ function delete_row(db, id, bt_id, tbody, row_index)  {
             if (confirm("Сохранить изменнения?")){
             fetch_data_to_save(edited_buh_data , "Buhuchet", "button_for_save_edit_buh_data")
             }}
- function save_edit_table_row() {
+ async function save_edit_table_row(tbody ,row_index) {
             var edited_row = {
                 id: document.getElementById("id_for_edit").value,
                 ud_punkt: document.getElementById("edit_UD_id").value,
@@ -102,9 +102,29 @@ function delete_row(db, id, bt_id, tbody, row_index)  {
             }
             console.log(edited_row)
             if (confirm("Сохранить изменнения?")){
-            fetch_data_to_save(edited_row , "sostav", "button_for_save_edit_row")
+            // fetch_data_to_save(edited_row , "sostav", "button_for_save_edit_row")
+                const data = await fetch_data_to_save_new(edited_row, "sostav");
+                console.log(data);
+                if(data==="SUCCESS"){
+                 document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-success");
+                 let oTable = document.getElementById(tbody);
+                 var oCells = oTable.rows.item(row_index-1).cells;
+                     oCells[1].textContent = document.getElementById("edit_UD_id").value;
+                     oCells[2].textContent = document.getElementById("edit_COD_id").value;
+                     oCells[3].textContent = document.getElementById("edit_Name_id").value;
+                     oCells[4].textContent = document.getElementById("edit_Inv_id").value;
+                     oCells[5].textContent = document.getElementById("edit_Serial_id").value;
+                     oCells[6].textContent = document.getElementById("edit_Riad_id").value;
+                     oCells[7].textContent = document.getElementById("edit_Mesto_id").value;
+                     oCells[8].textContent = document.getElementById("unit_note_id").value;
+                 }
+                 else {
+                     document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-danger");
+                     alert(data);
+                 }
             }}
- function save_edit_MA_table() {
+ async function save_edit_MA_table(tbody ,row_index) {
+            const list_input_id = [];
             var edited_row = {
                 id: document.getElementById("id_for_edit").value,
                 cod_name: document.getElementById("edit_cod_id").value,
@@ -115,12 +135,34 @@ function delete_row(db, id, bt_id, tbody, row_index)  {
                 naklodnaja: document.getElementById("edit_naklad_id").value,
                 serial_number: document.getElementById("edit_Serial_id").value,
                 IP: document.getElementById("edit_ip_id").value,
+                install_date: document.getElementById("edit_inst_date_id").value,
                 ORSH: document.getElementById("edit_orsh_id").value,
                 note: document.getElementById("unit_note_id").value,
             }
             console.log(edited_row)
             if (confirm("Сохранить изменнения?")){
-            fetch_data_to_save(edited_row , "Ma_Units_edit", "button_for_save_edit_row")
+            // fetch_data_to_save(edited_row , "Ma_Units_edit", "button_for_save_edit_row")
+             const data = await fetch_data_to_save_new(edited_row, "Ma_Units_edit");
+                console.log(data);
+                if(data==="SUCCESS"){
+                 document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-success");
+                 let oTable = document.getElementById(tbody);
+                 var oCells = oTable.rows.item(row_index-1).cells;
+                     oCells[1].textContent = document.getElementById("edit_cod_id").value;
+                     oCells[2].textContent = document.getElementById("edit_type_id").value;
+                     oCells[3].textContent = document.getElementById("edit_org_id").value;
+                     oCells[4].textContent = document.getElementById("edit_address_id").value;
+                     oCells[5].textContent = document.getElementById("edit_ip_id").value;
+                     oCells[6].textContent = document.getElementById("edit_Inv_id").value;
+                     oCells[7].textContent = document.getElementById("edit_naklad_id").value;
+                     oCells[8].textContent = document.getElementById("edit_orsh_id").value;
+                     oCells[9].textContent = document.getElementById("edit_inst_date_id").value;
+                     oCells[10].textContent = document.getElementById("unit_note_id").value;
+                 }
+                 else {
+                     document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-danger");
+                     alert(data);
+                 }
             }}
  function save_kts_data() {
             var kts_data = {
@@ -140,26 +182,18 @@ function delete_row(db, id, bt_id, tbody, row_index)  {
             if (confirm("Сохранить изменнения?")){
             fetch_data_to_save(kts_data, "KTS", "save_kts")
             }}
-function reset_tbodys(tbody, db_table, bt_id, add_param){
-    add_new_units(tbody, db_table, bt_id, add_param);
-    console.log("sdasddas")
-    setTimeout(function (){create_tables(add_param)}, 1000);
 
+function reset_tbodys(tbody, db_table, bt_id, add_param){
+    add_new_units(tbody, db_table, bt_id, add_param).then(function (r){
+        console.log(r)
+        if (r === 'SUCCESS'){
+            setTimeout(function (){create_tables(add_param)}, 1000);
+        }
+    });
 }
 
-// function reset_table(db, id, bt_id, tbody, row_index ){
-//     console.log(tbody, row_index)
-//     const server_answer = delete_row(db, id, bt_id);
-//         var rows = document.getElementById(tbody).getElementsByTagName('tr');
-//         setTimeout(function (){
-//             console.log(server_answer)
-//             if (server_answer === "SUCCESS"){
-//             rows[row_index-1].style.display = "none";}}, 1000);
 
-
-
-
-function add_new_units(tbody, db_table, bt_id, add_param){
+async function add_new_units(tbody, db_table, btn_id, add_param){
         var oTable = document.getElementById(tbody);
             //gets rows of table
         var rowLength = oTable.rows.length;
@@ -174,8 +208,18 @@ function add_new_units(tbody, db_table, bt_id, add_param){
                new_unit[j] = oCells[j].textContent;
             }
                 console.log(new_unit);
-                fetch_data_to_save(new_unit, db_table, bt_id)
+                const data = await fetch_data_to_save_new(new_unit, db_table);
+                console.log(data);
+                if(data==="SUCCESS"){
+                 document.getElementById(btn_id).setAttribute("class", "btn btn-success");
+                 }
+                 else {
+                     document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
+                     alert(data);
+                 }
+
            }
+            return "SUCCESS"
             }
         }
 
@@ -204,4 +248,20 @@ function add_new_units(tbody, db_table, bt_id, add_param){
              }
              }
          )
+ }
+
+ async function fetch_data_to_save_new(data_to_save, db) {
+     var data = new FormData();
+     data.append("json", JSON.stringify(data_to_save));
+     const route = "/save_data/" + db
+     console.log(route)
+     try {
+         const response = await fetch(route,
+         {
+             method: "POST",
+             body: data
+         })
+         return await response.json();
+         } catch (error){console.log("error: ", error)
+            return "Не удалось внести изменения, запись не найдена"}
  }

@@ -102,6 +102,12 @@
                 <input type="text"  class="form-control" id="edit_orsh_id">
               </div>
                    </div>
+                       <div class="col-sm">
+              <div class="mb-3">
+                <label class="col-form-label">Дата установки:</label>
+                <input type="text"  class="form-control" id="edit_inst_date_id">
+              </div>
+                   </div>
                    </div>
                     <div class="mb-3">
                 <label  class="col-form-label">Примечание:</label>
@@ -112,7 +118,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" id="button_for_save_edit_row" name="button_for_save_edit_row" onclick="save_edit_MA_table()">Сохранить</button>
-            <button type="button" class="btn btn-primary" id="button_for_delete_row" onclick="delete_row('MA_Unit',this.name,this.id)">Удалить</button>
+            <button type="button" class="btn btn-primary" id="button_for_delete_row">Удалить</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Закрыть</button>
           </div>
         </div>
@@ -349,11 +355,13 @@
                                         document.getElementById("edit_naklad_id").value = unit.naklodnaja;
                                         document.getElementById("edit_Serial_id").value = unit.serial_number;
                                         document.getElementById("edit_ip_id").value = unit.IP;
+                                        document.getElementById("edit_inst_date_id").value = unit.install_date;
                                         document.getElementById("edit_orsh_id").value = unit.ORSH;
                                         document.getElementById("unit_note_id").value = unit.note;
                                         }})
-                                        document.getElementById('button_for_delete_row').onclick = function (){reset_main_table('MA_Unit', id , 'button_for_delete_row','tbody_main_table',
+                                        document.getElementById('button_for_delete_row').onclick = function (){delete_row('MA_Unit', id , 'button_for_delete_row','tbody_main_table',
                                         e.relatedTarget.closest("tr").rowIndex)}
+                                        document.getElementById('button_for_save_edit_row').onclick = function (){save_edit_MA_table('tbody_main_table',e.relatedTarget.closest("tr").rowIndex)}
                                     });
     </script>
 {#      //копирование в таблицу из Excel 1#}
