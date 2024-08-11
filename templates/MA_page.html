@@ -329,6 +329,90 @@
         </div>
       </div>
     </div>
+      <div class="modal fade" id="ma_storage_Modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Склад</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"  ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h5 class="h5">Многопортовые устройства</h5>
+                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="button" class="btn btn-primary btn-sm"   onclick="add_new_row('new_MA_unit_tbody_storage_id',5)" >
+                            <i class="bi bi-plus-lg"></i></button>
+                        <button type="button" class="btn btn-primary btn-sm"  onclick="del_row('new_MA_unit_tbody_storage_id')">
+                            <i class="bi bi-dash-lg"></i></button>
+                </div>
+                </div>
+              <div class="table-responsive small">
+                <table class="table table-striped table-sm table-bordered" id="ma_unit_Modal_table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Тип</th>
+                      <th scope="col">Наименование</th>
+                      <th scope="col">Инвентарный номер</th>
+                      <th scope="col">Заводской номер</th>
+                      <th scope="col">Примечание</th>
+                        <th style="width:70px"></th>
+                    </tr>
+
+                  </thead>
+                    <tbody id="current_MA_unit_tbody_storage_id">
+
+                    </tbody>
+                    <tbody id="new_MA_unit_tbody_storage_id">
+
+                    </tbody>
+                </table>
+                </div>
+
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h5 class="h5">Дополнительные модули</h5>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                  <button type="button" class="btn btn-primary btn-sm"   onclick="add_new_row('new_MA_modules_tbody_storage_id',6)" >
+                      <i class="bi bi-plus-lg"></i></button>
+                  <button type="button" class="btn btn-primary btn-sm"  onclick="del_row('new_MA_modules_tbody_storage_id')">
+                      <i class="bi bi-dash-lg"></i></button>
+                </div>
+                </div>
+                <div class="table-responsive small">
+                <table class="table table-striped table-sm table-bordered" id="ma_add_mod_Modal_table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Тип</th>
+                      <th scope="col">Наименование</th>
+                      <th scope="col">Инвентарный номер</th>
+                      <th scope="col">Заводской номер</th>
+                      <th scope="col">Емкость</th>
+                      <th scope="col">Примечание</th>
+                        <th style="width:70px"></th>
+                    </tr>
+
+                  </thead>
+                    <tbody id="current_MA_modules_tbody_storage_id">
+
+                    </tbody>
+                    <tbody id="new_MA_modules_tbody_storage_id">
+
+                    </tbody>
+                </table>
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+
+              <button type="button" class="btn btn-primary"  onclick="reset_tbodys('new_MA_modules_tbody_id', 'ma_add_modules',this.id,'СКЛАД')" id="btn_to_add_new_ma_modules">
+                  <i class="bi bi-floppy"></i>
+              </button>
+
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
         <script type="text/javascript">
                                       $('#inventModal').on('show.bs.modal', function (e) {
                                       $(this).find('form').trigger('reset');
@@ -385,6 +469,14 @@
                                      })
 
     </script>
+       <script type="text/javascript">
+                                     $('#ma_storage_Modal').on('show.bs.modal', function (e) {
+                                      $(this).find('form').trigger('reset');
+                                      ma_unit_storage();
+                                      ma_add_module_storage();
+                                     })
+
+    </script>
 
 
      <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
@@ -430,8 +522,8 @@
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                   <button type="button" class="btn btn-primary btn-lg"  data-bs-toggle="modal" data-bs-target="#add_new_units_Modal" >
                       <i class="bi bi-plus-square-fill"></i>  Добавить</button>
-                  <button type="button" disabled class="btn btn-primary btn-lg" >
-                      <i class="bi bi-download"></i>  Сохранить а Excel </button>
+                  <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#ma_storage_Modal">
+                      <i class="bi bi-box2"></i>  Склад</button>
                 </div></div>
               <div class="table-responsive small">
                     <div class="container-fluid">
@@ -482,7 +574,8 @@
                       </a></td>
 
                     </tr>
-                    {% endfor %}
+                     {% endfor %}
+
                   </tbody>
                 </table>
 

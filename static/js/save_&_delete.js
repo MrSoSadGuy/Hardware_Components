@@ -76,6 +76,28 @@ function delete_row(db, id, bt_id, tbody, row_index)  {
             }}
 
 
+async function send_to_storage(db, id, bt_id, tbody, row_index, cells)  {
+    console.log(row_index)
+    var edit_data = {id: id, cod_name: "склад"}
+     let oTable = document.getElementById(tbody);
+    var oCells = oTable.rows.item(row_index-1).cells;
+     for (let i = 0; i < cells; i++) {
+         edit_data[i] = oCells[i].textContent;
+     }
+     console.log(edit_data)
+      if (confirm("Отправить на склад?")){
+                const data = await fetch_data_to_save_new(edit_data, db);
+                console.log(data);
+                if(data==="SUCCESS"){
+                 document.getElementById(bt_id).setAttribute("class", "btn btn-success");
+                 setTimeout(function (){document.getElementById(tbody).deleteRow(row_index-1)}, 500);
+                 }
+                 else {
+                     document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-danger");
+                     alert(data);
+                 }
+            }}
+
  function save_edit_buh_data() {
             var edited_buh_data = {
                 id: document.getElementById("id_buh").value,

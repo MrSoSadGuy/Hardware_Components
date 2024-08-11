@@ -84,9 +84,10 @@ def main():
 @login_required
 def ma_page():
     ma_units = MA_Unit.query.order_by(MA_Unit.id).all()
+    ma_add_mod = ma_add_modules.query.order_by(ma_add_modules.id).all()
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
-    return render_template("MA_page.html",  user_name=user_name, ma_units=ma_units)
+    return render_template("MA_page.html",  user_name=user_name, ma_units=ma_units, ma_add_mod=ma_add_mod)
 
 
 @app.route('/get_data_from_db/<db>', methods=['GET', 'POST'])
