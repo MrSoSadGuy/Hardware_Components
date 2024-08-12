@@ -117,7 +117,8 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="button_for_save_edit_row" name="button_for_save_edit_row" onclick="save_edit_MA_table()">Сохранить</button>
+            <button type="button" class="btn btn-primary" id="button_for_save_edit_row" name="button_for_save_edit_row">Сохранить</button>
+              <button type="button" class="btn btn-primary" id="button_for_storage_ma_unit" name="button_for_save_edit_row">На склад</button>
             <button type="button" class="btn btn-primary" id="button_for_delete_row">Удалить</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Закрыть</button>
           </div>
@@ -361,10 +362,10 @@
 
                   </thead>
                     <tbody id="current_MA_unit_tbody_storage_id">
-
+                        <tr></tr>
                     </tbody>
                     <tbody id="new_MA_unit_tbody_storage_id">
-
+                        <tr></tr>
                     </tbody>
                 </table>
                 </div>
@@ -379,24 +380,25 @@
                 </div>
                 </div>
                 <div class="table-responsive small">
-                <table class="table table-striped table-sm table-bordered" id="ma_add_mod_Modal_table">
+                <table class="table table-striped table-sm table-bordered" id="ma_add_mod_Modal_table_storage">
                   <thead>
                     <tr>
                       <th scope="col">Тип</th>
                       <th scope="col">Наименование</th>
                       <th scope="col">Инвентарный номер</th>
                       <th scope="col">Заводской номер</th>
-                      <th scope="col">Емкость</th>
+{#                      <th scope="col">Порт</th>#}
+{#                      <th scope="col">Емкость</th>#}
                       <th scope="col">Примечание</th>
                         <th style="width:70px"></th>
                     </tr>
 
                   </thead>
                     <tbody id="current_MA_modules_tbody_storage_id">
-
+                        <tr></tr>
                     </tbody>
                     <tbody id="new_MA_modules_tbody_storage_id">
-
+                        <tr></tr>
                     </tbody>
                 </table>
                 </div>
@@ -404,7 +406,7 @@
           </div>
           <div class="modal-footer">
 
-              <button type="button" class="btn btn-primary"  onclick="reset_tbodys('new_MA_modules_tbody_id', 'ma_add_modules',this.id,'СКЛАД')" id="btn_to_add_new_ma_modules">
+              <button type="button" class="btn btn-primary"  onclick="storage_reset_tbody(this.id)" id="btn_to_add_new_ma_storage">
                   <i class="bi bi-floppy"></i>
               </button>
 
@@ -444,6 +446,8 @@
                                         document.getElementById("unit_note_id").value = unit.note;
                                         }})
                                         document.getElementById('button_for_delete_row').onclick = function (){delete_row('MA_Unit', id , 'button_for_delete_row','tbody_main_table',
+                                        e.relatedTarget.closest("tr").rowIndex)}
+                                        document.getElementById('button_for_storage_ma_unit').onclick = function (){send_to_storage_ma_unit('Ma_Units_edit', id , 'button_for_storage_ma_unit','tbody_main_table',
                                         e.relatedTarget.closest("tr").rowIndex)}
                                         document.getElementById('button_for_save_edit_row').onclick = function (){save_edit_MA_table('tbody_main_table',e.relatedTarget.closest("tr").rowIndex)}
                                     });
@@ -557,6 +561,7 @@
                   </thead>
                   <tbody class="table-condensed " id="tbody_main_table">
                     {% for un in ma_units %}
+                        {% if un.cod_name != 'склад' %}
                     <tr>
                       <td style="width: 30px">{{ un.id }}</td>
                       <td style="width: 130px"><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"   data-cod ="{{ un.cod_name }}"  >{{ un.cod_name }}</a></td>
@@ -574,6 +579,7 @@
                       </a></td>
 
                     </tr>
+                        {% endif %}
                      {% endfor %}
 
                   </tbody>

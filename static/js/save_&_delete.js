@@ -61,19 +61,54 @@ function delete_row(db, id, bt_id, tbody, row_index)  {
             }
  }
 
-
- function edit_row(db, id, bt_id, tbody, row_index, cells)  {
+function storage_reset_tbody(btn_id){
+    const table_1 = document.getElementById('new_MA_unit_tbody_storage_id')
+    var rowLength_1 = table_1.rows.length;
+    const table_2 = document.getElementById('new_MA_modules_tbody_storage_id')
+    var rowLength_2 = table_2.rows.length;
+    console.log(rowLength_1 , rowLength_2)
+    if (rowLength_1 > 0 ){
+        add_new_units('new_MA_unit_tbody_storage_id', 'MA_Unit', btn_id, "СКЛАД").then(function (r){
+        console.log(r)
+        if (r === 'SUCCESS'){
+            setTimeout(function (){get_data_for_ma_storage('current_MA_unit_tbody_storage_id', 'new_MA_unit_tbody_storage_id', 5,'MA_Unit')}, 1000);
+        }
+    });
+    }
+    if (rowLength_2 > 0 ){
+          add_new_units('new_MA_modules_tbody_storage_id', 'ma_add_modules', btn_id, "СКЛАД").then(function (r){
+        console.log(r)
+        if (r === 'SUCCESS'){
+            setTimeout(function (){get_data_for_ma_storage('current_MA_modules_tbody_storage_id','new_MA_modules_tbody_storage_id', 7,'ma_add_modules')}, 1000);
+        }
+    });
+    }
+}
+ async function edit_row(db, id, bt_id, tbody, row_index, cells)  {
     console.log(row_index)
     var edit_data = {id: id}
-     let oTable = document.getElementById(tbody);
+    let oTable = document.getElementById(tbody);
     var oCells = oTable.rows.item(row_index-1).cells;
      for (let i = 0; i < cells; i++) {
          edit_data[i] = oCells[i].textContent;
      }
      console.log(edit_data)
-     if (confirm("Сохранить изменнения?")){
-            fetch_data_to_save(edit_data , db, bt_id)
-            }}
+     // if (confirm("Сохранить изменнения?")){
+     //        fetch_data_to_save(edit_data , db, bt_id)
+     //        }
+      if (confirm("Сохранить изменнения?")){
+            // fetch_data_to_save(edited_row , "sostav", "button_for_save_edit_row")
+                const data = await fetch_data_to_save_new(edit_data, "ma_add_modules_edited");
+                console.log(data);
+                if(data==="SUCCESS"){
+                 document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");
+                 }
+                 else {
+                     document.getElementById(bt_id).setAttribute("class", "btn btn-danger btn-sm");
+                     alert(data);
+                 }
+            }
+     }
 
 
 async function send_to_storage(db, id, bt_id, tbody, row_index, cells)  {
@@ -97,7 +132,33 @@ async function send_to_storage(db, id, bt_id, tbody, row_index, cells)  {
                      alert(data);
                  }
             }}
+async function send_to_storage_ma_unit(db, id, bt_id, tbody, row_index)  {
+    var stor_data = {id: document.getElementById("id_for_edit").value,
+                cod_name: "склад",
+                organization: "",
+                address: "",
+                type_equipment: document.getElementById("edit_type_id").value,
+                inv_number: document.getElementById("edit_Inv_id").value,
+                naklodnaja: "",
+                serial_number: document.getElementById("edit_Serial_id").value,
+                IP: "",
+                install_date:"",
+                ORSH: "",
+                note: document.getElementById("unit_note_id").value,}
 
+        console.log(stor_data)
+        if (confirm("Отправить на склад?")){
+                const data = await fetch_data_to_save_new(stor_data, db);
+                console.log(data);
+                if(data==="SUCCESS"){
+                 document.getElementById(bt_id).setAttribute("class", "btn btn-success");
+                 setTimeout(function (){document.getElementById(tbody).deleteRow(row_index-1)}, 500);
+                 }
+                 else {
+                     document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-danger");
+                     alert(data);
+                 }
+            }}
  function save_edit_buh_data() {
             var edited_buh_data = {
                 id: document.getElementById("id_buh").value,
@@ -164,7 +225,7 @@ async function send_to_storage(db, id, bt_id, tbody, row_index, cells)  {
             console.log(edited_row)
             if (confirm("Сохранить изменнения?")){
             // fetch_data_to_save(edited_row , "Ma_Units_edit", "button_for_save_edit_row")
-             const data = await fetch_data_to_save_new(edited_row, "Ma_Units_edit");
+             const data = await fetch_data_to_save_new(edited_row, "Ma_Units_edited");
                 console.log(data);
                 if(data==="SUCCESS"){
                  document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-success");

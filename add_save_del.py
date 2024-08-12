@@ -150,8 +150,8 @@ def save_ma_add_modules(req_dict, name):
         ma_add_mod.editor = name
         ma_add_mod.last_date_edit = datetime.now()
         if "cod_name" in req_dict:
-            ma_add_mod.cod_name = req_dict["cod_name"].strip().upper()
             ma_add_mod.note = "Снят -" + ma_add_mod.cod_name
+            ma_add_mod.cod_name = req_dict["cod_name"].strip().upper()
         return save_data_to_db()
     else:
         return json.dumps("NOT 'POST' REQUEST")

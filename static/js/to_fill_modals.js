@@ -112,7 +112,7 @@ function invent_modal(param){
               let oTable = document.getElementById(tbody_id);
               let rowLength = oTable.rows.length;
               console.log('1  ',rowLength, value.length);
-                for (let j = 0; j < value.length-1; j++) {
+                for (let j = 0; j < value.length; j++) {
                     var oCells = oTable.rows.item(start_row).cells;
                     var words = value[j].split(/\t/);
                     console.log("wl=",words.length);
@@ -133,18 +133,24 @@ function invent_modal(param){
         }
 
  function ma_unit_storage(){
-    get_data_for_ma_storage('current_MA_unit_tbody_storage_id', 5,'ma_add_modules')
+    get_data_for_ma_storage('current_MA_unit_tbody_storage_id','new_MA_unit_tbody_storage_id', 5,'MA_Unit')
  }
 function ma_add_module_storage(){
-    get_data_for_ma_storage('current_MA_modules_tbody_storage_id', 6,'ma_add_modules')
+    get_data_for_ma_storage('current_MA_modules_tbody_storage_id','new_MA_modules_tbody_storage_id', 6,'ma_add_modules')
 }
 
-function  get_data_for_ma_storage(tbody_id, cells, db_table){
-        var tbody_current = document.getElementById(tbody_id)
-        dataPon = 'СКЛАД'
+function get_data_for_ma_storage(cur_tbody_id, new_tbody_id, cells, db_table){
+        document.getElementById("btn_to_add_new_ma_storage").setAttribute("class", "btn btn-primary");
+        const tbody_current = document.getElementById(cur_tbody_id);
+        while (tbody_current.rows.length) {tbody_current.deleteRow(0);}
+        const tbody_new = document.getElementById(new_tbody_id);
+        while (tbody_new.rows.length) {tbody_new.deleteRow(0);}
+        const dataPon = 'СКЛАД'
         var data = new FormData();
         data.append('json', JSON.stringify(dataPon))
-         const column_name = ['type','modules_name','inv_number','serial_number','size','note'];
+        const column_name_modul = ['type','modules_name','inv_number','serial_number','note'];
+        const column_name_unit = ['type_equipment','modules_name','inv_number','serial_number','note'];
+        // const column_name = ['type','modules_name','inv_number','serial_number','port','size','note'];
         fetch("/get_data_from_db/" + db_table,
             {
                 method: "POST",
@@ -157,12 +163,20 @@ function  get_data_for_ma_storage(tbody_id, cells, db_table){
                 else {
                     data.forEach(item => {
                         const tr = document.createElement('tr');
-                        for (let i = 0; i < column_name.length; i++) {
+                        if (db_table === "ma_add_modules"){
+                        for (let i = 0; i < column_name_modul.length; i++) {
                             const td = document.createElement('td');
                             td.contentEditable = true;
-                            td.textContent = item[column_name[i]];
+                            td.textContent = item[column_name_modul[i]];
                             tr.appendChild(td);
-                        }
+                        }}
+                        if (db_table === "MA_Unit"){
+                        for (let i = 0; i < column_name_unit.length; i++) {
+                            const td = document.createElement('td');
+                            td.contentEditable = true;
+                            td.textContent = item[column_name_unit[i]];
+                            tr.appendChild(td);
+                        }}
                         const td8 = document.createElement('td');
                         const a1 = document.createElement('a');
                         const a2 = document.createElement('a');
@@ -178,9 +192,9 @@ function  get_data_for_ma_storage(tbody_id, cells, db_table){
                         a2.setAttribute('class','btn btn-primary btn-sm');
                         // a3.setAttribute('id','btn_send_ma_mod_to_storage_'+item['id']);
                         // a3.setAttribute('class','btn btn-primary btn-sm');
-                        a1.onclick = function (){edit_row('ma_add_modules_edited', item['id'],'btn_edit_ma_mod_'+item['id'],'current_MA_modules_tbody_id',
-                        this.closest("tr").rowIndex,6)};
-                        a2.onclick = function (){delete_row('ma_add_modules', item['id'],'btn_del_ma_mod_'+item['id'],'current_MA_modules_tbody_id',
+                        a1.onclick = function (){edit_row(db_table + '_edited', item['id'],'btn_edit_ma_mod_'+item['id'],cur_tbody_id,
+                        this.closest("tr").rowIndex,5)};
+                        a2.onclick = function (){delete_row(db_table, item['id'],'btn_del_ma_mod_'+item['id'],cur_tbody_id,
                         this.closest("tr").rowIndex)};
                         // a3.onclick = function (){send_to_storage('ma_add_modules_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'],'current_MA_modules_tbody_id',
                         // this.closest("tr").rowIndex, 6)};

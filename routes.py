@@ -101,6 +101,9 @@ def get_data_from_db(db):
     if db == 'ma_add_modules':
         modules = ma_add_modules.query.filter_by(cod_name=json.loads(req)).all()
         return jsonify(modules)
+    if db == 'MA_Unit':
+        modules = MA_Unit.query.filter_by(cod_name=json.loads(req).upper()).all()
+        return jsonify(modules)
     else:
         return None
 
@@ -230,7 +233,7 @@ def save_data(db_name):
         return save_buhuchet_data(req_dict, user.FIO)
     if db_name == 'Unit':
         return add_new_unit(req_dict, user.FIO)
-    if db_name == 'Ma_Units_edit':
+    if db_name == 'Ma_Units_edited':
         return save_ma_unit_data(req_dict, user.FIO)
     if db_name == 'MA_Unit':
         return add_ma_unit_data(req_dict, user.FIO)
