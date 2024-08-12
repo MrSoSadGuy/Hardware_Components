@@ -64,7 +64,7 @@ class ma_add_modules(db.Model):
     date = db.Column(db.DateTime, default=datetime.utcnow)
     editor = db.Column(db.String(20), nullable=True)
     last_date_edit = db.Column(db.DateTime, nullable=True)
-    ma_unit_id = db.Column(db.Integer, db.ForeingnKey('ma_unit.id'))
+    ma_unit_id = db.Column(db.Integer, db.ForeignKey('ma_unit.id'))
 
     def __repr__(self):
         return '<MA_Unit %r>' % self.id
