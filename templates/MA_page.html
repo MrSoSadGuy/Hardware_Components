@@ -415,70 +415,43 @@
         </div>
       </div>
     </div>
-        <script type="text/javascript">
-                                      $('#inventModal').on('show.bs.modal', function (e) {
-                                      $(this).find('form').trigger('reset');
-                                      const param = $(e.relatedTarget).data('inv');
-                                      invent_modal(param);
-                                        })
-                                        </script>
-        <script type="text/javascript">
-                                    $('#EditModal').on('show.bs.modal', function (e) {
-                                      $(this).find('form').trigger('reset');
-                                      var id = $(e.relatedTarget).data('id');
-                                      const units = {{ ma_units | tojson }}
-                                      document.getElementById("id_for_edit").value = id;
-                                      document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
-                                      document.getElementById('button_for_delete_row').setAttribute("class", "btn btn-primary");
-                                      console.log(document.getElementById("id_for_edit").value)
-                                      units.forEach((unit) => {
-                                      if ( id === unit.id){
-                                        document.getElementById("edit_cod_id").value = unit.cod_name;
-                                        document.getElementById("edit_org_id").value = unit.organization;
-                                        document.getElementById("edit_address_id").value = unit.address;
-                                        document.getElementById("edit_type_id").value = unit.type_equipment;
-                                        document.getElementById("edit_Inv_id").value = unit.inv_number;
-                                        document.getElementById("edit_naklad_id").value = unit.naklodnaja;
-                                        document.getElementById("edit_Serial_id").value = unit.serial_number;
-                                        document.getElementById("edit_ip_id").value = unit.IP;
-                                        document.getElementById("edit_inst_date_id").value = unit.install_date;
-                                        document.getElementById("edit_orsh_id").value = unit.ORSH;
-                                        document.getElementById("unit_note_id").value = unit.note;
-                                        }})
-                                        document.getElementById('button_for_delete_row').onclick = function (){delete_row('MA_Unit', id , 'button_for_delete_row','tbody_main_table',
-                                        e.relatedTarget.closest("tr").rowIndex)}
-                                        document.getElementById('button_for_storage_ma_unit').onclick = function (){send_to_storage_ma_unit('Ma_Units_edit', id , 'button_for_storage_ma_unit','tbody_main_table',
-                                        e.relatedTarget.closest("tr").rowIndex)}
-                                        document.getElementById('button_for_save_edit_row').onclick = function (){save_edit_MA_table('tbody_main_table',e.relatedTarget.closest("tr").rowIndex)}
-                                    });
+    <script type="text/javascript">
+                  $('#inventModal').on('show.bs.modal', function (e) {
+                  $(this).find('form').trigger('reset');
+                  invent_modal($(e.relatedTarget).data('inv'));
+                  })
+    </script>
+    <script type="text/javascript">
+                $('#EditModal').on('show.bs.modal', function (e) {
+                  $(this).find('form').trigger('reset');
+                  edit_ma_unit_modal($(e.relatedTarget).data('id'), e.relatedTarget.closest("tr").rowIndex);
+                });
     </script>
 {#      //копирование в таблицу из Excel 1#}
-        <script type="text/javascript">
-        document.getElementById('new_ma_tbody_id').addEventListener('paste', (e) => {
-              e.preventDefault(); // Отменяем дефолтное поведение вставки
-              let data = (e.clipboardData || window.clipboardData).getData('text');
-              // Преобразуем в формат CSV для удобства
-              let start_row= e.target.closest(`tr`).rowIndex-1;
-              let start_cell =e.target.closest(`td`).cellIndex
-              paste_to_cells_like_excel('new_ma_tbody_id', data, start_row, start_cell, 8);
-            });
+    <script type="text/javascript">
+                document.getElementById('new_ma_tbody_id').addEventListener('paste', (e) => {
+                  e.preventDefault(); // Отменяем дефолтное поведение вставки
+                  let data = (e.clipboardData || window.clipboardData).getData('text');
+                  // Преобразуем в формат CSV для удобства
+                  let start_row= e.target.closest(`tr`).rowIndex-1;
+                  let start_cell =e.target.closest(`td`).cellIndex
+                  paste_to_cells_like_excel('new_ma_tbody_id', data, start_row, start_cell, 8);
+                });
     </script>
-        <script type="text/javascript">
-                                     $('#SostavModal').on('show.bs.modal', function (e) {
-                                      $(this).find('form').trigger('reset');
-                                      var dataPon = $(e.relatedTarget).data('id');
-                                      console.log(dataPon)
-                                      sostav_ma_unit(dataPon);
-                                     })
+    <script type="text/javascript">
+                 $('#SostavModal').on('show.bs.modal', function (e) {
+                  $(this).find('form').trigger('reset');
+                  sostav_ma_unit($(e.relatedTarget).data('id'));
+                 })
 
     </script>
-       <script type="text/javascript">
-                                     $('#ma_storage_Modal').on('show.bs.modal', function (e) {
-                                      $(this).find('form').trigger('reset');
-                                      ma_unit_storage();
-                                      ma_add_module_storage();
-                                     })
-
+    <script type="text/javascript">
+                 $('#ma_storage_Modal').on('show.bs.modal', function (e) {
+                  $(this).find('form').trigger('reset');
+                  document.getElementById("btn_to_add_new_ma_storage").setAttribute("class", "btn btn-primary");
+                  ma_unit_storage();
+                  ma_add_module_storage();
+                 })
     </script>
 
 

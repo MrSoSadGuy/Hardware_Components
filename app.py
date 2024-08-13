@@ -12,10 +12,7 @@ db.init_app(app)
 manager = LoginManager(app)
 app.app_context().push()
 db.create_all()
-# hostedApp = Flask(__name__)
-# hostedApp.wsgi_app = DispatcherMiddleware(NotFound(), {
-#     "/units": app
-# })
+
 
 
 

@@ -99,7 +99,35 @@
                 }
               }
             }
-
+//копирование в таблицу из Excel 2
+ function paste_to_cells_like_excel(tbody_id, data, start_r, start_c,  cells_in_row){
+                let value = data.split(/\r\n|\n|\r/);
+                if (value[value.length-1] === ""){value.pop()}
+                console.log(value)
+                let start_row = start_r;
+                let start_cell = start_c
+              let oTable = document.getElementById(tbody_id);
+              let rowLength = oTable.rows.length;
+              console.log('1  ',rowLength, value.length);
+                for (let j = 0; j < value.length; j++) {
+                    var oCells = oTable.rows.item(start_row).cells;
+                    var words = value[j].split(/\t/);
+                    console.log("wl=",words.length);
+                    for (let k = 0; k < words.length; k++) {
+                        if (k === oCells.length - start_c){
+                            start_cell = start_c;
+                            break;}
+                        oCells[start_cell].innerHTML = words[k];
+                        start_cell++;
+                    }
+                    start_cell=start_c;
+                    start_row++;
+                    if (rowLength <= start_row){
+                        add_new_row(tbody_id,cells_in_row);
+                        rowLength++;
+                    }
+                }
+        }
 
  // function get_table_column_data(){
  //            const select = document.getElementsByTagName("select")

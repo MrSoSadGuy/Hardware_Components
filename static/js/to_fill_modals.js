@@ -60,78 +60,24 @@ function create_tables(dataPon, moduls, table_id, column_name){
             tbody_current.appendChild(tr);
         })
 }
-function invent_modal(param){
-    document.getElementById("In_num").value = param;
-    document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
-      var data = new FormData();
-      data.append('json', JSON.stringify(document.getElementById("In_num").value))
-      fetch("/get_data_from_db/BuhUch",
-            {
-                method: "POST",
-                body: data
-            })
-            .then(function(res){ return res.json(); })
-            .then(function(data){
-                console.log(data)
-                if (data === null){alert("Нет данных по этому номеру")}
-                else {
-                    document.getElementById("description_id").value = data['name'];
-                    document.getElementById("mol_id").value = data['MOL'];
-                    document.getElementById("char_id").value = data['charracter'];
-                    document.getElementById("note_id").value = data['note'];
-                }
-        })
-}
-
-//копирование в таблицу из Excel 2
- function paste_to_cells_like_excel(tbody_id, data, start_r, start_c,  cells_in_row){
-                let value = data.split(/\r\n|\n|\r/);
-                if (value[value.length-1] === ""){value.pop()}
-                console.log(value)
-                let start_row = start_r;
-                let start_cell = start_c
-              let oTable = document.getElementById(tbody_id);
-              let rowLength = oTable.rows.length;
-              console.log('1  ',rowLength, value.length);
-                for (let j = 0; j < value.length; j++) {
-                    var oCells = oTable.rows.item(start_row).cells;
-                    var words = value[j].split(/\t/);
-                    console.log("wl=",words.length);
-                    for (let k = 0; k < words.length; k++) {
-                        if (k === oCells.length - start_c){
-                            start_cell = start_c;
-                            break;}
-                        oCells[start_cell].innerHTML = words[k];
-                        start_cell++;
-                    }
-                    start_cell=start_c;
-                    start_row++;
-                    if (rowLength <= start_row){
-                        add_new_row(tbody_id,cells_in_row);
-                        rowLength++;
-                    }
-                }
-        }
-
- function ma_unit_storage(){
+async function ma_unit_storage(){
+    const tbody_current = document.getElementById('current_MA_unit_tbody_storage_id');
+    while (tbody_current.rows.length) {tbody_current.deleteRow(0);}
+    const column_name_unit = ['type_equipment','modules_name','inv_number','serial_number','note'];
+    const stor_ma_unit = await fetch_data_to_get('СКЛАД',"MA_Unit");
     get_data_for_ma_storage('current_MA_unit_tbody_storage_id','new_MA_unit_tbody_storage_id', 5,'MA_Unit')
  }
 function ma_add_module_storage(){
+    const tbody_new = document.getElementById('current_MA_modules_tbody_storage_id');
+    while (tbody_new.rows.length) {tbody_new.deleteRow(0);}
+    const column_name_modul = ['type','modules_name','inv_number','serial_number','note'];
     get_data_for_ma_storage('current_MA_modules_tbody_storage_id','new_MA_modules_tbody_storage_id', 6,'ma_add_modules')
 }
 
 function get_data_for_ma_storage(cur_tbody_id, new_tbody_id, cells, db_table){
-        document.getElementById("btn_to_add_new_ma_storage").setAttribute("class", "btn btn-primary");
-        const tbody_current = document.getElementById(cur_tbody_id);
-        while (tbody_current.rows.length) {tbody_current.deleteRow(0);}
-        const tbody_new = document.getElementById(new_tbody_id);
-        while (tbody_new.rows.length) {tbody_new.deleteRow(0);}
         const dataPon = 'СКЛАД'
         var data = new FormData();
         data.append('json', JSON.stringify(dataPon))
-        const column_name_modul = ['type','modules_name','inv_number','serial_number','note'];
-        const column_name_unit = ['type_equipment','modules_name','inv_number','serial_number','note'];
-        // const column_name = ['type','modules_name','inv_number','serial_number','port','size','note'];
         fetch("/get_data_from_db/" + db_table,
             {
                 method: "POST",
@@ -195,3 +141,50 @@ function get_data_for_ma_storage(cur_tbody_id, new_tbody_id, cells, db_table){
                 }
             })
 }
+function invent_modal(param){
+    document.getElementById("In_num").value = param;
+    document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
+      var data = new FormData();
+      data.append('json', JSON.stringify(document.getElementById("In_num").value))
+      fetch("/get_data_from_db/BuhUch",
+            {
+                method: "POST",
+                body: data
+            })
+            .then(function(res){ return res.json(); })
+            .then(function(data){
+                console.log(data)
+                if (data === null){alert("Нет данных по этому номеру")}
+                else {
+                    document.getElementById("description_id").value = data['name'];
+                    document.getElementById("mol_id").value = data['MOL'];
+                    document.getElementById("char_id").value = data['charracter'];
+                    document.getElementById("note_id").value = data['note'];
+                }
+        })
+}
+async function edit_ma_unit_modal(unit_id, row_index){
+              const data = await fetch_data_to_get(unit_id,"MA_Unit");
+              console.log(data);
+              document.getElementById("id_for_edit").value = unit_id;
+              document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
+              document.getElementById('button_for_delete_row').setAttribute("class", "btn btn-primary");
+              console.log(document.getElementById("id_for_edit").value)
+                document.getElementById("edit_cod_id").value = data[0].cod_name;
+                document.getElementById("edit_org_id").value = data[0].organization;
+                document.getElementById("edit_address_id").value = data[0].address;
+                document.getElementById("edit_type_id").value = data[0].type_equipment;
+                document.getElementById("edit_Inv_id").value = data[0].inv_number;
+                document.getElementById("edit_naklad_id").value = data[0].naklodnaja;
+                document.getElementById("edit_Serial_id").value = data[0].serial_number;
+                document.getElementById("edit_ip_id").value = data[0].IP;
+                document.getElementById("edit_inst_date_id").value = data[0].install_date;
+                document.getElementById("edit_orsh_id").value = data[0].ORSH;
+                document.getElementById("unit_note_id").value = data[0].note;
+                document.getElementById('button_for_delete_row').onclick = function (){
+                    delete_row('MA_Unit', id , 'button_for_delete_row','tbody_main_table', row_index)};
+                document.getElementById('button_for_storage_ma_unit').onclick = function (){
+                    send_to_storage_ma_unit('Ma_Units_edit', id , 'button_for_storage_ma_unit','tbody_main_table', row_index)};
+                document.getElementById('button_for_save_edit_row').onclick = function (){
+                    save_edit_MA_table('tbody_main_table', row_index)};
+    }
