@@ -305,10 +305,10 @@
 
                   </thead>
                     <tbody id="current_MA_modules_tbody_id">
-
+                        <tr></tr>
                     </tbody>
                     <tbody id="new_MA_modules_tbody_id">
-
+                        <tr></tr>
                     </tbody>
                 </table>
                 </div>
@@ -466,10 +466,9 @@
         <script type="text/javascript">
                                      $('#SostavModal').on('show.bs.modal', function (e) {
                                       $(this).find('form').trigger('reset');
-                                      var dataPon = $(e.relatedTarget).data('cod');
-                                      document.getElementById("cod_id").value = dataPon;
-                                      var units = {{ ma_units | tojson }};
-                                      sostav_ma_unit(units, dataPon);
+                                      var dataPon = $(e.relatedTarget).data('id');
+                                      console.log(dataPon)
+                                      sostav_ma_unit(dataPon);
                                      })
 
     </script>
@@ -564,7 +563,7 @@
                         {% if un.cod_name != 'склад' %}
                     <tr>
                       <td style="width: 30px">{{ un.id }}</td>
-                      <td style="width: 130px"><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"   data-cod ="{{ un.cod_name }}"  >{{ un.cod_name }}</a></td>
+                      <td style="width: 130px"><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-id ="{{ un.id }}" data-cod ="{{ un.cod_name }}"  >{{ un.cod_name }}</a></td>
                       <td style="width: 65px">{{ un.type_equipment }}</td>
                       <td style="width: 150px">{{ un.organization }}</td>
                       <td>{{ un.address }}</td>

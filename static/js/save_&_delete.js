@@ -348,3 +348,19 @@ async function add_new_units(tbody, db_table, btn_id, add_param){
          } catch (error){console.log("error: ", error)
             return "Не удалось внести изменения, запись не найдена"}
  }
+
+ async function fetch_data_to_get(data_to_save, db) {
+     var data = new FormData();
+     data.append("json", JSON.stringify(data_to_save));
+     const route = "/get_data_from_db/" + db
+     console.log(route)
+     try {
+         const response = await fetch(route,
+         {
+             method: "POST",
+             body: data
+         })
+         return await response.json();
+         } catch (error){console.log("error: ", error)
+            return "error"}
+ }

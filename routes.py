@@ -102,8 +102,11 @@ def get_data_from_db(db):
         modules = ma_add_modules.query.filter_by(cod_name=json.loads(req)).all()
         return jsonify(modules)
     if db == 'MA_Unit':
-        modules = MA_Unit.query.filter_by(cod_name=json.loads(req).upper()).all()
-        return jsonify(modules)
+        # units = MA_Unit.query.filter_by(cod_name=json.loads(req).upper()).all()
+        units = MA_Unit.query.get_or_404(int(json.loads(req)))
+        print(units)
+        print(units.modules)
+        return jsonify(units, units.modules)
     else:
         return None
 

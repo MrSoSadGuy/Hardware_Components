@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from datetime import datetime
 
 
-
 db = SQLAlchemy()
+
 @dataclass
 class Unit(db.Model):
     id:int = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -46,8 +46,9 @@ class MA_Unit(db.Model):
     last_date_edit = db.Column(db.DateTime, nullable=True)
     modules = db.relationship('ma_add_modules', backref='ma_unit')
 
-    def __repr__(self):
+    def __repr__(self): 
         return '<MA_Unit %r>' % self.id
+
 
 @dataclass
 class ma_add_modules(db.Model):
@@ -64,10 +65,10 @@ class ma_add_modules(db.Model):
     date = db.Column(db.DateTime, default=datetime.utcnow)
     editor = db.Column(db.String(20), nullable=True)
     last_date_edit = db.Column(db.DateTime, nullable=True)
-    ma_unit_id = db.Column(db.Integer, db.ForeignKey('ma_unit.id'))
+    ma_unit_id = db.Column(db.Integer, db.ForeignKey('ma__unit.id'))
 
     def __repr__(self):
-        return '<MA_Unit %r>' % self.id
+        return '<ma_add_modules %r>' % self.id
 
 @dataclass
 class BuhUch(db.Model):

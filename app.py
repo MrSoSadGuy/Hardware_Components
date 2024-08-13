@@ -10,7 +10,8 @@ app.secret_key = 'some secret salt'
 app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///sostav_PON.db'
 db.init_app(app)
 manager = LoginManager(app)
-
+app.app_context().push()
+db.create_all()
 # hostedApp = Flask(__name__)
 # hostedApp.wsgi_app = DispatcherMiddleware(NotFound(), {
 #     "/units": app
@@ -28,6 +29,6 @@ def load_user(user_id):
 
 
 if __name__ == '__main__':
-    # app.run(debug=True)
-    serve(app, host='0.0.0.0', port=8080, url_prefix='/units')
+    app.run(debug=True)
+    # serve(app, host='0.0.0.0', port=8080, url_prefix='/units')
     # serve(app, listen='0.0.0.0:8080', url_scheme="https" )
