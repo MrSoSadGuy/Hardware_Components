@@ -99,10 +99,12 @@ def get_data_from_db(db):
         buh = BuhUch.query.filter_by(inv_number=json.loads(req)).first()
         return jsonify(buh)
     if db == 'ma_add_modules':
-        modules = ma_add_modules.query.filter_by(cod_name=json.loads(req)).all()
+        modules = ma_add_modules.query.filter_by(cod_name=json.loads(req).upper()).all()
         return jsonify(modules)
+    if db == 'MA_Unit_stor':
+        ma_units = MA_Unit.query.filter_by(cod_name=json.loads(req).upper()).all()
+        return jsonify(ma_units)
     if db == 'MA_Unit':
-        # units = MA_Unit.query.filter_by(cod_name=json.loads(req).upper()).all()
         units = MA_Unit.query.get_or_404(int(json.loads(req)))
         print(units)
         print(units.modules)

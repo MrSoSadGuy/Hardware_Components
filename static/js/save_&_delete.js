@@ -113,7 +113,7 @@ function storage_reset_tbody(btn_id){
 
 async function send_to_storage(db, id, bt_id, tbody, row_index, cells)  {
     console.log(row_index)
-    var edit_data = {id: id, cod_name: "склад"}
+    var edit_data = {id: id, cod_name: "СКЛАД"}
      let oTable = document.getElementById(tbody);
     var oCells = oTable.rows.item(row_index-1).cells;
      for (let i = 0; i < cells; i++) {
@@ -133,8 +133,8 @@ async function send_to_storage(db, id, bt_id, tbody, row_index, cells)  {
                  }
             }}
 async function send_to_storage_ma_unit(db, id, bt_id, tbody, row_index)  {
-    var stor_data = {id: document.getElementById("id_for_edit").value,
-                cod_name: "склад",
+    var stor_data = {id: id,
+                cod_name: "СКЛАД",
                 organization: "",
                 address: "",
                 type_equipment: document.getElementById("edit_type_id").value,
@@ -349,9 +349,9 @@ async function add_new_units(tbody, db_table, btn_id, add_param){
             return "Не удалось внести изменения, запись не найдена"}
  }
 
- async function fetch_data_to_get(data_to_save, db) {
+ async function fetch_data_to_get(data_to_get, db) {
      var data = new FormData();
-     data.append("json", JSON.stringify(data_to_save));
+     data.append("json", JSON.stringify(data_to_get));
      const route = "/get_data_from_db/" + db
      console.log(route)
      try {
