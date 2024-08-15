@@ -27,45 +27,62 @@ class Unit(db.Model):
 
 
 @dataclass
-class MA_Unit(db.Model):
+class Objects_ur_lica(db.Model):
+    __tablename__ = "Objects_ur_lic"
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     cod_name: str = db.Column(db.String(20), nullable=False)
     organization: str = db.Column(db.String(100), nullable=False)
     address: str = db.Column(db.String(100), nullable=False)
-    type_equipment: str = db.Column(db.String(100), nullable=True)
-    serial_number: str = db.Column(db.String(50), nullable=True)
-    naklodnaja: str = db.Column(db.String(20), nullable=True)
-    ORSH:str = db.Column(db.String(20), nullable=True)
-    IP: str = db.Column(db.String(20), nullable=True)
-    inv_number:str = db.Column(db.String(20), nullable=True)
-    install_date:str = db.Column(db.String(20), nullable=True)
-    note:str = db.Column(db.String(500), nullable=True)
+    ORSH: str = db.Column(db.String(20), nullable=True)
+    note: str = db.Column(db.String(500), nullable=True)
     creator = db.Column(db.String(20), nullable=True)
     date = db.Column(db.DateTime, default=datetime.utcnow)
     editor = db.Column(db.String(20), nullable=True)
     last_date_edit = db.Column(db.DateTime, nullable=True)
-    modules = db.relationship('ma_add_modules', backref='ma_unit')
+    unit = db.relationship('MA_Units', backref='object')
+    install_date: str = db.Column(db.String(20), nullable=True)
 
-    def __repr__(self): 
-        return '<MA_Unit %r>' % self.id
+    def __repr__(self):
+        return '<Objects_ur_lica %r>' % self.id
+
+
+@dataclass
+class MA_Units(db.Model):
+    __tablename__="MA_Units"
+    id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    type_equipment: str = db.Column(db.String(100), nullable=True)
+    serial_number: str = db.Column(db.String(50), nullable=True)
+    IP: str = db.Column(db.String(20), nullable=True)
+    inv_number: str = db.Column(db.String(20), nullable=True)
+    naklodnaja: str = db.Column(db.String(20), nullable=True)
+    install_date: str = db.Column(db.String(20), nullable=True)
+    note: str = db.Column(db.String(500), nullable=True)
+    creator = db.Column(db.String(20), nullable=True)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    editor = db.Column(db.String(20), nullable=True)
+    last_date_edit = db.Column(db.DateTime, nullable=True)
+    modules = db.relationship('ma_add_modules', backref='MA_Units')
+    object_id = db.Column(db.Integer, db.ForeignKey('Objects_ur_lic.id'))
+
+    def __repr__(self):
+        return '<MA_Units %r>' % self.id
 
 
 @dataclass
 class ma_add_modules(db.Model):
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    cod_name: str = db.Column(db.String(20), nullable=False)
     modules_name: str = db.Column(db.String(20), nullable=False)
     type: str = db.Column(db.String(20), nullable=True)
     serial_number: str = db.Column(db.String(50), nullable=True)
-    inv_number:str = db.Column(db.String(20), nullable=True)
+    inv_number: str = db.Column(db.String(20), nullable=True)
     port: int = db.Column(db.Integer, nullable=True)
     size: int = db.Column(db.Integer, nullable=True)
-    note:str = db.Column(db.String(500), nullable=True)
+    note: str = db.Column(db.String(500), nullable=True)
     creator = db.Column(db.String(20), nullable=True)
     date = db.Column(db.DateTime, default=datetime.utcnow)
     editor = db.Column(db.String(20), nullable=True)
     last_date_edit = db.Column(db.DateTime, nullable=True)
-    ma_unit_id = db.Column(db.Integer, db.ForeignKey('ma__unit.id'))
+    ma_unit_id = db.Column(db.Integer, db.ForeignKey('MA_Units.id'))
 
     def __repr__(self):
         return '<ma_add_modules %r>' % self.id

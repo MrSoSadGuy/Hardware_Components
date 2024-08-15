@@ -270,7 +270,7 @@ function reset_tbodys(tbody, db_table, bt_id, add_param){
     add_new_units(tbody, db_table, bt_id, add_param).then(function (r){
         console.log(r)
         if (r === 'SUCCESS'){
-            setTimeout(function (){create_tables(add_param)}, 1000);
+            setTimeout(function (){sostav_ma_unit(add_param)}, 1000);
         }
     });
 }

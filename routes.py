@@ -83,11 +83,12 @@ def main():
 @app.route('/multiple_access')
 @login_required
 def ma_page():
-    ma_units = MA_Unit.query.order_by(MA_Unit.id).all()
+    object = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
+    ma_units = MA_Units.query.order_by(MA_Units.id).all()
     ma_add_mod = ma_add_modules.query.order_by(ma_add_modules.id).all()
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
-    return render_template("MA_page.html",  user_name=user_name, ma_units=ma_units, ma_add_mod=ma_add_mod)
+    return render_template("MA_page.html",  user_name=user_name, object=object)
 
 
 @app.route('/get_data_from_db/<db>', methods=['GET', 'POST'])
@@ -102,10 +103,10 @@ def get_data_from_db(db):
         modules = ma_add_modules.query.filter_by(cod_name=json.loads(req).upper()).all()
         return jsonify(modules)
     if db == 'MA_Unit_stor':
-        ma_units = MA_Unit.query.filter_by(cod_name=json.loads(req).upper()).all()
+        ma_units = MA_Units.query.filter_by(cod_name=json.loads(req).upper()).all()
         return jsonify(ma_units)
     if db == 'MA_Unit':
-        units = MA_Unit.query.get_or_404(int(json.loads(req)))
+        units = MA_Units.query.get_or_404(int(json.loads(req)))
         print(units)
         print(units.modules)
         return jsonify(units, units.modules)
@@ -127,7 +128,7 @@ def delete_row(base_table):
     if base_table == "Unit":
         db_obj = Unit.query.get_or_404(id)
     if base_table == "MA_Unit":
-        db_obj = MA_Unit.query.get_or_404(id)
+        db_obj = MA_Units.query.get_or_404(id)
     return delete_data_from_db(db_obj)
 
 

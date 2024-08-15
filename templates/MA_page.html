@@ -185,38 +185,30 @@
                   <thead>
                     <tr>
                       <th  style="cursor:pointer" scope="col">Код</th>
-                      <th  style="cursor:pointer" scope="col">Тип</th>
                       <th  style="cursor:pointer" scope="col">Организация</th>
                       <th  style="cursor:pointer" scope="col">Адрес</th>
-                      <th  style="cursor:pointer" scope="col">IP</th>
-                      <th scope="col">Инвентарный</th>
-                      <th class="th.sm"  scope="col">Накладная</th>
                       <th class="th.sm" scope="col">ОРШ</th>
                     </tr>
                   </thead>
                   <tbody id = "new_ma_tbody_id">
                     <tr >
                       <td contenteditable="true"></td>
-                      <td style="width: 75px" contenteditable="true"></td>
-                      <td style="width: 150px" contenteditable="true"></td>
                       <td contenteditable="true"></td>
+                      <td  contenteditable="true"></td>
                       <td contenteditable="true"></td>
-                      <td style="width: 100px" contenteditable="true"></td>
-                      <td style="width: 80px" contenteditable="true"></td>
-                      <td style="width: 75px" contenteditable="true"></td>
                     </tr>
                   </tbody>
                 </table>
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="button_add_new_row" onclick="add_new_row('new_ma_tbody_id',8)">
+            <button type="button" class="btn btn-primary" id="button_add_new_row" onclick="add_new_row('new_ma_tbody_id',4)">
                 <i class="bi bi-plus-lg"></i>
             </button>
               <button type="button" class="btn btn-primary" id="button_del_row" onclick="del_row('new_ma_tbody_id')">
                   <i class="bi bi-dash-lg"></i>
               </button>
-            <button type="button" class="btn btn-primary" id="button_for_save_new_units" onclick="add_new_units('new_ma_tbody_id','MA_Unit',this.id)">Сохранить</button>
+            <button type="button" class="btn btn-primary" id="button_for_save_new_units" onclick="add_new_units('new_ma_tbody_id','Object_ur_lic',this.id)">Сохранить</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="reload_page()" >Закрыть</button>
           </div>
         </div>
@@ -532,18 +524,18 @@
                     </tr>
                   </thead>
                   <tbody class="table-condensed " id="tbody_main_table">
-                    {% for un in ma_units %}
+                    {% for un in object %}
                         {% if un.cod_name != 'склад' %}
                     <tr>
                       <td style="width: 30px">{{ un.id }}</td>
                       <td style="width: 130px"><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-id ="{{ un.id }}" data-cod ="{{ un.cod_name }}"  >{{ un.cod_name }}</a></td>
-                      <td style="width: 65px">{{ un.type_equipment }}</td>
+                      <td style="width: 65px">{{ un.unit[0].type_equipment }}</td>
                       <td style="width: 150px">{{ un.organization }}</td>
                       <td>{{ un.address }}</td>
-                      <td>{{ un.IP}}</td>
-                      <td style="width: 100px"><a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-inv = "{{ un.inv_number }}" >{{ un.inv_number }}</a></td>
-                      <td>{{ un.naklodnaja }}</td>
-                      <td>{{ un.install_date }}</td>
+                      <td>{{ un.unit[0].IP}}</td>
+                      <td style="width: 100px"><a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-inv = "{{ un.unit[0].inv_number }}" >{{ un.unit[0].inv_number }}</a></td>
+                      <td>{{ un.unit[0].naklodnaja }}</td>
+                      <td>{{ un.unit[0].install_date }}</td>
                       <td>{{ un.ORSH }}</td>
                       <td style="width:70px"><div class="clip">{{ un.note }}</div></td>
                       <td><a href="" data-bs-toggle="modal" data-bs-target="#EditModal"  data-id = "{{ un.id }}" >

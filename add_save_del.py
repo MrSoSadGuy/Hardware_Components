@@ -55,7 +55,7 @@ def add_new_unit(req_dict, name):
 
 def add_ma_unit_data(req_dict, name):
     if request.method == 'POST':
-        ma_unit = MA_Unit(cod_name=req_dict["0"],
+        ma_unit = MA_Units(cod_name=req_dict["0"],
                         type_equipment=req_dict["1"],
                         organization=req_dict["2"],
                         address=req_dict["3"],
@@ -71,7 +71,7 @@ def add_ma_unit_data(req_dict, name):
 
 def add_ma_add_modules(req_dict, name):
     if request.method == 'POST':
-        ma_modules = ma_add_modules(cod_name=req_dict["add_p"],
+        ma_modules = ma_add_modules(ma_unit_id = req_dict["add_p"],
                                     type=req_dict["0"],
                                     modules_name=req_dict["1"],
                                     inv_number=req_dict["2"],
@@ -150,8 +150,11 @@ def save_ma_add_modules(req_dict, name):
         ma_add_mod.editor = name
         ma_add_mod.last_date_edit = datetime.now()
         if "cod_name" in req_dict:
-            ma_add_mod.note = "Снят -" + ma_add_mod.cod_name
+            print(ma_add_mod.cod_name)
+            ma_add_mod.note = ma_add_mod.note + "\n Снят на склад -" + str(datetime.now().strftime("%d/%m/%Y"))
             ma_add_mod.cod_name = req_dict["cod_name"].strip().upper()
+            ma_add_mod.ma_unit_id = ""
+            ma_add_mod.port = ""
         return save_data_to_db()
     else:
         return json.dumps("NOT 'POST' REQUEST")
@@ -176,7 +179,7 @@ def save_sostav_data(req_dict, name):
 
 
 def save_ma_unit_data(req_dict, name):
-    ma_unit = MA_Unit.query.get_or_404(int(req_dict["id"]))
+    ma_unit = MA_Units.query.get_or_404(int(req_dict["id"]))
     if request.method == 'POST':
         ma_unit.cod_name = req_dict["cod_name"]
         ma_unit.organization = req_dict["organization"]
