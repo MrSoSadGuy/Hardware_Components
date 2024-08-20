@@ -7,19 +7,21 @@ async function sostav_ma_unit(dataID){
     document.getElementById("cod_id").value = data[0]['cod_name'];
     //document.getElementById("Serial_id").value = data[0]['serial_number'];
     document.getElementById("ip_id").value = data[0]['IP'];
-    const tbody_current = document.getElementById('current_MA_modules_tbody_id');
+    const tbody_current = document.getElementById('curent_MA_unit_tbody_id');
     while (tbody_current.rows.length) {tbody_current.deleteRow(0);}
-    const tbody_new = document.getElementById('new_MA_modules_tbody_id');
+    const tbody_new = document.getElementById('curent_MA_modules_tbody_id');
     while (tbody_new.rows.length) {tbody_new.deleteRow(0);}
+    const tbody_mod = document.getElementById('new_MA_modules_tbody_id');
+    while (tbody_mod.rows.length) {tbody_mod.deleteRow(0);}
     document.getElementById("btn_to_add_new_ma_modules").setAttribute("class", "btn btn-primary");
     document.getElementById("btn_to_add_new_ma_modules").setAttribute("name", dataID);
     const column_name = ['type_equipment','inv_number','serial_number','note'];
-    if (data[1].length > 0){create_tables(dataID, data[1],'current_MA_modules_tbody_id', column_name)}
-    if (data[2].length > 0){create_tables(data[1].id, data[2],'new_MA_modules_tbody_id', column_name)}
+    if (data[1].length > 0){create_tables(dataID, data[1],'curent_MA_unit_tbody_id', column_name, 'Ma_Units')}
+    if (data[2].length > 0){create_tables(data[1].id, data[2],'curent_MA_modules_tbody_id', column_name, 'ma_add_modules')}
 
 }
 
-function create_tables(dataPon, moduls, table_id, column_name){
+function create_tables(dataPon, moduls, table_id, column_name, db_table){
    const tbody_current = document.getElementById(table_id);
    
         moduls.forEach(item => {
@@ -46,12 +48,12 @@ function create_tables(dataPon, moduls, table_id, column_name){
             a2.setAttribute('class','btn btn-primary btn-sm');
             a3.setAttribute('id','btn_send_ma_mod_to_storage_'+item['id']);
             a3.setAttribute('class','btn btn-primary btn-sm');
-            a1.onclick = function (){edit_row('ma_add_modules_edited', item['id'],'btn_edit_ma_mod_'+item['id'],'current_MA_modules_tbody_id',
-            this.closest("tr").rowIndex,7)};
-            a2.onclick = function (){delete_row('ma_add_modules', item['id'],'btn_del_ma_mod_'+item['id'],'current_MA_modules_tbody_id',
+            a1.onclick = function (){edit_row(db_table + '_edited', item['id'],'btn_edit_ma_mod_'+item['id'],table_id,
+            this.closest("tr").rowIndex,4)};
+            a2.onclick = function (){delete_row(db_table, item['id'],'btn_del_ma_mod_'+item['id'],table_id,
             this.closest("tr").rowIndex)};
-            a3.onclick = function (){send_to_storage('ma_add_modules_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'],'current_MA_modules_tbody_id',
-            this.closest("tr").rowIndex, 7)};
+            a3.onclick = function (){send_to_storage(db_table + '_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'],table_id,
+            this.closest("tr").rowIndex, 4)};
             i1.setAttribute('class', "bi bi-pencil-square h7");
             i2.setAttribute('class', "bi bi-trash3 h7");
             i3.setAttribute('class', "bi bi-box-arrow-up-right h10");

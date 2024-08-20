@@ -1,4 +1,6 @@
 function change_password(){
+        
+        
         var old_pass = document.getElementById("old_pass_id").value;
         var new_pass = document.getElementById("new_pass_id").value;
         var new_pass_2 = document.getElementById("new_pass_2_id").value;
@@ -31,7 +33,7 @@ function change_password(){
             document.getElementById("raport_chang_pass").setAttribute("style", "color:red")
             document.getElementById("raport_chang_pass").textContent = "Новый пароль задан не верно"}
 
-    }
+        }
 
 
 
@@ -84,7 +86,7 @@ function storage_reset_tbody(btn_id){
     });
     }
 }
- async function edit_row(db, id, bt_id, tbody, row_index, cells)  {
+ async function edit_row(db_table, id, bt_id, tbody, row_index, cells)  {
     console.log(row_index)
     var edit_data = {id: id}
     let oTable = document.getElementById(tbody);
@@ -98,7 +100,7 @@ function storage_reset_tbody(btn_id){
      //        }
       if (confirm("Сохранить изменнения?")){
             // fetch_data_to_save(edited_row , "sostav", "button_for_save_edit_row")
-                const data = await fetch_data_to_save_new(edit_data, "ma_add_modules_edited");
+                const data = await fetch_data_to_save_new(edit_data, db_table);
                 console.log(data);
                 if(data==="SUCCESS"){
                  document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");

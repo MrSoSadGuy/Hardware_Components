@@ -19,7 +19,7 @@
     <script src="{{ url_for('static', filename='js/table-sort.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-        {#document.getElementById(JSON.parse(localStorage.getItem("radio_check"))).click()#}
+        <!-- document.getElementById(JSON.parse(localStorage.getItem("radio_check"))).click() -->
         document.getElementById("myInput").value = JSON.parse(localStorage.getItem("serch"));
         myFunction()
         localStorage.clear()
@@ -222,6 +222,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+            <form>
               <div class="mb-3">
                 <input type="password"  class="form-control"  id = "old_pass_id" placeholder="Старый пароль">
               </div>
@@ -234,6 +235,8 @@
               <div class="mb-3">
                   <label class="col-form-label" id="raport_chang_pass"></label>
               </div>
+            </form>
+              
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" onclick="change_password();">Изменить пароль</button>
@@ -295,7 +298,7 @@
                     </tr>
 
                   </thead>
-                    <tbody id="current_MA_modules_tbody_id">
+                    <tbody id="curent_MA_unit_tbody_id">
                         <tr></tr>
                     </tbody>
                   
@@ -314,9 +317,12 @@
                     </tr>
 
                   </thead>
-                    <tbody id="new_MA_modules_tbody_id">
+                    <tbody id="curent_MA_modules_tbody_id">
                         <tr></tr>
                     </tbody>
+                  <tbody id="new_MA_modules_tbody_id">
+                      <tr></tr>
+                  </tbody>
                 </table>
                 </div>
             </form>
@@ -426,6 +432,10 @@
                   $('#inventModal').on('show.bs.modal', function (e) {
                   $(this).find('form').trigger('reset');
                   invent_modal($(e.relatedTarget).data('inv'));
+                  })
+                  $('#Change_pass').on('show.bs.modal', function (e) {
+                  $(this).find('form').trigger('reset');
+                  document.getElementById("raport_chang_pass").textContent = ""
                   })
     </script>
     <script type="text/javascript">
