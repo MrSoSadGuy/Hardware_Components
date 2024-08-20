@@ -1,28 +1,34 @@
-async function sostav_ma_unit(dataPon){
-    const data = await fetch_data_to_get(dataPon,"MA_Unit");
+async function sostav_ma_unit(dataID){
+
+    const data = await fetch_data_to_get(dataID,"Objects_ur_lica");
     console.log(data)
-    document.getElementById("type_id").value = data[0]['type_equipment'];
+    console.log(data.unit)
+    //document.getElementById("type_id").value = data[0]['type_equipment'];
     document.getElementById("cod_id").value = data[0]['cod_name'];
-    document.getElementById("Serial_id").value = data[0]['serial_number'];
+    //document.getElementById("Serial_id").value = data[0]['serial_number'];
     document.getElementById("ip_id").value = data[0]['IP'];
     const tbody_current = document.getElementById('current_MA_modules_tbody_id');
     while (tbody_current.rows.length) {tbody_current.deleteRow(0);}
     const tbody_new = document.getElementById('new_MA_modules_tbody_id');
     while (tbody_new.rows.length) {tbody_new.deleteRow(0);}
     document.getElementById("btn_to_add_new_ma_modules").setAttribute("class", "btn btn-primary");
-    document.getElementById("btn_to_add_new_ma_modules").setAttribute("name", dataPon);
-    const column_name = ['type','modules_name','inv_number','serial_number','port','size','note'];
-    if (data[1].length > 0){create_tables(dataPon, data[1],'current_MA_modules_tbody_id', column_name)}
+    document.getElementById("btn_to_add_new_ma_modules").setAttribute("name", dataID);
+    const column_name = ['type_equipment','inv_number','serial_number','note'];
+    if (data[1].length > 0){create_tables(dataID, data[1],'current_MA_modules_tbody_id', column_name)}
+    if (data[2].length > 0){create_tables(data[1].id, data[2],'new_MA_modules_tbody_id', column_name)}
 
 }
+
 function create_tables(dataPon, moduls, table_id, column_name){
    const tbody_current = document.getElementById(table_id);
+   
         moduls.forEach(item => {
             const tr = document.createElement('tr');
             for (let i = 0; i < column_name.length; i++) {
                 const td = document.createElement('td');
                 td.contentEditable = true;
                 td.textContent = item[column_name[i]];
+                console.log(item[column_name[i]])
                 tr.appendChild(td);
             }
             const td8 = document.createElement('td');
@@ -59,7 +65,12 @@ function create_tables(dataPon, moduls, table_id, column_name){
             tr.appendChild(td8);
             tbody_current.appendChild(tr);
         })
+        
 }
+
+
+
+
 async function ma_unit_storage(){
     const tbody_current = document.getElementById('current_MA_unit_tbody_storage_id');
     while (tbody_current.rows.length) {tbody_current.deleteRow(0);}

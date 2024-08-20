@@ -84,8 +84,6 @@ def main():
 @login_required
 def ma_page():
     object = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
-    ma_units = MA_Units.query.order_by(MA_Units.id).all()
-    ma_add_mod = ma_add_modules.query.order_by(ma_add_modules.id).all()
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
     return render_template("MA_page.html",  user_name=user_name, object=object)
@@ -110,6 +108,12 @@ def get_data_from_db(db):
         print(units)
         print(units.modules)
         return jsonify(units, units.modules)
+    if db == 'Objects_ur_lica':
+        obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
+        print(obj)
+        print(obj.unit)
+        
+        return jsonify(obj, obj.unit, obj.unit[0].modules)
     else:
         return None
 

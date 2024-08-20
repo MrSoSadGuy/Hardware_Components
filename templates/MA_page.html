@@ -282,15 +282,14 @@
 
 
               <div class="table-responsive small">
-                <table class="table table-striped table-sm table-bordered" id="Sostav_Modal_table">
+              <label class="col-form-label">Устройство:</label>
+                <table class="table table-striped table-sm table-bordered" id="Sostav_Modal_table_unit">
                   <thead>
                     <tr>
                       <th scope="col">Тип</th>
-                      <th scope="col">Наименование</th>
+                      {# <th scope="col">Наименование</th> #}
                       <th scope="col">Инвентарный номер</th>
                       <th scope="col">Заводской номер</th>
-                      <th scope="col">Порт:</th>
-                      <th scope="col">Емкость</th>
                       <th scope="col">Примечание</th>
                         <th style="width:70px"></th>
                     </tr>
@@ -299,6 +298,22 @@
                     <tbody id="current_MA_modules_tbody_id">
                         <tr></tr>
                     </tbody>
+                  
+                    
+                </table>
+                <label class="col-form-label">Модули:</label>
+                <table class="table table-striped table-sm table-bordered" id="Sostav_Modal_table_modules">
+                  <thead>
+                    <tr>
+                      <th scope="col">Тип</th>
+                      {# <th scope="col">Наименование</th> #}
+                      <th scope="col">Инвентарный номер</th>
+                      <th scope="col">Заводской номер</th>
+                      <th scope="col">Примечание</th>
+                        <th style="width:70px"></th>
+                    </tr>
+
+                  </thead>
                     <tbody id="new_MA_modules_tbody_id">
                         <tr></tr>
                     </tbody>
@@ -307,7 +322,7 @@
             </form>
           </div>
           <div class="modal-footer">
-              <button type="button" class="btn btn-primary" id="button_add_new_row" onclick="add_new_row('new_MA_modules_tbody_id',7)">
+              <button type="button" class="btn btn-primary" id="button_add_new_row" onclick="add_new_row('new_MA_modules_tbody_id',4)">
                 <i class="bi bi-plus-lg"></i>
               </button>
               <button type="button" class="btn btn-primary" id="button_del_row" onclick="del_row('new_MA_modules_tbody_id')">
@@ -532,10 +547,10 @@
                       <td style="width: 65px">{{ un.unit[0].type_equipment }}</td>
                       <td style="width: 150px">{{ un.organization }}</td>
                       <td>{{ un.address }}</td>
-                      <td>{{ un.unit[0].IP}}</td>
+                      <td>{{ un.IP}}</td>
                       <td style="width: 100px"><a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-inv = "{{ un.unit[0].inv_number }}" >{{ un.unit[0].inv_number }}</a></td>
-                      <td>{{ un.unit[0].naklodnaja }}</td>
-                      <td>{{ un.unit[0].install_date }}</td>
+                      <td>{{ un.naklodnaja }}</td>
+                      <td>{{ un.install_date }}</td>
                       <td>{{ un.ORSH }}</td>
                       <td style="width:70px"><div class="clip">{{ un.note }}</div></td>
                       <td><a href="" data-bs-toggle="modal" data-bs-target="#EditModal"  data-id = "{{ un.id }}" >

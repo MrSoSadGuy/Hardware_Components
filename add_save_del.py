@@ -71,14 +71,17 @@ def add_ma_unit_data(req_dict, name):
 
 def add_ma_add_modules(req_dict, name):
     if request.method == 'POST':
+        obj = Objects_ur_lica.query.get_or_404(int(req_dict["add_p"]))
+        unit = obj.unit[0].id
+        print(obj ,unit)
         ma_modules = ma_add_modules(ma_unit_id = req_dict["add_p"],
                                     type=req_dict["0"],
-                                    modules_name=req_dict["1"],
-                                    inv_number=req_dict["2"],
-                                    serial_number=req_dict["3"],
-                                    port=req_dict["4"],
-                                    size=req_dict["5"],
-                                    note=req_dict["6"],
+                                    # modules_name=req_dict["1"],
+                                    inv_number=req_dict["1"],
+                                    serial_number=req_dict["2"],
+                                    # port=req_dict["4"],
+                                    # size=req_dict["5"],
+                                    note=req_dict["3"],
                                     creator = name)
         return add_data_to_db(ma_modules)
     else:
