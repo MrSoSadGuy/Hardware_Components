@@ -366,7 +366,7 @@
                   <thead>
                     <tr>
                       <th scope="col">Тип</th>
-                      <th scope="col">Наименование</th>
+                      {# <th scope="col">Наименование</th> #}
                       <th scope="col">Инвентарный номер</th>
                       <th scope="col">Заводской номер</th>
                       <th scope="col">Примечание</th>
@@ -397,7 +397,7 @@
                   <thead>
                     <tr>
                       <th scope="col">Тип</th>
-                      <th scope="col">Наименование</th>
+                      {# <th scope="col">Наименование</th> #}
                       <th scope="col">Инвентарный номер</th>
                       <th scope="col">Заводской номер</th>
 {#                      <th scope="col">Порт</th>#}
@@ -467,7 +467,7 @@
                   $(this).find('form').trigger('reset');
                   document.getElementById("btn_to_add_new_ma_storage").setAttribute("class", "btn btn-primary");
                   ma_unit_storage();
-                  ma_add_module_storage();
+                  {# ma_add_module_storage(); #}
                  })
     </script>
 
@@ -550,7 +550,7 @@
                   </thead>
                   <tbody class="table-condensed " id="tbody_main_table">
                     {% for un in object %}
-                        {% if un.cod_name != 'склад' %}
+                        {% if un.cod_name != 'СКЛАД' %}
                     <tr>
                       <td style="width: 30px">{{ un.id }}</td>
                       <td style="width: 130px"><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-id ="{{ un.id }}" data-cod ="{{ un.cod_name }}"  >{{ un.cod_name }}</a></td>

@@ -2,7 +2,8 @@ async function sostav_ma_unit(dataID){
 
     const data = await fetch_data_to_get(dataID,"Objects_ur_lica");
     console.log(data)
-    console.log(data.unit)
+    console.log(data[2])
+
     //document.getElementById("type_id").value = data[0]['type_equipment'];
     document.getElementById("cod_id").value = data[0]['cod_name'];
     //document.getElementById("Serial_id").value = data[0]['serial_number'];
@@ -16,15 +17,20 @@ async function sostav_ma_unit(dataID){
     document.getElementById("btn_to_add_new_ma_modules").setAttribute("class", "btn btn-primary");
     document.getElementById("btn_to_add_new_ma_modules").setAttribute("name", dataID);
     const column_name = ['type_equipment','inv_number','serial_number','note'];
-    if (data[1].length > 0){create_tables(dataID, data[1],'curent_MA_unit_tbody_id', column_name, 'Ma_Units')}
-    if (data[2].length > 0){create_tables(data[1].id, data[2],'curent_MA_modules_tbody_id', column_name, 'ma_add_modules')}
+    if (data[1].length > 0){
+        data[1].forEach(item => {
+        create_tables(data[1],'curent_MA_unit_tbody_id', column_name, 'Ma_Units')})
+    if (data[2].length > 0){
+        data[2].forEach(item => {
+            create_tables(item,'curent_MA_modules_tbody_id', column_name, 'ma_add_modules')})
+        }
+}}
 
-}
-
-function create_tables(dataPon, moduls, table_id, column_name, db_table){
+function create_tables(moduls, table_id, column_name, db_table){
    const tbody_current = document.getElementById(table_id);
-   
+        console.log(moduls)
         moduls.forEach(item => {
+            console.log(item)
             const tr = document.createElement('tr');
             for (let i = 0; i < column_name.length; i++) {
                 const td = document.createElement('td');
@@ -76,18 +82,24 @@ function create_tables(dataPon, moduls, table_id, column_name, db_table){
 async function ma_unit_storage(){
     const tbody_current = document.getElementById('current_MA_unit_tbody_storage_id');
     while (tbody_current.rows.length) {tbody_current.deleteRow(0);}
-    const column_name_unit = ['type_equipment','modules_name','inv_number','serial_number','note'];
-    const stor_ma_unit = await fetch_data_to_get('склад',"MA_Unit_stor");
-    console.log(stor_ma_unit)
-    get_data_for_ma_storage('current_MA_unit_tbody_storage_id','new_MA_unit_tbody_storage_id', 5,'MA_Unit', column_name_unit,stor_ma_unit)
+    const stor_ma_unit = await fetch_data_to_get('543',"Objects_ur_lica");
+     console.log(stor_ma_unit)
+    const column_name = ['type_equipment','inv_number','serial_number','note'];
+    if(stor_ma_unit[1].length>0){
+        
+            create_tables(stor_ma_unit[1],'current_MA_unit_tbody_storage_id', column_name,stor_ma_unit, 'Ma_Units')
+        
+    }
+    
+    // get_data_for_ma_storage('current_MA_unit_tbody_storage_id','new_MA_unit_tbody_storage_id', 5,'MA_Unit', column_name_unit,stor_ma_unit)
  }
 async function ma_add_module_storage(){
     const tbody_new = document.getElementById('current_MA_modules_tbody_storage_id');
     while (tbody_new.rows.length) {tbody_new.deleteRow(0);}
     const column_name_modul = ['type','modules_name','inv_number','serial_number','note'];
     const stor_ma_unit = await fetch_data_to_get('склад',"ma_add_modules");
-    if (stor_ma_unit === "error"){alert("Произошла ошибка")}
-    else get_data_for_ma_storage('current_MA_modules_tbody_storage_id','new_MA_modules_tbody_storage_id', 6,'ma_add_modules',column_name_modul, stor_ma_unit)
+    // if (stor_ma_unit === "error"){alert("Произошла ошибка")}
+    // else get_data_for_ma_storage('current_MA_modules_tbody_storage_id','new_MA_modules_tbody_storage_id', 6,'ma_add_modules',column_name_modul, stor_ma_unit)
 }
 
 function get_data_for_ma_storage(cur_tbody_id, new_tbody_id, cells, db_table, column_name, data){
@@ -182,4 +194,4 @@ async function edit_ma_unit_modal(unit_id, row_index){
                     send_to_storage_ma_unit('Ma_Units_edited', unit_id , 'button_for_storage_ma_unit','tbody_main_table', row_index)};
                 document.getElementById('button_for_save_edit_row').onclick = function (){
                     save_edit_MA_table('tbody_main_table', row_index)};
-    }
+}

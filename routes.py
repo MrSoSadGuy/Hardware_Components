@@ -112,8 +112,15 @@ def get_data_from_db(db):
         obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
         print(obj)
         print(obj.unit)
-        
-        return jsonify(obj, obj.unit, obj.unit[0].modules)
+        units_list =[]
+        modules_list = []
+        for un in obj.unit:
+            # print(un, un.modules)
+            units_list.append(un)
+            modules_list.append(un.modules)
+        # return jsonify(obj, obj.unit, obj.unit[0].modules)
+        # print(units_list,modules_list)
+        return jsonify(obj,units_list,modules_list)
     else:
         return None
 
