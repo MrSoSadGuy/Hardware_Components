@@ -16,15 +16,16 @@ async function sostav_ma_unit(dataID){
     while (tbody_mod.rows.length) {tbody_mod.deleteRow(0);}
     document.getElementById("btn_to_add_new_ma_modules").setAttribute("class", "btn btn-primary");
     document.getElementById("btn_to_add_new_ma_modules").setAttribute("name", dataID);
-    const column_name = ['type_equipment','inv_number','serial_number','note'];
+    const column_name_unit = ['type_equipment','inv_number','serial_number','note'];
+    const column_name_modules = ['type','inv_number','serial_number','note'];
     if (data[1].length > 0){
-        data[1].forEach(item => {
-        create_tables(data[1],'curent_MA_unit_tbody_id', column_name, 'Ma_Units')})
+        
+        create_tables(data[1],'curent_MA_unit_tbody_id', column_name_unit, 'Ma_Units')}
     if (data[2].length > 0){
         data[2].forEach(item => {
-            create_tables(item,'curent_MA_modules_tbody_id', column_name, 'ma_add_modules')})
+            create_tables(item,'curent_MA_modules_tbody_id', column_name_modules, 'ma_add_modules')})
         }
-}}
+}
 
 function create_tables(moduls, table_id, column_name, db_table){
    const tbody_current = document.getElementById(table_id);
