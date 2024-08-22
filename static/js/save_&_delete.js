@@ -1,6 +1,4 @@
-function change_password(){
-        
-        
+function change_password(){     
         var old_pass = document.getElementById("old_pass_id").value;
         var new_pass = document.getElementById("new_pass_id").value;
         var new_pass_2 = document.getElementById("new_pass_2_id").value;
@@ -34,9 +32,6 @@ function change_password(){
             document.getElementById("raport_chang_pass").textContent = "Новый пароль задан не верно"}
 
         }
-
-
-
 function delete_row(db, id, bt_id, tbody, row_index)  {
     var id_val = {id: id}
             console.log(id)
@@ -95,11 +90,7 @@ function storage_reset_tbody(btn_id){
          edit_data[i] = oCells[i].textContent;
      }
      console.log(edit_data)
-     // if (confirm("Сохранить изменнения?")){
-     //        fetch_data_to_save(edit_data , db, bt_id)
-     //        }
       if (confirm("Сохранить изменнения?")){
-            // fetch_data_to_save(edited_row , "sostav", "button_for_save_edit_row")
                 const data = await fetch_data_to_save_new(edit_data, db_table);
                 console.log(data);
                 if(data==="SUCCESS"){
@@ -115,49 +106,18 @@ function storage_reset_tbody(btn_id){
 
 async function send_to_storage(db, id, bt_id, tbody, row_index, cells)  {
     console.log(row_index)
-    var edit_data = {id: id, cod_name: "СКЛАД"}
+    var edit_data = {id: id, parent_obj: 543}
      let oTable = document.getElementById(tbody);
-    var oCells = oTable.rows.item(row_index-1).cells;
-     for (let i = 0; i < cells; i++) {
-         edit_data[i] = oCells[i].textContent;
-     }
      console.log(edit_data)
       if (confirm("Отправить на склад?")){
                 const data = await fetch_data_to_save_new(edit_data, db);
                 console.log(data);
                 if(data==="SUCCESS"){
-                 document.getElementById(bt_id).setAttribute("class", "btn btn-success");
+                 document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");
                  setTimeout(function (){document.getElementById(tbody).deleteRow(row_index-1)}, 500);
                  }
                  else {
-                     document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-danger");
-                     alert(data);
-                 }
-            }}
-async function send_to_storage_ma_unit(db, id, bt_id, tbody, row_index)  {
-    var stor_data = {id: id,
-                cod_name: "СКЛАД",
-                organization: "",
-                address: "",
-                type_equipment: document.getElementById("edit_type_id").value,
-                inv_number: document.getElementById("edit_Inv_id").value,
-                naklodnaja: "",
-                serial_number: document.getElementById("edit_Serial_id").value,
-                IP: "",
-                install_date:"",
-                ORSH: "",
-                note: document.getElementById("unit_note_id").value,}
-
-        console.log(stor_data)
-        if (confirm("Отправить на склад?")){
-                const data = await fetch_data_to_save_new(stor_data, db);
-                console.log(data);
-                if(data==="SUCCESS"){
-                 document.getElementById(bt_id).setAttribute("class", "btn btn-success");
-                 setTimeout(function (){document.getElementById(tbody).deleteRow(row_index-1)}, 500);
-                 }
-                 else {
-                     document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-danger");
+                     document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-danger btn-sm");
                      alert(data);
                  }
             }}

@@ -140,27 +140,7 @@ def save_buhuchet_data(req_dict, name):
         return json.dumps("NOT 'POST' REQUEST")
 
 
-def save_ma_add_modules(req_dict, name):
-    ma_add_mod = ma_add_modules.query.get_or_404(int(req_dict["id"]))
-    if request.method == 'POST':
-        ma_add_mod.type = req_dict["0"]
-        # ma_add_mod.modules_name = req_dict["1"]
-        ma_add_mod.inv_number = req_dict["1"]
-        ma_add_mod.serial_number = req_dict["2"]
-        # ma_add_mod.port = req_dict["4"]
-        # ma_add_mod.size = req_dict["5"]
-        ma_add_mod.note = req_dict["3"]
-        ma_add_mod.editor = name
-        ma_add_mod.last_date_edit = datetime.now()
-        if "cod_name" in req_dict:
-            print(ma_add_mod.cod_name)
-            ma_add_mod.note = ma_add_mod.note + "\n Снят на склад -" + str(datetime.now().strftime("%d/%m/%Y"))
-            ma_add_mod.cod_name = req_dict["cod_name"].strip().upper()
-            ma_add_mod.ma_unit_id = ""
-            ma_add_mod.port = ""
-        return save_data_to_db()
-    else:
-        return json.dumps("NOT 'POST' REQUEST")
+
 
 
 def save_sostav_data(req_dict, name):
@@ -181,22 +161,36 @@ def save_sostav_data(req_dict, name):
         return json.dumps("NOT 'POST' REQUEST")
 
 
-def save_ma_unit_data(req_dict, name):
-    ma_unit = MA_Units.query.get_or_404(int(req_dict["id"]))
+def save_ma_add_modules(req_dict, name):
+    ma_add_mod = ma_add_modules.query.get_or_404(int(req_dict["id"]))
     if request.method == 'POST':
-        # ma_unit.cod_name = req_dict["cod_name"]
-        # ma_unit.organization = req_dict["organization"]
-        # ma_unit.address = req_dict["address"]
-        ma_unit.type_equipment = req_dict["0"]
-        ma_unit.inv_number = req_dict["1"]
-        # ma_unit.naklodnaja = req_dict["naklodnaja"]
-        ma_unit.serial_number = req_dict["2"]
-        # ma_unit.IP = req_dict["IP"]
-        # ma_unit.install_date = req_dict["install_date"]
-        # ma_unit.ORSH = req_dict["ORSH"]
-        ma_unit.note = req_dict["3"]
-        ma_unit.editor = name
-        ma_unit.last_date_edit = datetime.now()
+        if 'parent_obj' in req_dict :
+            ma_add_mod.ma_unit_id = int(req_dict['parent_obj'])
+        else:
+            ma_add_mod.type = req_dict["0"]
+            ma_add_mod.inv_number = req_dict["1"]
+            ma_add_mod.serial_number = req_dict["2"]
+            ma_add_mod.note = req_dict["3"]
+            ma_add_mod.editor = name
+            ma_add_mod.last_date_edit = datetime.now()
         return save_data_to_db()
     else:
         return json.dumps("NOT 'POST' REQUEST")
+
+
+def save_ma_unit_data(req_dict, name):
+    ma_unit = MA_Units.query.get_or_404(int(req_dict["id"]))
+    if request.method == 'POST':
+        if 'parent_obj' in req_dict :
+            ma_unit.object_id = int(req_dict['parent_obj'])
+        else:
+            ma_unit.type_equipment = req_dict["0"]
+            ma_unit.inv_number = req_dict["1"]
+            ma_unit.serial_number = req_dict["2"]
+            ma_unit.note = req_dict["3"]
+            ma_unit.editor = name
+            ma_unit.last_date_edit = datetime.now()
+        return save_data_to_db()
+    else:
+        return json.dumps("NOT 'POST' REQUEST")
+    

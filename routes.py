@@ -146,6 +146,31 @@ def delete_row(base_table):
     return delete_data_from_db(db_obj)
 
 
+@app.route('/save_data/<db_name>', methods=['GET', 'POST'])
+@login_required
+def save_data(db_name):
+    req_dict = json.loads(request.form['json'])
+    user = Users.query.filter_by(id=current_user.get_id()).first()
+    print(user.FIO, datetime.now())
+    print("запрос на внесение изменений или добавление новых записей -- ", db_name, req_dict)
+    if db_name == 'KTS':
+        return save_kts_data(req_dict, user.FIO)
+    if db_name == 'sostav':
+        return save_sostav_data(req_dict, user.FIO)
+    if db_name == 'Buhuchet':
+        return save_buhuchet_data(req_dict, user.FIO)
+    if db_name == 'Unit':
+        return add_new_unit(req_dict, user.FIO)
+    if db_name == 'MA_Units_edited':
+        return save_ma_unit_data(req_dict, user.FIO)
+    if db_name == 'MA_Unit':
+        return add_ma_unit_data(req_dict, user.FIO)
+    if db_name == 'ma_add_modules':
+        return add_ma_add_modules(req_dict, user.FIO)
+    if db_name == 'ma_add_modules_edited':
+        return save_ma_add_modules(req_dict, user.FIO)
+    
+
 @app.route('/download/<file>/<name_PON>', methods=['GET', 'POST'])
 @login_required
 def downloadFile(name_PON, file):
@@ -238,26 +263,3 @@ def create_file_KTS(name_PON):
     return "files for download\КТС.xlsx"
 
 
-@app.route('/save_data/<db_name>', methods=['GET', 'POST'])
-@login_required
-def save_data(db_name):
-    req_dict = json.loads(request.form['json'])
-    user = Users.query.filter_by(id=current_user.get_id()).first()
-    print(user.FIO, datetime.now())
-    print("запрос на внесение изменений или добавление новых записей -- ", db_name, req_dict)
-    if db_name == 'KTS':
-        return save_kts_data(req_dict, user.FIO)
-    if db_name == 'sostav':
-        return save_sostav_data(req_dict, user.FIO)
-    if db_name == 'Buhuchet':
-        return save_buhuchet_data(req_dict, user.FIO)
-    if db_name == 'Unit':
-        return add_new_unit(req_dict, user.FIO)
-    if db_name == 'Ma_Units_edited':
-        return save_ma_unit_data(req_dict, user.FIO)
-    if db_name == 'MA_Unit':
-        return add_ma_unit_data(req_dict, user.FIO)
-    if db_name == 'ma_add_modules':
-        return add_ma_add_modules(req_dict, user.FIO)
-    if db_name == 'ma_add_modules_edited':
-        return save_ma_add_modules(req_dict, user.FIO)
