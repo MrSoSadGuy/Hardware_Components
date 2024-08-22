@@ -138,8 +138,11 @@ def delete_row(base_table):
         db_obj = ma_add_modules.query.get_or_404(id)
     if base_table == "Unit":
         db_obj = Unit.query.get_or_404(id)
-    if base_table == "MA_Unit":
+    if base_table == "MA_Units":
         db_obj = MA_Units.query.get_or_404(id)
+        if len(db_obj.modules) > 0:
+            for modules in db_obj.modules:
+                delete_data_from_db(modules)      
     return delete_data_from_db(db_obj)
 
 

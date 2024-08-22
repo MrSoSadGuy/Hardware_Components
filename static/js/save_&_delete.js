@@ -41,7 +41,7 @@ function delete_row(db, id, bt_id, tbody, row_index)  {
     var id_val = {id: id}
             console.log(id)
      var data = new FormData();
-            data.append( "json", JSON.stringify( id_val ) );
+            data.append( "json", JSON.stringify(id_val) );
             if (confirm('Удалить запись?')){
                 fetch("/delete_row/"+db,
             {

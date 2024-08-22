@@ -20,7 +20,7 @@ async function sostav_ma_unit(dataID){
     const column_name_modules = ['type','inv_number','serial_number','note'];
     if (data[1].length > 0){
         
-        create_tables(data[1],'curent_MA_unit_tbody_id', column_name_unit, 'Ma_Units')}
+        create_tables(data[1],'curent_MA_unit_tbody_id', column_name_unit, 'MA_Units')}
     if (data[2].length > 0){
         data[2].forEach(item => {
             create_tables(item,'curent_MA_modules_tbody_id', column_name_modules, 'ma_add_modules')})
