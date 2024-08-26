@@ -452,7 +452,7 @@
                                         document.getElementById("unit_note_id").value = unit.note;
                                         }})
                                       document.getElementById('button_for_delete_row').onclick = function (){delete_row('Unit', id , 'button_for_delete_row','tbody_main_table',
-                                        e.relatedTarget.closest("tr").rowIndex)}
+                                        e.relatedTarget.closest("tr"))}
                                         document.getElementById('button_for_save_edit_row').onclick = function (){save_edit_table_row('tbody_main_table',e.relatedTarget.closest("tr").rowIndex)}
                                     });
     </script>
