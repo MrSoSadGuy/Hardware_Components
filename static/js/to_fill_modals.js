@@ -161,7 +161,8 @@ function invent_modal(param){
             })
             .then(function(res){ return res.json(); })
             .then(function(data){
-                console.log(data)
+                console.log("🚀 ~ .then ~ data:", data)
+                
                 if (data === null){alert("Нет данных по этому номеру")}
                 else {
                     document.getElementById("description_id").value = data['name'];
@@ -173,7 +174,8 @@ function invent_modal(param){
 }
 async function edit_ma_unit_modal(unit_id, row_index){
             const data = await fetch_data_to_get(unit_id,"MA_Unit");
-            console.log(data);
+            console.log("🚀 ~ edit_ma_unit_modal ~ data:", data)
+            
             document.getElementById("id_for_edit").value = unit_id;
             document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
             document.getElementById('button_for_delete_row').setAttribute("class", "btn btn-primary");
