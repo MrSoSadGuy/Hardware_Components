@@ -105,18 +105,19 @@ def get_data_from_db(db):
         return jsonify(ma_units)
     if db == 'MA_Units':
         units = MA_Units.query.get_or_404(int(json.loads(req)))
-        print(units)
-        print(units.modules)
+        # print(units)
+        # print(units.modules)
         return jsonify(units, units.modules)
     if db == 'Objects_ur_lica':
         obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
         print(obj)
-        print(obj.unit)
-        units_list =[]
-        modules_list = []
-        for un in obj.unit:
-            units_list.append(un)
-            modules_list.append(un.modules)
+        units_list = {}
+        modules_list = {}
+        for un in range(0, len(obj.unit)) :
+            units_list[un] = obj.unit[un]  
+            modules_list[un]= obj.unit[un].modules
+        print(modules_list)
+        print(units_list)    
         return jsonify(obj,units_list,modules_list)
     else:
         return None

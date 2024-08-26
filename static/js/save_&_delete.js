@@ -58,29 +58,29 @@ function delete_row(db, id, bt_id, tbody, row_index)  {
             }
  }
 
-function storage_reset_tbody(btn_id){
-    const table_1 = document.getElementById('new_MA_unit_tbody_storage_id')
-    var rowLength_1 = table_1.rows.length;
-    const table_2 = document.getElementById('new_MA_modules_tbody_storage_id')
-    var rowLength_2 = table_2.rows.length;
-    console.log(rowLength_1 , rowLength_2)
-    if (rowLength_1 > 0 ){
-        add_new_units('new_MA_unit_tbody_storage_id', 'MA_Unit', btn_id, "СКЛАД").then(function (r){
-        console.log(r)
-        if (r === 'SUCCESS'){
-            setTimeout(function (){get_data_for_ma_storage('current_MA_unit_tbody_storage_id', 'new_MA_unit_tbody_storage_id', 5,'MA_Unit')}, 1000);
-        }
-    });
-    }
-    if (rowLength_2 > 0 ){
-          add_new_units('new_MA_modules_tbody_storage_id', 'ma_add_modules', btn_id, "СКЛАД").then(function (r){
-        console.log(r)
-        if (r === 'SUCCESS'){
-            setTimeout(function (){get_data_for_ma_storage('current_MA_modules_tbody_storage_id','new_MA_modules_tbody_storage_id', 7,'ma_add_modules')}, 1000);
-        }
-    });
-    }
-}
+// function storage_reset_tbody(btn_id){
+//     const table_1 = document.getElementById('new_MA_unit_tbody_storage_id')
+//     var rowLength_1 = table_1.rows.length;
+//     const table_2 = document.getElementById('new_MA_modules_tbody_storage_id')
+//     var rowLength_2 = table_2.rows.length;
+//     console.log(rowLength_1 , rowLength_2)
+//     if (rowLength_1 > 0 ){
+//         add_new_units('new_MA_unit_tbody_storage_id', 'MA_Unit', btn_id, "СКЛАД").then(function (r){
+//         console.log(r)
+//         if (r === 'SUCCESS'){
+//             setTimeout(function (){get_data_for_ma_storage('current_MA_unit_tbody_storage_id', 'new_MA_unit_tbody_storage_id', 5,'MA_Unit')}, 1000);
+//         }
+//     });
+//     }
+//     if (rowLength_2 > 0 ){
+//           add_new_units('new_MA_modules_tbody_storage_id', 'ma_add_modules', btn_id, "СКЛАД").then(function (r){
+//         console.log(r)
+//         if (r === 'SUCCESS'){
+//             setTimeout(function (){get_data_for_ma_storage('current_MA_modules_tbody_storage_id','new_MA_modules_tbody_storage_id', 7,'ma_add_modules')}, 1000);
+//         }
+//     });
+//     }
+// }
  async function edit_row(db_table, id, bt_id, tbody, row_index, cells)  {
     console.log(row_index)
     var edit_data = {id: id}
@@ -104,7 +104,7 @@ function storage_reset_tbody(btn_id){
      }
 
 
-async function send_to_storage(db, id, bt_id, tbody, row_index, cells)  {
+async function send_to_storage(db, id, bt_id, tbody, row_index, cells, dataID)  {
     console.log(row_index)
     var edit_data = {id: id, parent_obj: 543}
      let oTable = document.getElementById(tbody);
