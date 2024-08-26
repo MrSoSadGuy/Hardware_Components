@@ -103,7 +103,7 @@ def get_data_from_db(db):
     if db == 'MA_Unit_stor':
         ma_units = MA_Units.query.filter_by(cod_name=json.loads(req).upper()).all()
         return jsonify(ma_units)
-    if db == 'MA_Unit':
+    if db == 'MA_Units':
         units = MA_Units.query.get_or_404(int(json.loads(req)))
         print(units)
         print(units.modules)
@@ -115,11 +115,8 @@ def get_data_from_db(db):
         units_list =[]
         modules_list = []
         for un in obj.unit:
-            # print(un, un.modules)
             units_list.append(un)
             modules_list.append(un.modules)
-        # return jsonify(obj, obj.unit, obj.unit[0].modules)
-        # print(units_list,modules_list)
         return jsonify(obj,units_list,modules_list)
     else:
         return None

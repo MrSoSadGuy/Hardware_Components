@@ -118,7 +118,6 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" id="button_for_save_edit_row" name="button_for_save_edit_row">Сохранить</button>
-              <button type="button" class="btn btn-primary" id="button_for_storage_ma_unit" name="button_for_save_edit_row">На склад</button>
             <button type="button" class="btn btn-primary" id="button_for_delete_row">Удалить</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Закрыть</button>
           </div>
@@ -355,24 +354,23 @@
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h5 class="h5">Многопортовые устройства</h5>
                      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button type="button" class="btn btn-primary btn-sm"   onclick="add_new_row('new_MA_unit_tbody_storage_id',5)" >
+                        <button type="button" class="btn btn-primary btn-sm"   onclick="add_new_row('new_MA_unit_tbody_storage_id',4)" >
                             <i class="bi bi-plus-lg"></i></button>
                         <button type="button" class="btn btn-primary btn-sm"  onclick="del_row('new_MA_unit_tbody_storage_id')">
                             <i class="bi bi-dash-lg"></i></button>
                 </div>
                 </div>
+              <!-- <div class="table-responsive small"> -->
               <div class="table-responsive small">
                 <table class="table table-striped table-sm table-bordered" id="ma_unit_Modal_table">
                   <thead>
                     <tr>
                       <th scope="col">Тип</th>
-                      {# <th scope="col">Наименование</th> #}
                       <th scope="col">Инвентарный номер</th>
                       <th scope="col">Заводской номер</th>
                       <th scope="col">Примечание</th>
                         <th style="width:70px"></th>
                     </tr>
-
                   </thead>
                     <tbody id="current_MA_unit_tbody_storage_id">
                         <tr></tr>
@@ -386,7 +384,7 @@
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h5 class="h5">Дополнительные модули</h5>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                  <button type="button" class="btn btn-primary btn-sm"   onclick="add_new_row('new_MA_modules_tbody_storage_id',6)" >
+                  <button type="button" class="btn btn-primary btn-sm"   onclick="add_new_row('new_MA_modules_tbody_storage_id',4)" >
                       <i class="bi bi-plus-lg"></i></button>
                   <button type="button" class="btn btn-primary btn-sm"  onclick="del_row('new_MA_modules_tbody_storage_id')">
                       <i class="bi bi-dash-lg"></i></button>
@@ -467,7 +465,7 @@
                   $(this).find('form').trigger('reset');
                   document.getElementById("btn_to_add_new_ma_storage").setAttribute("class", "btn btn-primary");
                   ma_unit_storage();
-                  <!-- {# ma_add_module_storage(); #} -->
+                  ma_add_module_storage();
                  })
     </script>
 

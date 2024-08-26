@@ -4,9 +4,7 @@ async function sostav_ma_unit(dataID){
     console.log(data)
     console.log(data[2])
 
-    //document.getElementById("type_id").value = data[0]['type_equipment'];
     document.getElementById("cod_id").value = data[0]['cod_name'];
-    //document.getElementById("Serial_id").value = data[0]['serial_number'];
     document.getElementById("ip_id").value = data[0]['IP'];
     const tbody_current = document.getElementById('curent_MA_unit_tbody_id');
     while (tbody_current.rows.length) {tbody_current.deleteRow(0);}
@@ -76,9 +74,64 @@ function create_tables(moduls, table_id, column_name, db_table){
         })
         
 }
+function create_tables2(unit, modules, table_id, column_name, db_table){
+   const tbody_current = document.getElementById(table_id);
+        console.log(unit, modules)
+        unit.forEach(item => {
+            console.log(item)
+            const tr = document.createElement('tr');
+            for (let i = 0; i < column_name.length; i++) {
+                const td = document.createElement('td');
+                td.contentEditable = true;
+                td.textContent = item[column_name[i]];
+                console.log(item[column_name[i]])
+                tr.appendChild(td);
+            }
+            const td8 = document.createElement('td');
+            const a1 = document.createElement('a');
+            const a2 = document.createElement('a');
+            const a3 = document.createElement('a');
+            const i1 = document.createElement('i');
+            const i2 = document.createElement('i');
+            const i3 = document.createElement('i');
+            const div = document.createElement('div');
+            div.setAttribute('class','d-grid gap-1 d-md-flex');
+            a1.setAttribute('id','btn_edit_ma_mod_'+item['id']);
+            a1.setAttribute('class','btn btn-primary btn-sm');
+            a2.setAttribute('id','btn_del_ma_mod_'+item['id']);
+            a2.setAttribute('class','btn btn-primary btn-sm');
+            a3.setAttribute('id','btn_send_ma_mod_to_storage_'+item['id']);
+            a3.setAttribute('class','btn btn-primary btn-sm');
+            a1.onclick = function (){edit_row(db_table + '_edited', item['id'],'btn_edit_ma_mod_'+item['id'],table_id,
+            this.closest("tr").rowIndex,4)};
+            a2.onclick = function (){delete_row(db_table, item['id'],'btn_del_ma_mod_'+item['id'],table_id,
+            this.closest("tr").rowIndex)};
+            a3.onclick = function (){send_to_storage(db_table + '_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'],table_id,
+            this.closest("tr").rowIndex, 4)};
+            i1.setAttribute('class', "bi bi-pencil-square h7");
+            i2.setAttribute('class', "bi bi-trash3 h7");
+            i3.setAttribute('class', "bi bi-box-arrow-up-right h10");
+            a1.appendChild(i1);
+            a2.appendChild(i2);
+            a3.appendChild(i3);
+            div.appendChild(a1);
+            div.appendChild(a3);
+            div.appendChild(a2);
+            td8.appendChild(div);
+            tr.appendChild(td8);
+            tbody_current.appendChild(tr);
+            const tr2 = document.createElement('tr');
+            const td2 = document.createElement('td');
+            tr2.appendChild(td2);
+            const table = document.createElement('table');
+            const tbody_1 = document.createElement('tbody');
+            td2.appendChild(table);
+            table.appendChild(tbody_1);           
+        })       
+}
+function create_rows(){
 
-
-
+}
 
 async function ma_unit_storage(){
     const tbody_current = document.getElementById('current_MA_unit_tbody_storage_id');
@@ -87,68 +140,23 @@ async function ma_unit_storage(){
      console.log(stor_ma_unit)
     const column_name = ['type_equipment','inv_number','serial_number','note'];
     if(stor_ma_unit[1].length>0){
-        
-            create_tables(stor_ma_unit[1],'current_MA_unit_tbody_storage_id', column_name,stor_ma_unit, 'Ma_Units')
-        
+         create_tables(stor_ma_unit[1],'current_MA_unit_tbody_storage_id', column_name, 'Ma_Units')       
     }
     
-    // get_data_for_ma_storage('current_MA_unit_tbody_storage_id','new_MA_unit_tbody_storage_id', 5,'MA_Unit', column_name_unit,stor_ma_unit)
+
  }
 async function ma_add_module_storage(){
     const tbody_new = document.getElementById('current_MA_modules_tbody_storage_id');
     while (tbody_new.rows.length) {tbody_new.deleteRow(0);}
-    const column_name_modul = ['type','modules_name','inv_number','serial_number','note'];
-    const stor_ma_unit = await fetch_data_to_get('склад',"ma_add_modules");
-    // if (stor_ma_unit === "error"){alert("Произошла ошибка")}
-    // else get_data_for_ma_storage('current_MA_modules_tbody_storage_id','new_MA_modules_tbody_storage_id', 6,'ma_add_modules',column_name_modul, stor_ma_unit)
-}
-
-function get_data_for_ma_storage(cur_tbody_id, new_tbody_id, cells, db_table, column_name, data){
-    const tbody_current = document.getElementById(cur_tbody_id);
-    data.forEach(item => {
-        const tr = document.createElement('tr');
-        for (let i = 0; i < column_name.length; i++) {
-            const td = document.createElement('td');
-            td.contentEditable = true;
-            td.textContent = item[column_name[i]];
-            tr.appendChild(td);
-        }
-        const td8 = document.createElement('td');
-        const a1 = document.createElement('a');
-        const a2 = document.createElement('a');
-        const a3 = document.createElement('a');
-        const i1 = document.createElement('i');
-        const i2 = document.createElement('i');
-        const i3 = document.createElement('i');
-        const div = document.createElement('div');
-        div.setAttribute('class','d-grid gap-1 d-md-flex');
-        a1.setAttribute('id','btn_edit_ma_mod_'+item['id']);
-        a1.setAttribute('class','btn btn-primary btn-sm');
-        a2.setAttribute('id','btn_del_ma_mod_'+item['id']);
-        a2.setAttribute('class','btn btn-primary btn-sm');
-        a3.setAttribute('id','btn_send_ma_mod_to_storage_'+item['id']);
-        a3.setAttribute('class','btn btn-primary btn-sm');
-        a1.onclick = function (){edit_row(db_table + '_edited', item['id'],'btn_edit_ma_mod_'+item['id'],cur_tbody_id,
-        this.closest("tr").rowIndex,cells)};
-        a2.onclick = function (){delete_row(db_table, item['id'],'btn_del_ma_mod_'+item['id'],cur_tbody_id,
-        this.closest("tr").rowIndex)};
-        a3.onclick = function (){send_to_storage('ma_add_modules_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'],'current_MA_modules_tbody_id', this.closest("tr").rowIndex, cells)};
-        i1.setAttribute('class', "bi bi-pencil-square h7");
-        i2.setAttribute('class', "bi bi-trash3 h7");
-        i3.setAttribute('class', "bi bi-box-arrow-up-right h10");
-        a1.appendChild(i1);
-        a2.appendChild(i2);
-        a3.appendChild(i3);
-        div.appendChild(a1);
-        div.appendChild(a3);
-        div.appendChild(a2);
-        td8.appendChild(div);
-        tr.appendChild(td8);
-        tbody_current.appendChild(tr);
-    })
-
+    const column_name = ['type','inv_number','serial_number','note'];
+    const stor_ma_modules = await fetch_data_to_get('543',"MA_Units");
+    if(stor_ma_modules[1].length>0){
+        create_tables(stor_ma_modules[1],'current_MA_modules_tbody_storage_id', column_name, 'ma_add_modules')
+    }
 
 }
+
+
 function invent_modal(param){
     document.getElementById("In_num").value = param;
     document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
