@@ -112,6 +112,12 @@ async function ma_unit_storage(){
             new_tbody.setAttribute('id', 'stored_ma_unit_tbody_'+ key);
             new_tbody.setAttribute('class',"table-group-divider ");
             table_current.appendChild(new_tbody);
+            const name_line = document.createElement('tr');
+            new_tbody.appendChild(name_line)
+            const td = document.createElement('td');
+            td.setAttribute('colspan', '5')
+            name_line.appendChild(td)
+            td.innerHTML="Устройство - \"Склад-"  + stor_ma_unit[1][key]['id'] + "\""
             const empty_line = document.createElement('tr');
             empty_line.setAttribute('height',"15")
             table_current.appendChild(empty_line)          
