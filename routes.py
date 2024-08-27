@@ -2,7 +2,6 @@ from flask import render_template, request, json, send_file, jsonify, redirect, 
 import openpyxl
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-
 from app import app
 from models import *
 from add_save_del import *
@@ -84,9 +83,27 @@ def main():
 @login_required
 def ma_page():
     object = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
+    new_obj_list = []
+    for i in range(0, len(object)):
+        new_obj = {}
+        new_obj['id'] = object[i].id
+        new_obj['cod_name'] = object[i].cod_name
+        new_obj['organization'] = object[i].organization
+        new_obj['address'] = object[i].address
+        new_obj['ORSH'] = object[i].ORSH
+        new_obj['IP'] = object[i].IP
+        new_obj['naklodnaja'] = object[i].naklodnaja
+        new_obj['note'] = object[i].note
+        if len(object[i].unit)>0:
+            new_obj['type_equipment'] = object[i].unit[0].type_equipment
+            new_obj['inv_number'] = object[i].unit[0].inv_number
+        else:
+            new_obj['type_equipment'] =''
+            new_obj['inv_number'] = ''
+        new_obj_list.append(new_obj)
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
-    return render_template("MA_page.html",  user_name=user_name, object=object)
+    return render_template("MA_page.html",  user_name=user_name, new_obj_list=new_obj_list )
 
 
 @app.route('/get_data_from_db/<db>', methods=['GET', 'POST'])
@@ -105,8 +122,6 @@ def get_data_from_db(db):
         return jsonify(ma_units)
     if db == 'MA_Units':
         units = MA_Units.query.get_or_404(int(json.loads(req)))
-        # print(units)
-        # print(units.modules)
         return jsonify(units, units.modules)
     if db == 'Objects_ur_lica':
         obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
@@ -157,16 +172,17 @@ def save_data(db_name):
         return save_sostav_data(req_dict, user.FIO)
     if db_name == 'Buhuchet':
         return save_buhuchet_data(req_dict, user.FIO)
-    if db_name == 'Unit':
-        return add_new_unit(req_dict, user.FIO)
+    if db_name == 'ma_add_modules_edited':
+        return save_ma_add_modules(req_dict, user.FIO)
     if db_name == 'MA_Units_edited':
         return save_ma_unit_data(req_dict, user.FIO)
+    if db_name == 'Unit':
+        return add_new_unit(req_dict, user.FIO)
     if db_name == 'MA_Unit':
         return add_ma_unit_data(req_dict, user.FIO)
     if db_name == 'ma_add_modules':
         return add_ma_add_modules(req_dict, user.FIO)
-    if db_name == 'ma_add_modules_edited':
-        return save_ma_add_modules(req_dict, user.FIO)
+    
     
 
 @app.route('/download/<file>/<name_PON>', methods=['GET', 'POST'])
