@@ -1,5 +1,4 @@
 async function sostav_ma_unit(dataID){
-
     const data = await fetch_data_to_get(dataID,"Objects_ur_lica");
     console.log(data);
     document.getElementById("cod_id").value = data[0]['cod_name'];
@@ -34,6 +33,7 @@ function create_tables(moduls, table_id, column_name, db_table, buse){
         const tr = document.createElement('tr');
         for (let i = 0; i < column_name.length; i++) {
             const td = document.createElement('td');
+            td.setAttribute('width', '22.5%')
             td.contentEditable = true;
             td.textContent = item[column_name[i]];
             console.log(item[column_name[i]])
@@ -89,7 +89,7 @@ function create_tables2(table_id, column_name, unit_id){
     const thead_n = document.createElement('thead');
     thead_n.appendChild(tr_h) 
     const table_n = document.createElement('table');
-    table_n.setAttribute('class','table mb-0 table-striped table-bordered table-success' )
+    table_n.setAttribute('class','table mb-0 table-striped table-bordered table-secondary table-sm' )
     const tbody_n = document.createElement('tbody');
     tbody_n.setAttribute('id',"tbody_unit_modules_"+ unit_id);
     table_n.appendChild(thead_n);
@@ -99,8 +99,9 @@ function create_tables2(table_id, column_name, unit_id){
     tbody_current.appendChild(tr);
 }
 async function ma_unit_storage(){
-    const tbody_current = document.getElementById('ma_unit_Modal_table');
-    while (tbody_current.getElementsByTagName("tbody").length>0) {tbody_current.removeChild(tbody_current.getElementsByTagName("tbody")[0]);}
+    const table_current = document.getElementById('ma_unit_Modal_table');
+    while (table_current.rows.length) {table_current.deleteRow(0);}
+    while (table_current.getElementsByTagName("tbody").length>0) {table_current.removeChild(table_current.getElementsByTagName("tbody")[0]);}
     const stor_ma_unit = await fetch_data_to_get('543',"Objects_ur_lica");
     console.log(stor_ma_unit)
     const column_name = ['type_equipment','inv_number','serial_number','note'];
@@ -109,8 +110,17 @@ async function ma_unit_storage(){
         for (let key in stor_ma_unit[1]){
             const new_tbody = document.createElement('tbody');
             new_tbody.setAttribute('id', 'stored_ma_unit_tbody_'+ key);
-            new_tbody.setAttribute('class',"table-group-divider");
-            tbody_current.appendChild(new_tbody);
+            new_tbody.setAttribute('class',"table-group-divider ");
+            table_current.appendChild(new_tbody);
+            const name_line = document.createElement('tr');
+            new_tbody.appendChild(name_line)
+            const td = document.createElement('td');
+            td.setAttribute('colspan', '5')
+            name_line.appendChild(td)
+            td.innerHTML="Устройство - \"Склад-"  + stor_ma_unit[1][key]['id'] + "\""
+            const empty_line = document.createElement('tr');
+            empty_line.setAttribute('height',"15")
+            table_current.appendChild(empty_line)          
             temp_list = [stor_ma_unit[1][key]]
             create_tables(temp_list,'stored_ma_unit_tbody_'+ key, column_name, 'MA_Units',false)
             if(stor_ma_unit[2][key].length > 0){
@@ -162,7 +172,6 @@ function invent_modal(param){
             .then(function(res){ return res.json(); })
             .then(function(data){
                 console.log("🚀 ~ .then ~ data:", data)
-                
                 if (data === null){alert("Нет данных по этому номеру")}
                 else {
                     document.getElementById("description_id").value = data['name'];
