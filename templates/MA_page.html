@@ -8,15 +8,22 @@
 
     <title>Многопортовые устройства</title>
 
+
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../static/bootstrap.css">
     <link rel="stylesheet" href="../static/custom_style.css">
+    <link rel="stylesheet" href="../static/select2.min.css">
     <script type=text/javascript src="{{ url_for('static', filename='js/jquery-3.7.1.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bad_scripts.js') }}"></script>
     <script src="{{ url_for('static', filename='js/save_&_delete.js') }}"></script>
     <script src="{{ url_for('static', filename='js/to_fill_modals.js') }}"></script>
     <script src="{{ url_for('static', filename='js/table-sort.js') }}"></script>
+    <script src='/static/js/select2.min.js'></script>
+    
+    
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
         <!-- document.getElementById(JSON.parse(localStorage.getItem("radio_check"))).click() -->
@@ -38,14 +45,23 @@
           <div class="modal-body">
             <form>
                 <label class="col-form-label" id="id_for_edit"></label>
-               <div class="container">
-                  <div class="row">
-                      <div class="col-sm">
-              <div class="mb-3">
+
+              <div class="container">
+                   <div class="row">
+                      
+                       
+               <div class="col-sm">
+               <div class="mb-3">
                   <label class="col-form-label">Код:</label>
                    <input type="text"  class="form-control"  id = "edit_cod_id">
               </div>
-                      </div>
+              
+                       </div>
+                   </div>
+                </div>
+               <div class="container">
+                  <div class="row">
+                     
                <div class="col-sm">
               <div class="mb-3">
                 <label class="col-form-label">Организация:</label>
@@ -58,38 +74,18 @@
                 <input type="text"  class="form-control" id="edit_address_id">
               </div>
                       </div>
+                       <div class="col-sm">
+                  <div class="mb-3">
+                <label class="col-form-label">ОРШ:</label>
+                <input type="text"  class="form-control" id="edit_orsh_id">
+              </div>
+                      </div>
                   </div>
                </div>
+                
                 <div class="container">
                    <div class="row">
-                       <div class="col-sm">
-              <div class="mb-3">
-                <label class="col-form-label">Тип устройства:</label>
-                <input type="text"  class="form-control" id="edit_type_id">
-              </div>
-                       </div>
-                       <div class="col-sm">
-              <div class="mb-3">
-                <label class="col-form-label">Инвентарный номер:</label>
-                <input type="text"  class="form-control" id="edit_Inv_id">
-              </div>
-                       </div>
-               <div class="col-sm">
-              <div class="mb-3">
-                <label class="col-form-label">№ накладной:</label>
-                <input type="text"  class="form-control" id="edit_naklad_id">
-              </div>
-                       </div>
-                   </div>
-                </div>
-                <div class="container">
-                   <div class="row">
-                       <div class="col-sm">
-              <div class="mb-3">
-                <label class="col-form-label">Серийный номер:</label>
-                <input type="text"  class="form-control" id="edit_Serial_id">
-              </div>
-                       </div>
+                       
                        <div class="col-sm">
               <div class="mb-3">
                 <label class="col-form-label">IP:</label>
@@ -97,10 +93,11 @@
               </div>
                        </div>
                        <div class="col-sm">
-              <div class="mb-3">
-                <label class="col-form-label">ОРШ:</label>
-                <input type="text"  class="form-control" id="edit_orsh_id">
+                       <div class="mb-3">
+                <label class="col-form-label">№ накладной:</label>
+                <input type="text"  class="form-control" id="edit_naklad_id">
               </div>
+              
                    </div>
                        <div class="col-sm">
               <div class="mb-3">
@@ -172,7 +169,7 @@
         </div>
       </div>
     </div>
-      <div class="modal fade" id="add_new_units_Modal" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="add_new_object_Modal" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -189,7 +186,7 @@
                       <th class="th.sm" scope="col">ОРШ</th>
                     </tr>
                   </thead>
-                  <tbody id = "new_ma_tbody_id">
+                  <tbody id = "new_object_tbody_id">
                     <tr >
                       <td contenteditable="true"></td>
                       <td contenteditable="true"></td>
@@ -201,19 +198,19 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="button_add_new_row" onclick="add_new_row('new_ma_tbody_id',4)">
+            <button type="button" class="btn btn-primary" id="button_add_new_row" onclick="add_new_row('new_object_tbody_id',4)">
                 <i class="bi bi-plus-lg"></i>
             </button>
-              <button type="button" class="btn btn-primary" id="button_del_row" onclick="del_row('new_ma_tbody_id')">
+              <button type="button" class="btn btn-primary" id="button_del_row" onclick="del_row('new_object_tbody_id')">
                   <i class="bi bi-dash-lg"></i>
               </button>
-            <button type="button" class="btn btn-primary" id="button_for_save_new_units" onclick="add_new_units('new_ma_tbody_id','Object_ur_lic',this.id)">Сохранить</button>
+            <button type="button" class="btn btn-primary" id="button_for_save_new_units" onclick="add_new_units('new_object_tbody_id','Object_ur_lica',this.id)">Сохранить</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="reload_page()" >Закрыть</button>
           </div>
         </div>
       </div>
     </div>
-       <div class="modal" id="Change_pass"  data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal" id="Change_pass"  data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -426,6 +423,39 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="select_usege_Modal" tabindex="-1" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <div class="container">
+                   <div class="row">
+                      
+                 <form></form>      
+               <div class="col-sm">
+               <div class="mb-3">
+                 <select class="form-select" aria-label="Default select example" id = 'select_send_to_usage'>
+                  <option selected>Выберите обьект</option>
+                  
+                </select>
+              </div>
+              
+                </div>
+                </form>
+                   </div>
+                </div>
+            
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ma_storage_Modal">Отмена</button>
+              <button type="button" class="btn btn-primary" onclick="send_to_usage()" >Применить</button>
+            </div>
+      </div>
+      </div>
+    </div>
     <script type="text/javascript">
                   $('#inventModal').on('show.bs.modal', function (e) {
                   $(this).find('form').trigger('reset');
@@ -435,22 +465,31 @@
                   $(this).find('form').trigger('reset');
                   document.getElementById("raport_chang_pass").textContent = ""
                   })
+                  $('#select_usege_Modal').on('show.bs.modal', function (e) {
+                    
+                  select_usage_modal($(e.relatedTarget).data('id'), $(e.relatedTarget).data('db'));
+                  })
+                  
+                  
+
+
+                  
     </script>
     <script type="text/javascript">
                 $('#EditModal').on('show.bs.modal', function (e) {
                   $(this).find('form').trigger('reset');
-                  edit_ma_unit_modal($(e.relatedTarget).data('id'), e.relatedTarget.closest("tr").rowIndex);
+                  edit_ma_unit_modal($(e.relatedTarget).data('id'), e.relatedTarget.closest("tr"));
                 });
     </script>
 {#      //копирование в таблицу из Excel 1#}
     <script type="text/javascript">
-                document.getElementById('new_ma_tbody_id').addEventListener('paste', (e) => {
+                document.getElementById('new_object_tbody_id').addEventListener('paste', (e) => {
                   e.preventDefault(); // Отменяем дефолтное поведение вставки
                   let data = (e.clipboardData || window.clipboardData).getData('text');
                   // Преобразуем в формат CSV для удобства
                   let start_row= e.target.closest(`tr`).rowIndex-1;
                   let start_cell =e.target.closest(`td`).cellIndex
-                  paste_to_cells_like_excel('new_ma_tbody_id', data, start_row, start_cell, 8);
+                  paste_to_cells_like_excel('new_object_tbody_id', data, start_row, start_cell, 8);
                 });
     </script>
     <script type="text/javascript">
@@ -499,9 +538,9 @@
             <button class="btn btn-secondary" type="button" disabled >Многопортовые устройства доступа</button>
 
                 <button class="btn btn-primary" type="submit" disabled formaction="/other_property">Прочее имущество</button>
+
             </div>
-
-
+            
                 </form>
         </div>
     </div>
@@ -511,7 +550,7 @@
               <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Многопортовые устройства</h1>
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                  <button type="button" class="btn btn-primary btn-lg"  data-bs-toggle="modal" data-bs-target="#add_new_units_Modal" >
+                  <button type="button" class="btn btn-primary btn-lg"  data-bs-toggle="modal" data-bs-target="#add_new_object_Modal" >
                       <i class="bi bi-plus-square-fill"></i>  Добавить</button>
                   <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#ma_storage_Modal">
                       <i class="bi bi-box2"></i>  Склад</button>

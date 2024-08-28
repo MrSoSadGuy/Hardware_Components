@@ -82,6 +82,12 @@ def main():
 @app.route('/multiple_access')
 @login_required
 def ma_page():
+    new_obj_list = get_data_for_jinja()
+    user = Users.query.get_or_404(current_user.get_id())
+    user_name = user.FIO
+    return render_template("MA_page.html",  user_name=user_name, new_obj_list=new_obj_list )
+
+def get_data_for_jinja():
     object = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
     new_obj_list = []
     for i in range(0, len(object)):
@@ -102,10 +108,7 @@ def ma_page():
             new_obj['type_equipment'] =''
             new_obj['inv_number'] = ''
         new_obj_list.append(new_obj)
-    user = Users.query.get_or_404(current_user.get_id())
-    user_name = user.FIO
-    return render_template("MA_page.html",  user_name=user_name, new_obj_list=new_obj_list )
-
+    return new_obj_list    
 
 @app.route('/get_data_from_db/<db>', methods=['GET', 'POST'])
 @login_required
@@ -124,6 +127,9 @@ def get_data_from_db(db):
     if db == 'MA_Units':
         units = MA_Units.query.get_or_404(int(json.loads(req)))
         return jsonify(units, units.modules)
+    if db == 'Objects_ur_lica_all':
+        units = get_data_for_select()
+        return jsonify(units)
     if db == 'Objects_ur_lica':
         obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
         print(obj)
@@ -137,6 +143,25 @@ def get_data_from_db(db):
         return jsonify(obj,units_list,modules_list)
     else:
         return None
+    
+def get_data_for_select():
+    obj = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
+    
+    obj_dict = {}
+    units_list = []
+    modules_list = {}
+    for i in range (0, len(obj)): 
+        print(obj[i].unit)
+        for un in range(0, len(obj[i].unit)) : 
+            
+            modules_list[un]= obj[i].unit[un].modules
+            print(obj[i].unit[un].modules)
+        obj_dict[i] = modules_list
+        modules_list.clear
+          
+    
+      
+    return obj_dict
 
 
 @app.route('/delete_row/<base_table>', methods=['GET', 'POST'])
@@ -157,6 +182,10 @@ def delete_row(base_table):
         if len(db_obj.modules) > 0:
             for modules in db_obj.modules:
                 delete_data_from_db(modules)      
+    if base_table == "Objects_ur_lica":
+        db_obj = Objects_ur_lica.query.get_or_404(id)
+        if len(db_obj.unit) > 0:
+            return jsonify("На объекте установленно устройство!!!! \n Переместите его на склад")     
     return delete_data_from_db(db_obj)
 
 
@@ -183,6 +212,10 @@ def save_data(db_name):
         return add_ma_unit_data(req_dict, user.FIO)
     if db_name == 'ma_add_modules':
         return add_ma_add_modules(req_dict, user.FIO)
+    if db_name == 'Object_ur_lica':
+        return add_object_for_MA(req_dict, user.FIO)
+    if db_name == 'Objects_ur_lica_edited':
+        return save_object_for_MA(req_dict, user.FIO)
     
     
 

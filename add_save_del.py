@@ -69,6 +69,19 @@ def add_ma_unit_data(req_dict, name):
         return json.dumps("NOT 'POST' REQUEST")
 
 
+def add_object_for_MA(req_dict, name):
+    if request.method == 'POST':
+        obj = Objects_ur_lica(cod_name=req_dict["0"],
+                        organization=req_dict["1"],
+                        address=req_dict["2"],
+                        ORSH=req_dict["3"],
+                        creator=name)
+        return add_data_to_db(obj)
+    else:
+        return json.dumps("NOT 'POST' REQUEST")
+    
+    
+    
 def add_ma_add_modules(req_dict, name):
     if request.method == 'POST':
         obj = Objects_ur_lica.query.get_or_404(int(req_dict["add_p"]))
@@ -76,11 +89,8 @@ def add_ma_add_modules(req_dict, name):
         print(obj ,unit)
         ma_modules = ma_add_modules(ma_unit_id = req_dict["add_p"],
                                     type=req_dict["0"],
-                                    # modules_name=req_dict["1"],
                                     inv_number=req_dict["1"],
                                     serial_number=req_dict["2"],
-                                    # port=req_dict["4"],
-                                    # size=req_dict["5"],
                                     note=req_dict["3"],
                                     creator = name)
         return add_data_to_db(ma_modules)
@@ -131,10 +141,10 @@ def save_buhuchet_data(req_dict, name):
                 b.last_edit_date = datetime.now()
                 return save_data_to_db()
         buh = BuhUch(inv_number=req_dict["inv_number"].strip(),
-                     MOL=req_dict["MOL"].strip(),
-                     charracter=req_dict["charracter"],
-                     note=req_dict["note"],
-                     creator=name)
+                    MOL=req_dict["MOL"].strip(),
+                    charracter=req_dict["charracter"],
+                    note=req_dict["note"],
+                    creator=name)
         return add_data_to_db(buh)
     else:
         return json.dumps("NOT 'POST' REQUEST")
@@ -190,6 +200,27 @@ def save_ma_unit_data(req_dict, name):
             ma_unit.note = req_dict["3"]
             ma_unit.editor = name
             ma_unit.last_date_edit = datetime.now()
+        return save_data_to_db()
+    else:
+        return json.dumps("NOT 'POST' REQUEST")
+
+
+def save_object_for_MA(req_dict, name):
+    obj = Objects_ur_lica.query.get_or_404(int(req_dict["id"]))
+    if request.method == 'POST':
+        if 'parent_obj' in req_dict :
+            obj.object_id = int(req_dict['parent_obj'])
+        else:
+            obj.cod_name = req_dict["cod_name"]
+            obj.organization = req_dict["organization"]
+            obj.address = req_dict["address"]
+            obj.naklodnaja = req_dict["naklodnaja"]
+            obj.IP = req_dict["IP"]
+            obj.install_date = req_dict["install_date"]
+            obj.ORSH = req_dict["ORSH"]
+            obj.note = req_dict["note"]
+            obj.editor = name
+            obj.last_date_edit = datetime.now()
         return save_data_to_db()
     else:
         return json.dumps("NOT 'POST' REQUEST")

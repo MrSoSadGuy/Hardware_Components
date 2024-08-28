@@ -58,13 +58,25 @@ function create_tables(moduls, table_id, column_name, db_table, buse){
         this.closest("tr"), 4)};
         a2.onclick = function (){delete_row(db_table, item['id'],'btn_del_ma_mod_'+item['id'],table_id,
         this.closest("tr"))};
-        a3.onclick = function (){
-            if (buse){
-                send_to_storage(db_table + '_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'],table_id,
-                    this.closest("tr"), 4)
-                }
-            else {console.log("qrwyequretqweyquwe")}
-            }                 
+        if (buse){
+            a3.onclick = function (){send_to_storage(db_table + '_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'],table_id,
+                        this.closest("tr"), 4)}
+        }
+        else{
+            a3.setAttribute('data-bs-toggle',"modal")
+            a3.setAttribute('data-bs-target',"#select_usege_Modal")
+            a3.setAttribute('data-id', item['id'])
+            a3.setAttribute('data-db', db_table)
+        }
+        // a3.onclick = function (){
+        //     if (buse){
+        //         send_to_storage(db_table + '_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'],table_id,
+        //             this.closest("tr"), 4)
+        //         }
+        //     else {
+        //         send_to_usage()
+        //         console.log("qrwyequretqweyquwe")}
+        //     }                 
         i1.setAttribute('class', "bi bi-pencil-square h7");
         i2.setAttribute('class', "bi bi-trash3 h7");
         i3.setAttribute('class', "bi bi-box-arrow-up-right h10");
@@ -110,7 +122,7 @@ async function ma_unit_storage(){
         for (let key in stor_ma_unit[1]){
             const new_tbody = document.createElement('tbody');
             new_tbody.setAttribute('id', 'stored_ma_unit_tbody_'+ key);
-            new_tbody.setAttribute('class',"table-group-divider ");
+            new_tbody.setAttribute('class',"borderd_table");
             table_current.appendChild(new_tbody);
             const name_line = document.createElement('tr');
             new_tbody.appendChild(name_line)
@@ -130,24 +142,6 @@ async function ma_unit_storage(){
         }            
     }   
 }
-// async function ma_unit_storage(){
-//     const tbody_current = document.getElementById('current_MA_unit_tbody_storage_id');
-//     while (tbody_current.rows.length) {tbody_current.deleteRow(0);}
-//     const stor_ma_unit = await fetch_data_to_get('543',"Objects_ur_lica");
-//     console.log(stor_ma_unit)
-//     const column_name = ['type_equipment','inv_number','serial_number','note'];
-//     const column_name_mod = ['type','inv_number','serial_number','note'];
-//     if(Object.keys(stor_ma_unit[1]).length>0){
-//         for (let key in stor_ma_unit[1]){
-//             temp_list = [stor_ma_unit[1][key]]
-//             create_tables(temp_list,'current_MA_unit_tbody_storage_id', column_name, 'MA_Units',false)
-//             if(stor_ma_unit[2][key].length > 0){
-//                 create_tables2('current_MA_unit_tbody_storage_id', column_name, stor_ma_unit[1][key]['id'] )
-//                 create_tables(stor_ma_unit[2][key],"tbody_unit_modules_"+ stor_ma_unit[1][key]['id'], column_name_mod, 'ma_add_modules',true)
-//             }
-//         }            
-//     }   
-// }
 
 async function ma_add_module_storage(){
     const tbody_new = document.getElementById('current_MA_modules_tbody_storage_id');
@@ -181,29 +175,42 @@ function invent_modal(param){
                 }
         })
 }
-async function edit_ma_unit_modal(unit_id, row_index){
-            const data = await fetch_data_to_get(unit_id,"MA_Unit");
+async function edit_ma_unit_modal(obj_id, row_index){
+            
+            const data = await fetch_data_to_get(obj_id,"Objects_ur_lica");
             console.log("🚀 ~ edit_ma_unit_modal ~ data:", data)
             
-            document.getElementById("id_for_edit").value = unit_id;
+            document.getElementById("id_for_edit").value = obj_id;
             document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
             document.getElementById('button_for_delete_row').setAttribute("class", "btn btn-primary");
             console.log(document.getElementById("id_for_edit").value)
                 document.getElementById("edit_cod_id").value = data[0].cod_name;
                 document.getElementById("edit_org_id").value = data[0].organization;
                 document.getElementById("edit_address_id").value = data[0].address;
-                document.getElementById("edit_type_id").value = data[0].type_equipment;
-                document.getElementById("edit_Inv_id").value = data[0].inv_number;
                 document.getElementById("edit_naklad_id").value = data[0].naklodnaja;
-                document.getElementById("edit_Serial_id").value = data[0].serial_number;
                 document.getElementById("edit_ip_id").value = data[0].IP;
                 document.getElementById("edit_inst_date_id").value = data[0].install_date;
                 document.getElementById("edit_orsh_id").value = data[0].ORSH;
                 document.getElementById("unit_note_id").value = data[0].note;
                 document.getElementById('button_for_delete_row').onclick = function (){
-                    delete_row('MA_Unit', id , 'button_for_delete_row','tbody_main_table', row_index)};
-                document.getElementById('button_for_storage_ma_unit').onclick = function (){
-                    send_to_storage_ma_unit('Ma_Units_edited', unit_id , 'button_for_storage_ma_unit','tbody_main_table', row_index)};
+                    delete_row('Objects_ur_lica', obj_id , 'button_for_delete_row','tbody_main_table', row_index)};
                 document.getElementById('button_for_save_edit_row').onclick = function (){
                     save_edit_MA_table('tbody_main_table', row_index)};
+}
+async function select_usage_modal(id, db_table) {
+    console.log("🚀 ~ select_usage_modal ~ db_table:", db_table)
+    console.log("🚀 ~ select_usage_modal ~ id:", id)
+    const select = document.getElementById('select_send_to_usage')
+    const data = await fetch_data_to_get('all','Objects_ur_lica_all')
+    console.log(data)
+    data.forEach(item => {
+        
+        console.log(item.id, item.cod_name, item.type_equipment)
+        const opt = document.createElement('option')
+        opt.value = item.id
+        opt.text = item.cod_name
+        select.add(opt)
+    })
+    
+    
 }

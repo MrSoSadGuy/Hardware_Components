@@ -19,3 +19,9 @@
                 overflow: hidden; /* Обрезаем все, что не помещается в область */
                 text-overflow: ellipsis; /* Добавляем многоточие */
             }
+            .borderd_table {
+              table-layout: fixed;
+              width: 100%;
+              border-collapse: collapse;
+              border: 2px solid rgb(19, 17, 19);
+            }

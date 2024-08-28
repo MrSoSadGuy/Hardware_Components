@@ -35,7 +35,7 @@ function change_password(){
 function delete_row(db, id, bt_id, tbody, row)  {
     console.log(row.rowIndex)
     var id_val = {id: id}
-            console.log(id)
+    console.log("🚀 ~ delete_row ~ id:", id)
     var data = new FormData();
             data.append( "json", JSON.stringify(id_val) );
             if (confirm('Удалить запись?')){
@@ -46,16 +46,18 @@ function delete_row(db, id, bt_id, tbody, row)  {
             })
                 .then(function(res){ return res.json(); })
             .then(function(data){
-                console.log(data)
+                console.log("🚀 ~ delete_row ~ data:", data)
                 if ((data === 'SUCCESS')&&(typeof(data) === "string")){
                     document.getElementById(bt_id).setAttribute("class", "btn btn-success");
                     setTimeout(function (){document.getElementById(tbody).deleteRow(row.rowIndex-1)}, 500);
                     return data;
                 }
                 else {
+                    alert(data)
                     document.getElementById(bt_id).setAttribute("class", "btn btn-danger");
                 }
             })
+                
             }
 }
 
@@ -105,13 +107,12 @@ async function edit_row(db_table, id, bt_id, tbody, row, cells)  {
     }
 
 async function send_to_storage(db, id, bt_id, tbody, row_index, cells, dataID)  {
-    console.log(row_index)
+    console.log("🚀 ~ send_to_storage ~ row_index:", row_index)
     var edit_data = {id: id, parent_obj: 543}
-    let oTable = document.getElementById(tbody);
-    console.log(edit_data)
+    console.log("🚀 ~ send_to_storage ~ edit_data:", edit_data)
     if (confirm("Отправить на склад?")){
         const data = await fetch_data_to_save_new(edit_data, db);
-        console.log(data);
+        console.log("🚀 ~ send_to_storage ~ data:", data)
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");
             setTimeout(function (){document.getElementById(tbody).deleteRow(row_index-1)}, 500);
@@ -122,6 +123,13 @@ async function send_to_storage(db, id, bt_id, tbody, row_index, cells, dataID)  
             alert(data);
         }
     }}
+    
+async function send_to_usage() {
+    const unit = document.getElementById('send_to_usege_id');
+    
+}
+
+
 function save_edit_buh_data() {
             var edited_buh_data = {
                 id: document.getElementById("id_buh").value,
@@ -170,17 +178,14 @@ async function save_edit_table_row(tbody ,row_index) {
                     alert(data);
                 }
             }}
-async function save_edit_MA_table(tbody ,row_index) {
+async function save_edit_MA_table(tbody ,row) {
             const list_input_id = [];
             var edited_row = {
                 id: document.getElementById("id_for_edit").value,
                 cod_name: document.getElementById("edit_cod_id").value,
                 organization: document.getElementById("edit_org_id").value,
                 address: document.getElementById("edit_address_id").value,
-                type_equipment: document.getElementById("edit_type_id").value,
-                inv_number: document.getElementById("edit_Inv_id").value,
                 naklodnaja: document.getElementById("edit_naklad_id").value,
-                serial_number: document.getElementById("edit_Serial_id").value,
                 IP: document.getElementById("edit_ip_id").value,
                 install_date: document.getElementById("edit_inst_date_id").value,
                 ORSH: document.getElementById("edit_orsh_id").value,
@@ -188,19 +193,16 @@ async function save_edit_MA_table(tbody ,row_index) {
             }
             console.log(edited_row)
             if (confirm("Сохранить изменнения?")){
-            // fetch_data_to_save(edited_row , "Ma_Units_edit", "button_for_save_edit_row")
-            const data = await fetch_data_to_save_new(edited_row, "Ma_Units_edited");
+            const data = await fetch_data_to_save_new(edited_row, "Objects_ur_lica_edited");
                 console.log(data);
                 if(data==="SUCCESS"){
                     document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-success");
                     let oTable = document.getElementById(tbody);
-                    var oCells = oTable.rows.item(row_index-1).cells;
+                    var oCells = oTable.rows.item(row.rowIndex-1).cells;
                     oCells[1].textContent = document.getElementById("edit_cod_id").value;
-                    oCells[2].textContent = document.getElementById("edit_type_id").value;
                     oCells[3].textContent = document.getElementById("edit_org_id").value;
                     oCells[4].textContent = document.getElementById("edit_address_id").value;
                     oCells[5].textContent = document.getElementById("edit_ip_id").value;
-                    oCells[6].textContent = document.getElementById("edit_Inv_id").value;
                     oCells[7].textContent = document.getElementById("edit_naklad_id").value;
                     oCells[8].textContent = document.getElementById("edit_orsh_id").value;
                     oCells[9].textContent = document.getElementById("edit_inst_date_id").value;
@@ -211,7 +213,7 @@ async function save_edit_MA_table(tbody ,row_index) {
                     alert(data);
                 }
             }}
- function save_kts_data() {
+function save_kts_data() {
             var kts_data = {
                 UD:document.getElementById("Ud_id").value,
                 cod_name: document.getElementById("PON_id").value,
