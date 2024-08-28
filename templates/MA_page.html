@@ -350,14 +350,13 @@
             <form>
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h5 class="h5">Многопортовые устройства</h5>
-                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <button type="button" class="btn btn-primary btn-sm"   onclick="add_new_row('new_MA_unit_tbody_storage_id',4)" >
                             <i class="bi bi-plus-lg"></i></button>
                         <button type="button" class="btn btn-primary btn-sm"  onclick="del_row('new_MA_unit_tbody_storage_id')">
                             <i class="bi bi-dash-lg"></i></button>
                 </div>
                 </div>
-              <!-- <div class="table-responsive small"> -->
               <div class="table-responsive small">
                 <table class="table  table-sm table-bordered" id="ma_unit_Modal_table">
                   <thead>
@@ -392,15 +391,11 @@
                   <thead>
                     <tr>
                       <th scope="col">Тип</th>
-                      {# <th scope="col">Наименование</th> #}
                       <th scope="col">Инвентарный номер</th>
                       <th scope="col">Заводской номер</th>
-{#                      <th scope="col">Порт</th>#}
-{#                      <th scope="col">Емкость</th>#}
                       <th scope="col">Примечание</th>
                         <th style="width:70px"></th>
                     </tr>
-
                   </thead>
                     <tbody id="current_MA_modules_tbody_storage_id">
                         <tr></tr>
@@ -413,7 +408,6 @@
             </form>
           </div>
           <div class="modal-footer">
-
               <button type="button" class="btn btn-primary"  onclick="storage_reset_tbody(this.id)" id="btn_to_add_new_ma_storage">
                   <i class="bi bi-floppy"></i>
               </button>
@@ -424,7 +418,7 @@
       </div>
     </div>
     <div class="modal fade" id="select_usege_Modal" tabindex="-1" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content">
             <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
@@ -432,9 +426,9 @@
             </div>
             <div class="modal-body">
             <div class="container">
-                   <div class="row">
+                  <div class="row">
                       
-                 <form></form>      
+                     
                <div class="col-sm">
                <div class="mb-3">
                  <select class="form-select" aria-label="Default select example" id = 'select_send_to_usage'>
@@ -444,14 +438,15 @@
               </div>
               
                 </div>
-                </form>
-                   </div>
+              
+                  </div>
                 </div>
+                
             
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ma_storage_Modal">Отмена</button>
-              <button type="button" class="btn btn-primary" onclick="send_to_usage()" >Применить</button>
+              <button type="button" class="btn btn-primary" id="btn_send_to_usage" >Применить</button>
             </div>
       </div>
       </div>
@@ -466,7 +461,6 @@
                   document.getElementById("raport_chang_pass").textContent = ""
                   })
                   $('#select_usege_Modal').on('show.bs.modal', function (e) {
-                    
                   select_usage_modal($(e.relatedTarget).data('id'), $(e.relatedTarget).data('db'));
                   })
                   
@@ -503,7 +497,7 @@
                 $('#ma_storage_Modal').on('show.bs.modal', function (e) {
                   $(this).find('form').trigger('reset');
                   document.getElementById("btn_to_add_new_ma_storage").setAttribute("class", "btn btn-primary");
-                  ma_unit_storage();
+                  ma_unit_storage('ma_unit_Modal_table', '543','stored_ma_unit_tbody_');
                   ma_add_module_storage();
                  })
     </script>

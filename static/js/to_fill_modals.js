@@ -67,16 +67,7 @@ function create_tables(moduls, table_id, column_name, db_table, buse){
             a3.setAttribute('data-bs-target',"#select_usege_Modal")
             a3.setAttribute('data-id', item['id'])
             a3.setAttribute('data-db', db_table)
-        }
-        // a3.onclick = function (){
-        //     if (buse){
-        //         send_to_storage(db_table + '_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'],table_id,
-        //             this.closest("tr"), 4)
-        //         }
-        //     else {
-        //         send_to_usage()
-        //         console.log("qrwyequretqweyquwe")}
-        //     }                 
+        }                
         i1.setAttribute('class', "bi bi-pencil-square h7");
         i2.setAttribute('class', "bi bi-trash3 h7");
         i3.setAttribute('class', "bi bi-box-arrow-up-right h10");
@@ -110,12 +101,12 @@ function create_tables2(table_id, column_name, unit_id){
     tr.appendChild(td);
     tbody_current.appendChild(tr);
 }
-async function ma_unit_storage(){
-    const table_current = document.getElementById('ma_unit_Modal_table');
+async function ma_unit_storage(table_id, stor_id, tbody_ma_id){
+    const table_current = document.getElementById(table_id);
     while (table_current.rows.length) {table_current.deleteRow(0);}
     while (table_current.getElementsByTagName("tbody").length>0) {table_current.removeChild(table_current.getElementsByTagName("tbody")[0]);}
-    const stor_ma_unit = await fetch_data_to_get('543',"Objects_ur_lica");
-    console.log(stor_ma_unit)
+    const stor_ma_unit = await fetch_data_to_get(stor_id,"Objects_ur_lica");
+    console.log("🚀 ~ ma_unit_storage ~ stor_ma_unit:", stor_ma_unit)
     const column_name = ['type_equipment','inv_number','serial_number','note'];
     const column_name_mod = ['type','inv_number','serial_number','note'];
     if(Object.keys(stor_ma_unit[1]).length>0){
@@ -134,9 +125,9 @@ async function ma_unit_storage(){
             empty_line.setAttribute('height',"15")
             table_current.appendChild(empty_line)          
             temp_list = [stor_ma_unit[1][key]]
-            create_tables(temp_list,'stored_ma_unit_tbody_'+ key, column_name, 'MA_Units',false)
+            create_tables(temp_list,tbody_ma_id + key, column_name, 'MA_Units',false)
             if(stor_ma_unit[2][key].length > 0){
-                create_tables2('stored_ma_unit_tbody_'+ key, column_name, stor_ma_unit[1][key]['id'] )
+                create_tables2(tbody_ma_id  + key, column_name, stor_ma_unit[1][key]['id'] )
                 create_tables(stor_ma_unit[2][key],"tbody_unit_modules_"+ stor_ma_unit[1][key]['id'], column_name_mod, 'ma_add_modules',true)
             }
         }            
@@ -198,19 +189,51 @@ async function edit_ma_unit_modal(obj_id, row_index){
                     save_edit_MA_table('tbody_main_table', row_index)};
 }
 async function select_usage_modal(id, db_table) {
+    document.getElementById("btn_send_to_usage").setAttribute("class", "btn btn-primary");
     console.log("🚀 ~ select_usage_modal ~ db_table:", db_table)
     console.log("🚀 ~ select_usage_modal ~ id:", id)
+    const table_current = document.getElementById('in_usage_ma_units_table');
+    // while (table_current.getElementsByTagName("tbody").length>0) {table_current.removeChild(table_current.getElementsByTagName("tbody")[0]);}
     const select = document.getElementById('select_send_to_usage')
+    console.log(select.length)
+    while(select.length>0){select.remove(0)}
+    const opt_selected = document.createElement('option')
+    opt_selected.selected
+    opt_selected.text = 'Выберите обьект'
+    select.add(opt_selected)
     const data = await fetch_data_to_get('all','Objects_ur_lica_all')
-    console.log(data)
-    data.forEach(item => {
-        
-        console.log(item.id, item.cod_name, item.type_equipment)
+   
+    for (const [key] of Object.entries(data)) { 
         const opt = document.createElement('option')
-        opt.value = item.id
-        opt.text = item.cod_name
-        select.add(opt)
-    })
+        
+        if (db_table === "MA_Units"){
+            if (data[key][2].length === 0){
+                opt.value = data[key][0]
+                opt.text = data[key][1]
+                select.add(opt)
+            }
+        }
+        else if (data[key][2].length > 1){
+                data[key][2].forEach(id => {
+                    const opt_stor = document.createElement('option')
+                    opt_stor.value = id
+                    opt_stor.text = data[key][1] +"-" + id
+                    select.add(opt_stor)
+                })
+            }
+        else if  (data[key][2].length === 1){
+            opt.value = data[key][0]
+            opt.text = data[key][1]
+            select.add(opt)
+        }   
+    }
+    let target_id
+    select.addEventListener("change", function() {
+        target_id = this.value
+        
+    });
+    document.getElementById('btn_send_to_usage').onclick = function (){
+        send_to_usage(id, db_table, target_id, "btn_send_to_usage")};
     
-    
+
 }

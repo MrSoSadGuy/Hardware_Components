@@ -146,22 +146,15 @@ def get_data_from_db(db):
     
 def get_data_for_select():
     obj = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
-    
     obj_dict = {}
-    units_list = []
-    modules_list = {}
     for i in range (0, len(obj)): 
-        print(obj[i].unit)
-        for un in range(0, len(obj[i].unit)) : 
-            
-            modules_list[un]= obj[i].unit[un].modules
-            print(obj[i].unit[un].modules)
-        obj_dict[i] = modules_list
-        modules_list.clear
-          
-    
-      
-    return obj_dict
+        unit_id_list = []
+        if len(obj[i].unit)>0:
+            for un in obj[i].unit :                
+                unit_id_list.append(un.id)  
+        obj_dict[i] = [obj[i].id, obj[i].cod_name, unit_id_list]
+    print(obj_dict)
+    return obj_dict        
 
 
 @app.route('/delete_row/<base_table>', methods=['GET', 'POST'])

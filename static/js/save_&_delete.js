@@ -124,10 +124,28 @@ async function send_to_storage(db, id, bt_id, tbody, row_index, cells, dataID)  
         }
     }}
     
-async function send_to_usage() {
-    const unit = document.getElementById('send_to_usege_id');
+async function send_to_usage(id, db_table, parent_id, bt_id) {
     
-}
+    
+        var edit_data = {id: id, parent_obj :parent_id}
+    
+    
+    console.log(edit_data)
+    if (confirm("Переместить устройство?")){
+                const data = await fetch_data_to_save_new(edit_data, db_table+ '_edited');
+                console.log(data);
+                if(data==="SUCCESS"){
+                    document.getElementById(bt_id).setAttribute("class", "btn btn-success");
+                    
+                }
+                else {
+                    document.getElementById(bt_id).setAttribute("class", "btn btn-danger");
+                    alert(data);
+                }
+            }
+    }
+    
+
 
 
 function save_edit_buh_data() {
