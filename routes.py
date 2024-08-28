@@ -94,6 +94,7 @@ def ma_page():
         new_obj['IP'] = object[i].IP
         new_obj['naklodnaja'] = object[i].naklodnaja
         new_obj['note'] = object[i].note
+        new_obj['install_date'] = object[i].install_date
         if len(object[i].unit)>0:
             new_obj['type_equipment'] = object[i].unit[0].type_equipment
             new_obj['inv_number'] = object[i].unit[0].inv_number
