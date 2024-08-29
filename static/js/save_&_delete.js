@@ -48,42 +48,19 @@ function delete_row(db, id, bt_id, tbody, row)  {
             .then(function(data){
                 console.log("🚀 ~ delete_row ~ data:", data)
                 if ((data === 'SUCCESS')&&(typeof(data) === "string")){
-                    document.getElementById(bt_id).setAttribute("class", "btn btn-success");
+                    document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");
                     setTimeout(function (){document.getElementById(tbody).deleteRow(row.rowIndex-1)}, 500);
                     return data;
                 }
                 else {
                     alert(data)
-                    document.getElementById(bt_id).setAttribute("class", "btn btn-danger");
+                    document.getElementById(bt_id).setAttribute("class", "btn btn-danger btn-sm");
                 }
             })
                 
             }
 }
 
-// function storage_reset_tbody(btn_id){
-//     const table_1 = document.getElementById('new_MA_unit_tbody_storage_id')
-//     var rowLength_1 = table_1.rows.length;
-//     const table_2 = document.getElementById('new_MA_modules_tbody_storage_id')
-//     var rowLength_2 = table_2.rows.length;
-//     console.log(rowLength_1 , rowLength_2)
-//     if (rowLength_1 > 0 ){
-//         add_new_units('new_MA_unit_tbody_storage_id', 'MA_Unit', btn_id, "СКЛАД").then(function (r){
-//         console.log(r)
-//         if (r === 'SUCCESS'){
-//             setTimeout(function (){get_data_for_ma_storage('current_MA_unit_tbody_storage_id', 'new_MA_unit_tbody_storage_id', 5,'MA_Unit')}, 1000);
-//         }
-//     });
-//     }
-//     if (rowLength_2 > 0 ){
-//           add_new_units('new_MA_modules_tbody_storage_id', 'ma_add_modules', btn_id, "СКЛАД").then(function (r){
-//         console.log(r)
-//         if (r === 'SUCCESS'){
-//             setTimeout(function (){get_data_for_ma_storage('current_MA_modules_tbody_storage_id','new_MA_modules_tbody_storage_id', 7,'ma_add_modules')}, 1000);
-//         }
-//     });
-//     }
-// }
 async function edit_row(db_table, id, bt_id, tbody, row, cells)  {
     console.log(row.cells.length)
     var edit_data = {id: id}
@@ -115,7 +92,7 @@ async function send_to_storage(db, id, bt_id, tbody, row_index, cells, dataID)  
         console.log("🚀 ~ send_to_storage ~ data:", data)
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");
-            setTimeout(function (){document.getElementById(tbody).deleteRow(row_index-1)}, 500);
+            setTimeout(function (){document.getElementById(tbody).deleteRow(row_index.rowIndex-1)}, 500);
             ma_add_module_storage();
         }
         else {
@@ -124,19 +101,15 @@ async function send_to_storage(db, id, bt_id, tbody, row_index, cells, dataID)  
         }
     }}
     
-async function send_to_usage(id, db_table, parent_id, bt_id) {
-    
-    
-        var edit_data = {id: id, parent_obj :parent_id}
-    
-    
-    console.log(edit_data)
+async function send_to_usage(id, db_table, parent_id, bt_id) {        
+        var edit_data = {id: id, parent_obj :parent_id}           
+        console.log("🚀 ~ send_to_usage ~ edit_data:", edit_data)
     if (confirm("Переместить устройство?")){
                 const data = await fetch_data_to_save_new(edit_data, db_table+ '_edited');
                 console.log(data);
                 if(data==="SUCCESS"){
                     document.getElementById(bt_id).setAttribute("class", "btn btn-success");
-                    
+                    setTimeout(function (){document.getElementById('btn_to_close_mod_send_to_usage').click()}, 700);
                 }
                 else {
                     document.getElementById(bt_id).setAttribute("class", "btn btn-danger");
@@ -144,9 +117,6 @@ async function send_to_usage(id, db_table, parent_id, bt_id) {
                 }
             }
     }
-    
-
-
 
 function save_edit_buh_data() {
             var edited_buh_data = {
@@ -250,15 +220,43 @@ function save_kts_data() {
             fetch_data_to_save(kts_data, "KTS", "save_kts")
             }}
 
-function reset_tbodys(tbody, db_table, bt_id, add_param){
+function reset_tbodys(tbody, db_table, bt_id, add_param, obj_id){
     add_new_units(tbody, db_table, bt_id, add_param).then(function (r){
         console.log(r)
         if (r === 'SUCCESS'){
-            setTimeout(function (){sostav_ma_unit(add_param)}, 1000);
+            setTimeout(function (){sostav_ma_unit(obj_id)}, 1000);
         }
+        else{alert(r)}
     });
 }
-
+function storage_reset_tbody(btn_id){
+    const table_1 = document.getElementById('new_MA_unit_tbody_storage_id')
+    var rowLength_1 = table_1.rows.length;
+    const table_2 = document.getElementById('new_MA_modules_tbody_storage_id')
+    var rowLength_2 = table_2.rows.length;
+    console.log(rowLength_1 , rowLength_2)
+    if (rowLength_1 > 0 ){
+        add_new_units('new_MA_unit_tbody_storage_id', 'MA_Unit', btn_id, "543").then(function (r){
+        console.log(r)
+        if (r === 'SUCCESS'){
+            setTimeout(function (){ma_unit_storage('ma_unit_Modal_table', '543','stored_ma_unit_tbody_');}, 1000);
+            document.getElementById(btn_id).setAttribute("class", "btn btn-primary");
+        }
+        else{alert(r)}
+    });
+    }
+    if (rowLength_2 > 0 ){
+        add_new_units('new_MA_modules_tbody_storage_id', 'ma_add_modules', btn_id, "543").then(function (r){
+        console.log(r)
+        if (r === 'SUCCESS'){
+            setTimeout(function (){ma_add_module_storage(); }, 1000);
+            document.getElementById(btn_id).setAttribute("class", "btn btn-primary");
+        }
+        else{alert(r)}
+    });
+    }
+    
+}
 
 async function add_new_units(tbody, db_table, btn_id, add_param){
         var oTable = document.getElementById(tbody);
@@ -272,20 +270,19 @@ async function add_new_units(tbody, db_table, btn_id, add_param){
             var oCells = oTable.rows.item(i).cells;
            //gets amount of cells of current row
             for (let j = 0; j < oCells.length; j++) {
-               new_unit[j] = oCells[j].textContent;
+                new_unit[j] = oCells[j].textContent;
             }
                 console.log(new_unit);
                 const data = await fetch_data_to_save_new(new_unit, db_table);
                 console.log(data);
                 if(data==="SUCCESS"){
-                 document.getElementById(btn_id).setAttribute("class", "btn btn-success");
-                 }
-                 else {
-                     document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
-                     alert(data);
-                 }
-
-           }
+                    document.getElementById(btn_id).setAttribute("class", "btn btn-success");
+                }
+                else {
+                    document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
+                    alert(data);
+                }
+        }
             return "SUCCESS"
             }
         }

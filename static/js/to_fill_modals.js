@@ -10,7 +10,7 @@ async function sostav_ma_unit(dataID){
     const tbody_mod = document.getElementById('new_MA_modules_tbody_id');
     while (tbody_mod.rows.length) {tbody_mod.deleteRow(0);}
     document.getElementById("btn_to_add_new_ma_modules").setAttribute("class", "btn btn-primary");
-    document.getElementById("btn_to_add_new_ma_modules").setAttribute("name", dataID);
+    
     const column_name_unit = ['type_equipment','inv_number','serial_number','note'];
     const column_name_modules = ['type','inv_number','serial_number','note'];
     if (Object.keys(data[1]).length > 0){
@@ -21,8 +21,9 @@ async function sostav_ma_unit(dataID){
                 console.log('start')
                 create_tables(data[2][key],'curent_MA_modules_tbody_id', column_name_modules, 'ma_add_modules', true)
             }
+            document.getElementById("btn_to_add_new_ma_modules").onclick = function(){reset_tbodys('new_MA_modules_tbody_id', 'ma_add_modules','btn_to_add_new_ma_modules',data[1][key]['id'], dataID)}; 
         }            
-    }  
+    }
 }
 
 function create_tables(moduls, table_id, column_name, db_table, buse){
@@ -103,8 +104,9 @@ function create_tables2(table_id, column_name, unit_id){
 }
 async function ma_unit_storage(table_id, stor_id, tbody_ma_id){
     const table_current = document.getElementById(table_id);
-    while (table_current.rows.length) {table_current.deleteRow(0);}
+    while (table_current.rows.length > 1) {table_current.deleteRow(-1);}
     while (table_current.getElementsByTagName("tbody").length>0) {table_current.removeChild(table_current.getElementsByTagName("tbody")[0]);}
+
     const stor_ma_unit = await fetch_data_to_get(stor_id,"Objects_ur_lica");
     console.log("🚀 ~ ma_unit_storage ~ stor_ma_unit:", stor_ma_unit)
     const column_name = ['type_equipment','inv_number','serial_number','note'];
@@ -131,12 +133,17 @@ async function ma_unit_storage(table_id, stor_id, tbody_ma_id){
                 create_tables(stor_ma_unit[2][key],"tbody_unit_modules_"+ stor_ma_unit[1][key]['id'], column_name_mod, 'ma_add_modules',true)
             }
         }            
-    }   
+    }
+    const tfoot_for_new_ma_unit = document.createElement('tfoot');
+    tfoot_for_new_ma_unit.setAttribute('id','new_MA_unit_tbody_storage_id')
+    table_current.appendChild(tfoot_for_new_ma_unit);   
 }
 
 async function ma_add_module_storage(){
-    const tbody_new = document.getElementById('current_MA_modules_tbody_storage_id');
+    const tbody_curent = document.getElementById('current_MA_modules_tbody_storage_id');
+    const tbody_new = document.getElementById('new_MA_modules_tbody_storage_id');
     while (tbody_new.rows.length) {tbody_new.deleteRow(0);}
+    while (tbody_curent.rows.length) {tbody_curent.deleteRow(0);}
     const column_name = ['type','inv_number','serial_number','note'];
     const stor_ma_modules = await fetch_data_to_get('543',"MA_Units");
     if(stor_ma_modules[1].length>0){
@@ -202,7 +209,6 @@ async function select_usage_modal(id, db_table) {
     opt_selected.text = 'Выберите обьект'
     select.add(opt_selected)
     const data = await fetch_data_to_get('all','Objects_ur_lica_all')
-   
     for (const [key] of Object.entries(data)) { 
         const opt = document.createElement('option')
         
@@ -216,20 +222,24 @@ async function select_usage_modal(id, db_table) {
         else if (data[key][2].length > 1){
                 data[key][2].forEach(id => {
                     const opt_stor = document.createElement('option')
-                    opt_stor.value = id
+                    opt_stor.value =[data[key][0], id]
                     opt_stor.text = data[key][1] +"-" + id
                     select.add(opt_stor)
                 })
             }
         else if  (data[key][2].length === 1){
-            opt.value = data[key][0]
+            opt.value = [data[key][0],data[key][2]]
             opt.text = data[key][1]
             select.add(opt)
         }   
     }
-    let target_id
+    let target_id, target_list
     select.addEventListener("change", function() {
-        target_id = this.value
+        target_list = this.value.split(",")
+        console.log("🚀 ~ select.addEventListener ~ target_list:", target_list) 
+        if (target_list.length>1){target_id = target_list[1]}
+        else {target_id = target_list[0]}
+        console.log("🚀 ~ select.addEventListener ~ target_id:", target_id)
         
     });
     document.getElementById('btn_send_to_usage').onclick = function (){

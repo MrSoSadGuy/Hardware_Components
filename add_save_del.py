@@ -55,14 +55,12 @@ def add_new_unit(req_dict, name):
 
 def add_ma_unit_data(req_dict, name):
     if request.method == 'POST':
-        ma_unit = MA_Units(cod_name=req_dict["0"],
-                        type_equipment=req_dict["1"],
-                        organization=req_dict["2"],
-                        address=req_dict["3"],
-                        IP=req_dict["4"],
-                        inv_number=req_dict["5"],
-                        naklodnaja=req_dict["6"],
-                        ORSH=req_dict["7"],
+        ma_unit = MA_Units(
+                        type_equipment=req_dict["0"],
+                        inv_number=req_dict["1"],
+                        serial_number=req_dict["2"],
+                        note=req_dict["3"],
+                        object_id=req_dict["add_p"],
                         creator=name)
         return add_data_to_db(ma_unit)
     else:
@@ -84,9 +82,9 @@ def add_object_for_MA(req_dict, name):
     
 def add_ma_add_modules(req_dict, name):
     if request.method == 'POST':
-        obj = Objects_ur_lica.query.get_or_404(int(req_dict["add_p"]))
-        unit = obj.unit[0].id
-        print(obj ,unit)
+        # obj = Objects_ur_lica.query.get_or_404(int(req_dict["add_p"]))
+        # unit = obj.unit[0].id
+        # print(obj ,unit)
         ma_modules = ma_add_modules(ma_unit_id = req_dict["add_p"],
                                     type=req_dict["0"],
                                     inv_number=req_dict["1"],

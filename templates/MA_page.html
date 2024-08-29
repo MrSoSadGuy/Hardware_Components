@@ -330,7 +330,7 @@
               <button type="button" class="btn btn-primary" id="button_del_row" onclick="del_row('new_MA_modules_tbody_id')">
                   <i class="bi bi-dash-lg"></i>
               </button>
-              <button type="button" class="btn btn-primary"  onclick="reset_tbodys('new_MA_modules_tbody_id', 'ma_add_modules',this.id,this.name)" id="btn_to_add_new_ma_modules">
+              <button type="button" class="btn btn-primary"  id="btn_to_add_new_ma_modules">
                   <i class="bi bi-floppy"></i>
               </button>
 
@@ -401,8 +401,9 @@
                         <tr></tr>
                     </tbody>
                     <tbody id="new_MA_modules_tbody_storage_id">
-                        <tr></tr>
+                        
                     </tbody>
+                    
                 </table>
                 </div>
             </form>
@@ -412,7 +413,7 @@
                   <i class="bi bi-floppy"></i>
               </button>
 
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрать</button>
           </div>
         </div>
       </div>
@@ -445,7 +446,7 @@
             
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ma_storage_Modal">Отмена</button>
+              <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ma_storage_Modal" id="btn_to_close_mod_send_to_usage">Закрыть</button>
               <button type="button" class="btn btn-primary" id="btn_send_to_usage" >Применить</button>
             </div>
       </div>
