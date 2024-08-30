@@ -3,6 +3,8 @@ async function sostav_ma_unit(dataID){
     console.log(data);
     document.getElementById("cod_id").value = data[0]['cod_name'];
     document.getElementById("ip_id").value = data[0]['IP'];
+    document.getElementById("ordan_id").value = data[0]['organization'];
+    document.getElementById("address_id").value = data[0]['address'];
     const tbody_current = document.getElementById('curent_MA_unit_tbody_id');
     while (tbody_current.rows.length) {tbody_current.deleteRow(0);}
     const tbody_new = document.getElementById('curent_MA_modules_tbody_id');
