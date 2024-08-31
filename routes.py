@@ -72,6 +72,14 @@ def change_password():
 @app.route('/main')
 @login_required
 def main():
+    user = Users.query.get_or_404(current_user.get_id())
+    user_name = user.FIO
+    return render_template("start_page.html", user_name=user_name)
+
+
+@app.route('/pon_units')
+@login_required
+def pon_page():
     units = Unit.query.order_by(Unit.id).all()
     kts_data = Data_for_KTS.query.all()
     user = Users.query.get_or_404(current_user.get_id())
@@ -86,6 +94,16 @@ def ma_page():
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
     return render_template("MA_page.html",  user_name=user_name, new_obj_list=new_obj_list )
+
+
+@app.route('/buh_data')
+@login_required
+def buh_data_page():
+    buh_data = BuhUch.query.all()
+    user = Users.query.get_or_404(current_user.get_id())
+    user_name = user.FIO
+    return render_template("buh_data.html",  user_name=user_name, buh_data = buh_data)
+
 
 def get_data_for_jinja():
     object = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()

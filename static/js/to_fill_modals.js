@@ -57,16 +57,10 @@ function create_tables(moduls, table_id, column_name, db_table, busy){
         a2.setAttribute('class','btn btn-primary btn-sm');
         a3.setAttribute('id','btn_send_ma_mod_to_storage_'+item['id']);
         a3.setAttribute('class','btn btn-primary btn-sm');
-        a1.onclick = function (){edit_row(db_table + '_edited', item['id'],'btn_edit_ma_mod_'+item['id'],table_id,
-        this.closest("tr"), 4)};
-        if (check_row){
-            a2.onclick = function (){delete_row(db_table, item['id'],'btn_del_ma_mod_'+item['id'],table_id,
-                this.closest("tr"))};
-        }
-        
+        a1.onclick = function (){edit_row(db_table + '_edited', item['id'],'btn_edit_ma_mod_'+item['id'],table_id, this.closest("tr"), 4)};
+        a2.onclick = function (){delete_row(db_table, item['id'],'btn_del_ma_mod_'+item['id'],table_id, this.closest("tr"))};
         if (busy){
-            a3.onclick = function (){send_to_storage(db_table + '_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'],table_id,
-                        this.closest("tr"), 4)}
+            a3.onclick = function (){send_to_storage(db_table + '_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'],table_id, this.closest("tr"), 4)}
         }
         else{
             a3.setAttribute('data-bs-toggle',"modal")

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+
+    <title>Бухгалтерские данные</title>
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../static/bootstrap.css">
+    <link rel="stylesheet" href="../static/custom_style.css">
+    <link rel="stylesheet" href="../static/select2.min.css">
+    <script type=text/javascript src="{{ url_for('static', filename='js/jquery-3.7.1.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bad_scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/save_&_delete.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/to_fill_modals.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/table-sort.js') }}"></script>
+    <script src='/static/js/select2.min.js'></script>
+    
+    
+    
+    {# <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById("Input_for_buh_data_serch").value = JSON.parse(localStorage.getItem("serch"));
+        buh_data_table_serch()
+        localStorage.clear()
+        });
+    </script> #}
+    
+
+</head>
+<body>
+        <div class="modal fade" id="inventModal" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inventModalLabel">Карточка устройства</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <label class="col-form-label" id="id_buh"></label>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm">
+                        <div class="mb-3">
+                            <label class="col-form-label">Инвентарный номер:</label>
+                            <input type="text" readonly class="form-control" name="name" id = "In_num">
+                        </div>
+                        </div>
+                        <div class="col-sm">
+                        <div class="mb-3">
+                            <label class="col-form-label">МОЛ:</label>
+                            <input type="text"  class="form-control" id="mol_id">
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="col-form-label">Краткое описание:</label>
+                    <input type="text"  class="form-control" id="description_id">
+                </div>
+                <div class="mb-3">
+                    <label  class="col-form-label">Характеристика:</label>
+                    <textarea  class="form-control" id="char_id" cols="30" rows="7"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label  class="col-form-label">Примечание:</label>
+                    <textarea  class="form-control" id="note_id" cols="30" rows="3"></textarea>
+                </div>
+                    </form>
+            </div>
+            <div class="modal-footer">
+                
+                <button type="button" class="btn btn-primary" id = "button_for_save_edit_buh_data" onclick="save_edit_buh_data()">Сохранить</button>
+                <button type="button" class="btn btn-primary" id="button_for_delete_inv_number">Удалить</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+            </div>
+        </div>
+        </div>
+        <div class="modal" id="Change_pass"  data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Изменить пароль</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="password"  class="form-control"  id = "old_pass_id" placeholder="Старый пароль">
+                </div>
+                <div class="mb-3">
+                    <input type="password"  class="form-control" id="new_pass_id" placeholder="Новый пароль, не менее 6 символов">
+                </div>
+                <div class="mb-3">
+                    <input type="password"  class="form-control" id="new_pass_2_id" placeholder="Новый пароль павторно">
+                </div>
+                <div class="mb-3">
+                    <label class="col-form-label" id="raport_chang_pass"></label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="change_password();">Изменить пароль</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+            </div>
+            </div>
+        </div>
+        </div>
+        <script type="text/javascript">
+                    $('#inventModal').on('show.bs.modal', function (e) {
+                    $(this).find('form').trigger('reset');
+                    invent_modal($(e.relatedTarget).data('inv'));
+                    document.getElementById('button_for_delete_inv_number').setAttribute('class',"btn btn-primary");
+                    document.getElementById('button_for_delete_inv_number').onclick = function (){delete_row('BuhUch', e.relatedTarget).data('id'),this.id, table_id, this.closest("tr")};
+                    })
+                    $('#Change_pass').on('show.bs.modal', function (e) {
+                    $(this).find('form').trigger('reset');
+                    document.getElementById("raport_chang_pass").textContent = ""
+                    })
+        </script>
+
+
+    <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+        <div class="d-grid gap-2 d-md-flex float-left">
+        <a href="" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions" style="display: inline-block;" class="icon-link">
+            <i class="bi bi-list h2 castom-white"></i>
+        </a>
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Гомельский ЗУЭС</a>
+        </div>
+        <li class="nav-item dropdown nav justify-content-end">
+            <a class="nav-link dropdown-toggle text-white nav justify-content-end" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user_name }}    </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Change_pass" href="#">Изменить пароль</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/logout">Выйти</a></li>
+            </ul>
+        </li>
+    </header>
+
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+        <div class="offcanvas-header">
+        </div>
+        <div class="offcanvas-body">
+            <form>
+                <div class="d-grid gap-3">
+                    <button class="btn btn-primary" type="submit" formaction="/pon_units" >Оборудование PON</button>
+                    <button class="btn btn-primary" type="submit" formaction="/multiple_access" >Многопортовые устройства доступа</button>
+                    <button class="btn btn-secondary" type="submit" disabled formaction="/buh_data" >Бухгалтерские данные</button>      
+                    <button class="btn btn-primary" type="submit" disabled formaction="/other_property">Прочее имущество</button>
+                </div>            
+                </form>
+        </div>
+    </div>
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col" ></div>
+        <div class="col-8">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">Бухгалтерские данные</h1>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="button" class="btn btn-primary btn-lg"  data-bs-toggle="modal" data-bs-target="#add_new_object_Modal" >
+                    <i class="bi bi-plus-square-fill"></i>  Добавить</button>
+                    <button type="button" class="btn btn-primary btn-lg" onclick="save_main_table_in_file()">
+                    <i class="bi bi-download"></i> Сохранить в Excel</button>
+                </div></div>
+                <div class="table-responsive small">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <div class="container-fluid">
+                                    <input  class ="input_for_serch" type="text" id="Input_for_buh_data_serch" onkeyup="buh_data_table_serch()" placeholder="Поиск по инвентарному номеру..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                        </div>
+                        
+                        
+                        
+                </div>
+                <table class="table table-sm " id="buh_data_table">                
+                    <tbody class="table-condensed " id="buh_data_tbody">
+                    <tr><td>
+                        {% for buh in buh_data %} 
+                            {% if buh.MOL == user_name %} 
+                                    <table class="table table-sm table-bordered table-hover borderd_table" id = "inv_number_id_{{buh.id}}">
+                                    <tbody >
+                                        <tr>
+                                            <td width = '18%'><a href="" data-bs-toggle="modal" data-bs-target="#inventModal" data-id = "{{ buh.id }}" data-inv = "{{ buh.inv_number }}" >{{ buh.inv_number }}</a></td>
+                                            <td >{{ buh.name }}</td>
+                                            <td width = '18%'>{{ buh.MOL }}</td>      
+                                        </tr> 
+                                        <tr>
+                                            <td colspan = '3'>{{ buh.charracter }}</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                    
+                                </table>
+                            {% endif %}                                                   
+                        {% endfor %}
+                    </td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col" ></div>     
+    </div>
+    </div>
+</body>
+

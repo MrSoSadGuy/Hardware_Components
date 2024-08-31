@@ -61,6 +61,32 @@ function delete_row(db, id, bt_id, tbody, row)  {
             }
 }
 
+async function delete_data_from_db() {
+    var data = new FormData();
+    data.append( "json", JSON.stringify(id_val) );
+    if (confirm('Удалить запись?')){
+        fetch("/delete_row/"+db,
+    {
+        method: "POST",
+        body: data
+    })
+        .then(function(res){ return res.json(); })
+    .then(function(data){
+        console.log("🚀 ~ delete_row ~ data:", data)
+        if ((data === 'SUCCESS')&&(typeof(data) === "string")){
+            document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");
+            setTimeout(function (){document.getElementById(tbody).deleteRow(row.rowIndex-1)}, 500);
+            return data;
+        }
+        else {
+            alert(data)
+            document.getElementById(bt_id).setAttribute("class", "btn btn-danger btn-sm");
+        }
+    })
+        
+    }
+}
+
 async function edit_row(db_table, id, bt_id, tbody, row, cells)  {
     console.log(row.cells.length)
     var edit_data = {id: id}
@@ -288,31 +314,31 @@ async function add_new_units(tbody, db_table, btn_id, add_param){
         }
 
 
- function fetch_data_to_save(data_to_save, db, btn_id) {
-     var data = new FormData();
-     data.append("json", JSON.stringify(data_to_save));
-     const route = "/save_data/" + db
-     console.log(route)
-     fetch(route,
-         {
-             method: "POST",
-             body: data
-         })
-         .then(function (res) {
-             return res.json();
-         })
-         .then(function (data) {
-             console.log(data)
-             if(data==="SUCCESS"){
-                 document.getElementById(btn_id).setAttribute("class", "btn btn-success");
-             }
-             else {
-                 document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
-                 alert(data);
-             }
-             }
-         )
- }
+function fetch_data_to_save(data_to_save, db, btn_id) {
+    var data = new FormData();
+    data.append("json", JSON.stringify(data_to_save));
+    const route = "/save_data/" + db
+    console.log(route)
+    fetch(route,
+        {
+            method: "POST",
+            body: data
+        })
+        .then(function (res) {
+            return res.json();
+        })
+        .then(function (data) {
+            console.log(data)
+            if(data==="SUCCESS"){
+                document.getElementById(btn_id).setAttribute("class", "btn btn-success");
+            }
+            else {
+                document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
+                alert(data);
+            }
+            }
+        )
+}
 
 async function fetch_data_to_save_new(data_to_save, db) {
     var data = new FormData();
@@ -331,17 +357,17 @@ async function fetch_data_to_save_new(data_to_save, db) {
 }
 
 async function fetch_data_to_get(data_to_get, db) {
-     var data = new FormData();
-     data.append("json", JSON.stringify(data_to_get));
-     const route = "/get_data_from_db/" + db
-     console.log(route)
-     try {
-         const response = await fetch(route,
-         {
-             method: "POST",
-             body: data
-         })
-         return await response.json();
-         } catch (error){console.log("error: ", error)
-            return "error"}
- }
+    var data = new FormData();
+    data.append("json", JSON.stringify(data_to_get));
+    const route = "/get_data_from_db/" + db
+    console.log(route)
+    try {
+        const response = await fetch(route,
+        {
+            method: "POST",
+            body: data
+        })
+        return await response.json();
+        } catch (error){console.log("error: ", error)
+        return "error"}
+}

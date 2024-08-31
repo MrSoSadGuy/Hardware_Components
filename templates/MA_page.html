@@ -525,19 +525,15 @@
     <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
         <div class="offcanvas-header">
         </div>
-
         <div class="offcanvas-body">
             <form>
-            <div class="d-grid gap-3">
-            <button class="btn btn-primary" type="submit" formaction="/main" >Оборудование PON</button>
-
-            <button class="btn btn-secondary" type="button" disabled >Многопортовые устройства доступа</button>
-
-                <button class="btn btn-primary" type="submit" disabled formaction="/other_property">Прочее имущество</button>
-
-            </div>
-            
-                </form>
+              <div class="d-grid gap-3">
+                  <button class="btn btn-primary" type="submit" formaction="/pon_units" >Оборудование PON</button>
+                  <button class="btn btn-secondary" type="submit" disabled >Многопортовые устройства доступа</button>
+                  <button class="btn btn-primary" type="submit"  formaction="/buh_data" >Бухгалтерские данные</button>      
+                  <button class="btn btn-primary" type="submit" disabled formaction="/other_property">Прочее имущество</button>
+              </div>            
+            </form>
         </div>
     </div>
     <div class="container-fluid">
@@ -561,7 +557,7 @@
                       <input class="form-check-input" type="radio" name="radio_serch" id="inlineRadio2" value="option2">
                       <label class="form-check-label" for="inlineRadio2"  >Поиск "ИЛИ"</label>
                     </div>
-                            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Поиск по таблице.." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
+                            <input class ="input_for_serch" type="text" id="myInput" onkeyup="myFunction()" placeholder="Поиск по таблице.." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
                     </div>
               </div>
                   <table class="table table-striped table-sm table-bordered table-sort table-hover" id="myTable">

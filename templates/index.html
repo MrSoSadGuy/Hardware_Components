@@ -398,7 +398,7 @@
                                                 document.getElementById("mesto_id").value = item['mesto'];
                                                 document.getElementById("zavod_id").value = item['zavod'];
                                             }
-                                         })
+                                        })
                                         if ((dataPon.toUpperCase().includes("A5GM")) || (dataPon.toUpperCase().includes("P5GM")) || (dataPon.toUpperCase().includes("I5GM"))){
                                             list_id.forEach(id => {document.getElementById(id).disabled = false;})
                                             document.getElementById("sostav").disabled = !((dataPon.toUpperCase().includes("OL")) || (dataPon.toUpperCase().includes("UL")));
@@ -483,37 +483,31 @@
     <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
         <div class="offcanvas-header">
         </div>
-
         <div class="offcanvas-body">
-             <form>
-
-            <div class="d-grid gap-3">
-            <button class="btn btn-secondary" type="submit" disabled >Оборудование PON</button>
-
-             <button class="btn btn-primary" type="submit"  formaction="/multiple_access">Многопортовые устройства доступа</button>
-
+            <form>
+              <div class="d-grid gap-3">
+                <button class="btn btn-secondary" type="submit" disabled >Оборудование PON</button>
+                <button class="btn btn-primary" type="submit"  formaction="/multiple_access">Многопортовые устройства доступа</button>
+                <button class="btn btn-primary" type="submit"  formaction="/buh_data" >Бухгалтерские данные</button>
                 <button class="btn btn-primary" type="submit" disabled formaction="/other_property">Прочее имущество</button>
-            </div>
-
-
-                </form>
+              </div>
+            </form>
         </div>
     </div>
     <div class="container-fluid">
     <div class="row">
         <main class="col-md-auto ms-sm-auto col-lg-12 px-md-5">
               <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Список оборудования</h1>
+                <h1 class="h2">Список оборудования PON</h1>
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                   <button type="button" class="btn btn-primary btn-lg"  data-bs-toggle="modal" data-bs-target="#add_new_units_Modal" >
                       <i class="bi bi-plus-square-fill"></i> Добавить</button>
                   <button type="button" class="btn btn-primary btn-lg" onclick="save_main_table_in_file()">
-                      <i class="bi bi-download"></i> Сохранить а Excel</button>
+                      <i class="bi bi-download"></i> Сохранить в Excel</button>
                 </div></div>
               <div class="table-responsive small">
-
                     <div class="container-fluid">
-                         <div class="form-check form-check-inline">
+                        <div class="form-check form-check-inline">
                       <input class="form-check-input" checked type="radio" name="radio_serch" id="inlineRadio1" value="option1">
                       <label class="form-check-label" for="inlineRadio1">Поиск "И"</label>
                     </div>
@@ -521,10 +515,10 @@
                       <input class="form-check-input" type="radio" name="radio_serch" id="inlineRadio2" value="option2">
                       <label class="form-check-label" for="inlineRadio2"  >Поиск "ИЛИ"</label>
                     </div>
-                            <input type="text" id="myInput" onkeyup="myFunction()"  placeholder="Поиск по таблице..">
+                            <input class ="input_for_serch" type="text" id="myInput" onkeyup="myFunction()"  placeholder="Поиск по таблице..">
                     </div>
               </div>
-                   <table class="table table-striped table-sm table-bordered table-sort" id="myTable">
+                  <table class="table table-striped table-sm table-bordered table-sort" id="myTable">
                   <thead>
                     <tr>
                       <th   scope="col">id</th>
