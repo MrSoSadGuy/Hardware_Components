@@ -129,11 +129,13 @@ def save_kts_data(req_dict, name):
 
 def save_buhuchet_data(req_dict, name):
     buh = BuhUch.query.all()
+    
     if request.method == 'POST':
         for b in buh:
             if b.inv_number == req_dict["inv_number"].strip():
                 b.MOL = req_dict["MOL"].strip()
                 b.charracter = req_dict["charracter"]
+                b.name = req_dict['name']
                 b.note = req_dict["note"]
                 b.editor = name
                 b.last_edit_date = datetime.now()
@@ -141,6 +143,7 @@ def save_buhuchet_data(req_dict, name):
         buh = BuhUch(inv_number=req_dict["inv_number"].strip(),
                     MOL=req_dict["MOL"].strip(),
                     charracter=req_dict["charracter"],
+                    name = req_dict['name'],
                     note=req_dict["note"],
                     creator=name)
         return add_data_to_db(buh)

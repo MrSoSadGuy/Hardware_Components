@@ -188,6 +188,8 @@ def delete_row(base_table):
         db_obj = ma_add_modules.query.get_or_404(id)
     if base_table == "Unit":
         db_obj = Unit.query.get_or_404(id)
+    if base_table == "BuhUch":
+        db_obj = BuhUch.query.get_or_404(id)
     if base_table == "MA_Units":
         db_obj = MA_Units.query.get_or_404(id)
         if len(db_obj.modules) > 0:
