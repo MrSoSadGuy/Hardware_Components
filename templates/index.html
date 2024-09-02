@@ -378,6 +378,7 @@
                                       $(this).find('form').trigger('reset');
                                       var dataPon = $(e.relatedTarget).data('pon');
                                       var dataUd = $(e.relatedTarget).data('ud');
+                                      document.getElementById('save_kts').setAttribute("class", "btn btn-primary");
                                       document.getElementById("PON_id").value = dataPon;
                                       document.getElementById("Ud_id").value = dataUd;
                                       document.getElementById("t_body").remove();

@@ -103,7 +103,7 @@ function save_buh_data_table_in_file(){
     let table = document.getElementById('buh_data_tbody');
     let tbodies = table.getElementsByTagName('table');
     var list_data = []
-    
+    var data = new FormData();
     for(var i = 0; i < tbodies.length; i++){
         var style = tbodies[i].getAttribute("style");
         if(style == null){
@@ -121,7 +121,7 @@ function save_buh_data_table_in_file(){
         .then(function(data){
             if (data === "SUCCESS"){
                 const link = document.createElement('a');
-                link.href = '/download/main_table';
+                link.href = '/download/buh_table';
                 document.body.appendChild(link);
                 link.click();
                 link.remove();}

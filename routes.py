@@ -1,5 +1,6 @@
 from flask import render_template, request, json, send_file, jsonify, redirect, url_for
 import openpyxl
+from openpyxl.styles import Border, Side, Alignment                                                                  
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import app
@@ -249,6 +250,52 @@ def main_table_data_download():
     path = 'files for download/Таблица оборудования PON.xlsx'
     return send_file(path, as_attachment=True)
 
+
+@app.route('/download/buh_table/', methods=['GET', 'POST'])
+@login_required
+def buh_table_data_download():
+    path = 'files for download/Бухгалтерские данные.xlsx'
+    return send_file(path, as_attachment=True)
+
+
+@app.route('/buh_table_data', methods=['GET', 'POST'])
+@login_required
+def buh_table_data():
+    name = request.form['json']
+    print(json.loads(name))
+    list_data = json.loads(name)
+    print(type(list_data))
+    start_row = 4
+    row_count = 1
+    path = 'files for download\шаблон Бухгалтерские данные.xlsx'
+    try:
+        wb_obj = openpyxl.load_workbook(path)
+        sheet = wb_obj.active
+        thins = Side(border_style="thin", color="000000")
+        double = Side(border_style="medium", color="000000")
+        for id in list_data:
+            
+            buh = BuhUch.query.get_or_404(int(id))
+            sheet["A" + str(start_row)] = row_count
+            sheet["A" + str(start_row)].border = Border(top=double, bottom=thins, left=double, right=thins)
+            sheet["B" + str(start_row)] = buh.inv_number
+            sheet["B" + str(start_row)].border = Border(top=double, bottom=thins, left=thins, right=thins)
+            sheet["C" + str(start_row)] = buh.name
+            sheet["C" + str(start_row)].border = Border(top=double, bottom=thins, left=thins, right=thins)
+            sheet["D" + str(start_row)] = buh.MOL
+            sheet["D" + str(start_row)].border = Border(top=double, bottom=thins, left=thins, right=double)
+            for i in range(0,len(buh.charracter.split('\n'))):
+                start = "A" + str(start_row+1+i)
+                end = "D" + str(start_row+1+i)
+                sheet.merge_cells(start+':'+end)
+                sheet["A" + str(start_row+1+i)] = buh.charracter.split('\n')[i]
+            start_row = start_row + 2 + len(buh.charracter.split('\n'))
+            row_count = row_count + 1
+        wb_obj.save('files for download\Бухгалтерские данные.xlsx')
+        return json.dumps("SUCCESS")
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
+        return json.dumps(f"Unexpected {err=}, {type(err)=}")
 
 @app.route('/main_table_data', methods=['GET', 'POST'])
 @login_required
