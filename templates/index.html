@@ -18,7 +18,11 @@
     <script src="{{ url_for('static', filename='js/to_fill_modals.js') }}"></script>
     <script src="{{ url_for('static', filename='js/table-sort.js') }}"></script>
 
-
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {     
+      document.documentElement.setAttribute('data-bs-theme',JSON.parse(localStorage.getItem("colar_thema")))
+      });
+  </script> 
 <!--    Заполнение в модульное окно Инвентарного номера-->
 
 <!--    заполнение модульного окна для редактирования записи UNITS-->
@@ -443,7 +447,7 @@
                                         document.getElementById("edit_Mesto_id").value = unit.plata_mesto;
                                         document.getElementById("unit_note_id").value = unit.note;
                                         }})
-                                      document.getElementById('button_for_delete_row').onclick = function (){delete_row('Unit', id , 'button_for_delete_row','tbody_main_table',
+                                      document.getElementById('button_for_delete_row').onclick = function (){delete_row_from_edit_mod('Unit', id , 'button_for_delete_row','tbody_main_table',
                                         e.relatedTarget.closest("tr"))}
                                         document.getElementById('button_for_save_edit_row').onclick = function (){save_edit_table_row('tbody_main_table',e.relatedTarget.closest("tr").rowIndex)}
                                     });
@@ -474,13 +478,26 @@
         <li class="nav-item dropdown nav justify-content-end">
               <a class="nav-link dropdown-toggle text-white nav justify-content-end" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user_name }}</a>
               <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" id="switch_to_dark_mod" href="#">Тема</a></li>
+                <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Change_pass" href="#">Изменить пароль</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="/logout">Выйти</a></li>
               </ul>
         </li>
     </header>
-
+    <script type="text/javascript">
+      document.getElementById('switch_to_dark_mod').addEventListener('click',()=>{
+          if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
+              document.documentElement.setAttribute('data-bs-theme','light')
+              localStorage.setItem("colar_thema",JSON.stringify('light'));
+          }
+          else {
+              document.documentElement.setAttribute('data-bs-theme','dark')
+              localStorage.setItem("colar_thema",JSON.stringify('dark'));
+          }
+      })
+  </script>
     <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
         <div class="offcanvas-header">
         </div>

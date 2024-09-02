@@ -26,10 +26,9 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-        <!-- document.getElementById(JSON.parse(localStorage.getItem("radio_check"))).click() -->
-        document.getElementById("myInput").value = JSON.parse(localStorage.getItem("serch"));
-        myFunction()
-        localStorage.clear()
+       
+        document.documentElement.setAttribute('data-bs-theme',JSON.parse(localStorage.getItem("colar_thema")))
+
         });
     </script>
 
@@ -116,7 +115,7 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" id="button_for_save_edit_row" name="button_for_save_edit_row">Сохранить</button>
             <button type="button" class="btn btn-primary" id="button_for_delete_row">Удалить</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Закрыть</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_btn_id" >Закрыть</button>
           </div>
         </div>
       </div>
@@ -515,13 +514,26 @@
         <li class="nav-item dropdown nav justify-content-end">
               <a class="nav-link dropdown-toggle text-white nav justify-content-end" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user_name }}    </a>
               <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" id="switch_to_dark_mod" href="#">Тема</a></li>
+                <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Change_pass" href="#">Изменить пароль</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="/logout">Выйти</a></li>
               </ul>
         </li>
     </header>
-
+    <script type="text/javascript">
+        document.getElementById('switch_to_dark_mod').addEventListener('click',()=>{
+            if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
+                document.documentElement.setAttribute('data-bs-theme','light')
+                localStorage.setItem("colar_thema",JSON.stringify('light'));
+            }
+            else {
+                document.documentElement.setAttribute('data-bs-theme','dark')
+                localStorage.setItem("colar_thema",JSON.stringify('dark'));
+            }
+        })
+    </script>
     <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
         <div class="offcanvas-header">
         </div>

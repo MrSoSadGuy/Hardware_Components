@@ -190,7 +190,7 @@ async function edit_ma_unit_modal(obj_id, row_index){
                 document.getElementById("edit_orsh_id").value = data[0].ORSH;
                 document.getElementById("unit_note_id").value = data[0].note;
                 document.getElementById('button_for_delete_row').onclick = function (){
-                    delete_row('Objects_ur_lica', obj_id , 'button_for_delete_row','tbody_main_table', row_index)};
+                    delete_row_from_edit_mod('Objects_ur_lica', obj_id , 'button_for_delete_row','tbody_main_table', row_index)};
                 document.getElementById('button_for_save_edit_row').onclick = function (){
                     save_edit_MA_table('tbody_main_table', row_index)};
 }

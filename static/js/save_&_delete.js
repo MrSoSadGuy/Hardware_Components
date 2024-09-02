@@ -49,6 +49,23 @@ async function delete_row(db_table, id, bt_id, tbody, row)  {
             alert(data);
     }}
 }
+async function delete_row_from_edit_mod(db_table, id, bt_id, tbody, row)  {
+    console.log(row.rowIndex)
+    var id_val = {id: id}
+    console.log("🚀 ~ delete_row_from_edit_mod ~ id:", id)
+    if (confirm("Удалить запись?")){
+        const data = await fetch_delete_data_from_db(id_val, db_table);
+        console.log(data);
+        if(data==="SUCCESS"){
+            document.getElementById(bt_id).setAttribute("class", "btn btn-success");
+            document.getElementById(tbody).deleteRow(row.rowIndex-1)
+            setTimeout(function (){document.getElementById('close_btn_id').click()}, 800);      
+        }
+        else {
+            document.getElementById(bt_id).setAttribute("class", "btn btn-danger");
+            alert(data);
+    }}
+}
 async function delete_table(db_table, id, bt_id, table_id)  {
     var id_val = {id: id}
     console.log("🚀 ~ delete_table ~ id:", id)
@@ -57,7 +74,8 @@ async function delete_table(db_table, id, bt_id, table_id)  {
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success");
-            setTimeout(function (){document.getElementById(table_id).remove()}, 500);      
+            setTimeout(function (){document.getElementById(table_id).remove()}, 500);
+            setTimeout(function (){document.getElementById('close_btn_id').click()}, 800);      
         }
         else {
             document.getElementById(bt_id).setAttribute("class", "btn btn-danger");
@@ -280,15 +298,9 @@ function storage_reset_tbody(btn_id){
 }
 async function add_new_inv_numbers(parent_tag_id, btn_id) {
     const parent_tag = document.getElementById(parent_tag_id);
-    console.log("🚀 ~ add_new_inv_numbers ~ parent_tag:", parent_tag);
     const list_of_tables = parent_tag.querySelectorAll('table')
-    console.log("🚀 ~ add_new_inv_numbers ~ list_of_tables:", list_of_tables)
-    console.log("🚀 ~ add_new_inv_numbers ~ list_of_tables.length:", list_of_tables.length)
     for(let i=0; i<list_of_tables.length; i++){
         let list_of_tds = list_of_tables[i].querySelectorAll('td')
-        console.log("🚀 ~ add_new_inv_numbers ~ list_of_tds:", list_of_tds)
-        console.log("🚀 ~ add_new_inv_numbers ~ list_of_tds[0]:", list_of_tds[0].textContent)
-        console.log("🚀 ~ add_new_inv_numbers ~ list_of_tds[0].querySelector('i').length:", list_of_tds[0].querySelector('i'))
         for(let j=0; j<list_of_tds.length; j++){
         if(list_of_tds[j].querySelector('i') != null){list_of_tds[j].querySelector('i').remove()}    
         }
@@ -307,6 +319,7 @@ async function add_new_inv_numbers(parent_tag_id, btn_id) {
                 note:""
             }
         const response = await fetch_data_to_save_new(new_inv_data, "Buhuchet");
+        console.log("🚀 ~ add_new_inv_numbers ~ response:", response)
         if(response==="SUCCESS"){
             document.getElementById(btn_id).setAttribute("class", "btn btn-success");
             list_of_tables[i].setAttribute('class', 'table table-sm table-bordered table-hover borderd_table table-success')
@@ -314,6 +327,7 @@ async function add_new_inv_numbers(parent_tag_id, btn_id) {
         }
         else {
             document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
+            list_of_tables[i].setAttribute('class', 'table table-sm table-bordered table-hover borderd_table table-danger')
             alert(response);
             break;
         }
@@ -323,29 +337,40 @@ async function add_new_inv_numbers(parent_tag_id, btn_id) {
 async function add_new_units(tbody, db_table, btn_id, add_param){
         var oTable = document.getElementById(tbody);
             //gets rows of table
-        var rowLength = oTable.rows.length;
-            //loops through rows
+        var list_of_rows = oTable.getElementsByTagName('tr')
+            //loops through rows        
         if (confirm("Сохранить изменнения?")){
-        for (i = 0; i < rowLength; i++){
+        for (i = 0; i < list_of_rows.length; i++){
             var new_unit ={add_p :add_param};
-
-            var oCells = oTable.rows.item(i).cells;
+            let empty_row = 0;
+            var oCells = list_of_rows[i].getElementsByTagName('td');
            //gets amount of cells of current row
             for (let j = 0; j < oCells.length; j++) {
                 new_unit[j] = oCells[j].textContent;
+                empty_row = empty_row + new_unit[j].length
+            }
+            if(empty_row === 0){
+                list_of_rows[i].setAttribute('class', 'table-danger');                
+                continue;
             }
             console.log(new_unit);
             const data = await fetch_data_to_save_new(new_unit, db_table);
             console.log(data);
             if(data==="SUCCESS"){
                 document.getElementById(btn_id).setAttribute("class", "btn btn-success");
-            }
+                list_of_rows[i].setAttribute('class', 'table-success')
+                setTimeout(function (){
+                    for (y = 0; y < list_of_rows.length; y++){
+                        if(list_of_rows[y].getAttribute('class')==='table-success'){list_of_rows[y].remove()}
+                    }}, 700);                  
+            }                
             else {
                 document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
+                list_of_rows[i].setAttribute('class', 'table-danger')
                 alert(data);
             }
         }
-            return "SUCCESS"
+            
             }
         }
 

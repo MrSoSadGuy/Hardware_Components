@@ -47,6 +47,7 @@ def add_new_unit(req_dict, name):
                     serial_number=req_dict["4"],
                     row_mesto=req_dict["5"],
                     plata_mesto=req_dict["6"],
+                    note="",
                     creator=name)
         return add_data_to_db(unit)
     else:

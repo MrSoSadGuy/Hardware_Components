@@ -24,13 +24,14 @@
     
     
     
-    {# <script>
+     <script>
         document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById("Input_for_buh_data_serch").value = JSON.parse(localStorage.getItem("serch"));
-        buh_data_table_serch()
-        localStorage.clear()
+        {# document.getElementById("Input_for_buh_data_serch").value = JSON.parse(localStorage.getItem("serch")); #}
+        {# buh_data_table_serch() #}
+        {# localStorage.clear() #}
+        document.documentElement.setAttribute('data-bs-theme',JSON.parse(localStorage.getItem("colar_thema")))
         });
-    </script> #}
+    </script> 
     
 
 </head>
@@ -120,7 +121,7 @@
             
             <button type="button" class="btn btn-primary" id = "button_for_save_edit_buh_data" onclick="save_edit_buh_data()">Сохранить</button>
             <button type="button" class="btn btn-primary" id="button_for_delete_inv_number">Удалить</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id = 'close_btn_id'>Закрыть</button>
         </div>
         </div>
     </div>
@@ -170,6 +171,7 @@
                     if (e.target.tagName === "I"){e.target.remove()}                                                                 
                 });
                 document.getElementById('button_add_new_row').setAttribute('name','{{ user_name | tojson }}');
+                
     </script>
 
 
@@ -183,13 +185,26 @@
         <li class="nav-item dropdown nav justify-content-end">
             <a class="nav-link dropdown-toggle text-white nav justify-content-end" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user_name }}    </a>
             <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" id="switch_to_dark_mod" href="#">Тема</a></li>
+                <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Change_pass" href="#">Изменить пароль</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="/logout">Выйти</a></li>
+                <li><a class="dropdown-item" href="/logout">Выйти</a></li>                               
             </ul>
         </li>
     </header>
-
+    <script type="text/javascript">
+        document.getElementById('switch_to_dark_mod').addEventListener('click',()=>{
+            if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
+                document.documentElement.setAttribute('data-bs-theme','light')
+                localStorage.setItem("colar_thema",JSON.stringify('light'));
+            }
+            else {
+                document.documentElement.setAttribute('data-bs-theme','dark')
+                localStorage.setItem("colar_thema",JSON.stringify('dark'));
+            }
+        })
+    </script>
     <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
         <div class="offcanvas-header">
         </div>
@@ -240,12 +255,12 @@
                                     <table class="table table-sm table-bordered table-hover borderd_table" id = "inv_number_id_{{buh.id}}">
                                     <tbody >
                                         <tr>
-                                            <td width = '18%'><a href="" data-bs-toggle="modal" data-bs-target="#inventModal" data-id = "{{ buh.id }}" data-inv = "{{ buh.inv_number }}" >{{ buh.inv_number }}</a></td>
+                                            <td width = '18%'>Инв. №:  <a href="" data-bs-toggle="modal" data-bs-target="#inventModal" data-id = "{{ buh.id }}" data-inv = "{{ buh.inv_number }}" >{{ buh.inv_number }}</a></td>
                                             <td >{{ buh.name }}</td>
-                                            <td width = '18%'>{{ buh.MOL }}</td>      
+                                            <td width = '18%'>МОЛ: {{ buh.MOL }}</td>      
                                         </tr> 
                                         <tr>
-                                            <td colspan = '3'>{{ buh.charracter }}</td>
+                                            <td colspan = '3'>Характеристика: {{ buh.charracter }}</td>
                                         </tr>
                                         
                                     </tbody>

@@ -267,6 +267,7 @@ def buh_table_data():
     print(type(list_data))
     start_row = 4
     row_count = 1
+    step = 1
     path = 'files for download\шаблон Бухгалтерские данные.xlsx'
     try:
         wb_obj = openpyxl.load_workbook(path)
@@ -281,16 +282,25 @@ def buh_table_data():
             sheet["B" + str(start_row)] = buh.inv_number
             sheet["B" + str(start_row)].border = Border(top=double, bottom=thins, left=thins, right=thins)
             sheet["C" + str(start_row)] = buh.name
+            sheet["C" + str(start_row)].alignment = Alignment(wrap_text=True)
             sheet["C" + str(start_row)].border = Border(top=double, bottom=thins, left=thins, right=thins)
             sheet["D" + str(start_row)] = buh.MOL
-            sheet["D" + str(start_row)].border = Border(top=double, bottom=thins, left=thins, right=double)
-            for i in range(0,len(buh.charracter.split('\n'))):
-                start = "A" + str(start_row+1+i)
-                end = "D" + str(start_row+1+i)
-                sheet.merge_cells(start+':'+end)
-                sheet["A" + str(start_row+1+i)] = buh.charracter.split('\n')[i]
-            start_row = start_row + 2 + len(buh.charracter.split('\n'))
+            sheet["D" + str(start_row)].border = Border(top=double, bottom=thins, left=thins, right=double)                       
+            if (type(buh.charracter) == str):
+                for i in range(0,len(buh.charracter.split('\n'))):
+                    start = "A" + str(start_row+1+i)
+                    end = "D" + str(start_row+1+i)
+                    sheet.merge_cells(start+':'+end)
+                    sheet["A" + str(start_row+1+i)] = buh.charracter.split('\n')[i]
+                    step = len(buh.charracter.split('\n'))
+            else:
+                start = "A" + str(start_row+1)
+                end = "D" + str(start_row+1)
+                sheet.merge_cells(start+':'+end) 
+                sheet["A" + str(start_row+1)] = "Нет данных!"
+            start_row = start_row + 2 + step
             row_count = row_count + 1
+            step = 1
         wb_obj.save('files for download\Бухгалтерские данные.xlsx')
         return json.dumps("SUCCESS")
     except Exception as err:
