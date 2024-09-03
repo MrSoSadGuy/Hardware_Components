@@ -53,6 +53,14 @@ function create_tables(moduls, table_id, column_name, db_table, busy){
         div.setAttribute('class','d-grid gap-1 d-md-flex');
         a1.setAttribute('id','btn_edit_ma_mod_'+item['id']);
         a1.setAttribute('class','btn btn-primary btn-sm');
+        a1.setAttribute('data-toggle','tooltip');
+        a1.setAttribute('data-placement','top');
+        a1.setAttribute('title','Редактировать');
+        a2.setAttribute('data-toggle','tooltip');
+        a2.setAttribute('data-placement','top');
+        a3.setAttribute('data-toggle','tooltip');
+        a3.setAttribute('data-placement','top');
+        a2.setAttribute('title','Удалить запись');
         a2.setAttribute('id','btn_del_ma_mod_'+item['id']);
         a2.setAttribute('class','btn btn-primary btn-sm');
         a3.setAttribute('id','btn_send_ma_mod_to_storage_'+item['id']);
@@ -60,9 +68,11 @@ function create_tables(moduls, table_id, column_name, db_table, busy){
         a1.onclick = function (){edit_row(db_table + '_edited', item['id'],'btn_edit_ma_mod_'+item['id'],table_id, this.closest("tr"), 4)};
         a2.onclick = function (){delete_row(db_table, item['id'],'btn_del_ma_mod_'+item['id'],table_id, this.closest("tr"))};
         if (busy){
+            a3.setAttribute('title','Демонтировать устройство');
             a3.onclick = function (){send_to_storage(db_table + '_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'],table_id, this.closest("tr"), 4)}
         }
         else{
+            a3.setAttribute('title','Замонтировать устройство');
             a3.setAttribute('data-bs-toggle',"modal")
             a3.setAttribute('data-bs-target',"#select_usege_Modal")
             a3.setAttribute('data-id', item['id'])

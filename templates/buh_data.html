@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#000000">
 
     <title>Бухгалтерские данные</title>
+    <link rel="shortcut icon" href="../static/images/jruby.svg">
 
 
 
@@ -62,16 +63,16 @@
                     </td></tr>
                     </tbody>
                 </table>
-  
+
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" id="button_add_new_row" onclick="add_new_table('td_for_new_table',this.name)">
+              <button type="button" class="btn btn-primary" id="button_add_new_row" onclick="add_new_table('td_for_new_table',this.name)" data-toggle="tooltip" data-placement="top" title="Добавить строку">
                   <i class="bi bi-plus-lg"></i>
               </button>
-                <button type="button" class="btn btn-primary" id="button_del_row" onclick="del_new_table('td_for_new_table')">
+                <button type="button" class="btn btn-primary" id="button_del_row" onclick="del_new_table('td_for_new_table')" data-toggle="tooltip" data-placement="top" title="Удалить строку">
                     <i class="bi bi-dash-lg"></i>
                 </button>
-              <button type="button" class="btn btn-primary" id="button_for_save_new_units" onclick="add_new_inv_numbers('td_for_new_table', this.id)">Сохранить</button>
+              <button type="button" class="btn btn-primary" id="button_for_save_new_units" onclick="add_new_inv_numbers('td_for_new_table', this.id)" data-toggle="tooltip" data-placement="top" title="Добавить данные на сервер">Сохранить</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="reload_page()" >Закрыть</button>
             </div>
           </div>
@@ -119,8 +120,8 @@
         </div>
         <div class="modal-footer">
             
-            <button type="button" class="btn btn-primary" id = "button_for_save_edit_buh_data" onclick="save_edit_buh_data()">Сохранить</button>
-            <button type="button" class="btn btn-primary" id="button_for_delete_inv_number">Удалить</button>
+            <button type="button" class="btn btn-primary" id = "button_for_save_edit_buh_data" onclick="save_edit_buh_data()" data-toggle="tooltip" data-placement="top" title="Сохранить изменения">Сохранить</button>
+            <button type="button" class="btn btn-primary" id="button_for_delete_inv_number" data-toggle="tooltip" data-placement="top" title="Удалить запись">Удалить</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id = 'close_btn_id'>Закрыть</button>
         </div>
         </div>
@@ -171,7 +172,9 @@
                     if (e.target.tagName === "I"){e.target.remove()}                                                                 
                 });
                 document.getElementById('button_add_new_row').setAttribute('name','{{ user_name | tojson }}');
-                
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip()
+                })
     </script>
 
 
@@ -226,9 +229,9 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Бухгалтерские данные</h1>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button type="button" class="btn btn-primary btn-lg"  data-bs-toggle="modal" data-bs-target="#add_new_inv_number_Modal" >
+                <button type="button" class="btn btn-primary btn-lg"  data-bs-toggle="modal" data-bs-target="#add_new_inv_number_Modal" data-toggle="tooltip" data-placement="bottom" title="Окно добавления новых записей" >
                     <i class="bi bi-plus-square-fill"></i>  Добавить</button>
-                    <button type="button" class="btn btn-primary btn-lg" onclick="save_buh_data_table_in_file()">
+                    <button type="button" class="btn btn-primary btn-lg" onclick="save_buh_data_table_in_file()" data-toggle="tooltip" data-placement="bottom" title="Скачсть файл с текущими данными">
                     <i class="bi bi-download"></i> Сохранить в Excel</button>
                 </div></div>
                 <div class="table-responsive small">
