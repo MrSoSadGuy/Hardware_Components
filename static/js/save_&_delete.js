@@ -259,15 +259,7 @@ function save_kts_data() {
             fetch_data_to_save(kts_data, "KTS", "save_kts")
             }}
 
-function reset_tbodys(tbody, db_table, bt_id, add_param, obj_id){
-    add_new_units(tbody, db_table, bt_id, add_param).then(function (r){
-        console.log(r)
-        if (r === 'SUCCESS'){
-            setTimeout(function (){sostav_ma_unit(obj_id)}, 1000);
-        }
-        else{alert(r)}
-    });
-}
+
 function storage_reset_tbody(btn_id){
     const table_1 = document.getElementById('new_MA_unit_tbody_storage_id')
     var rowLength_1 = table_1.rows.length;
@@ -334,6 +326,15 @@ async function add_new_inv_numbers(parent_tag_id, btn_id) {
         }    
     }
 }
+function reset_tbodys(tbody, db_table, bt_id, add_param, obj_id){
+    add_new_units(tbody, db_table, bt_id, add_param).then(function (r){
+        console.log(r)
+        if (r === 'SUCCESS'){
+            setTimeout(function (){sostav_ma_unit(obj_id)}, 1000);
+        }
+        else{alert(r)}
+    });
+}
 async function add_new_units(tbody, db_table, btn_id, add_param){
         var oTable = document.getElementById(tbody);
             //gets rows of table
@@ -366,11 +367,11 @@ async function add_new_units(tbody, db_table, btn_id, add_param){
             }                
             else {
                 document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
-                list_of_rows[i].setAttribute('class', 'table-danger')
+                list_of_rows[i].setAttribute('class', 'table-danger');
                 alert(data);
             }
         }
-            
+            return "SUCCESS";  
             }
         }
 
