@@ -25,7 +25,12 @@ def load_user(user_id):
     return Users.query.get(user_id)
 
 
+@manager.unauthorized_handler
+def unauthorized_handler():
+    return redirect(url_for('login'))
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
-    # serve(app, host='0.0.0.0', port=8080, url_prefix='/units')
+    # app.run(debug=True)
+    serve(app, host='0.0.0.0', port=8080, url_prefix='/units')
     # serve(app, listen='0.0.0.0:8080', url_scheme="https" )
