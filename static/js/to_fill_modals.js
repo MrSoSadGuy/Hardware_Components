@@ -1,6 +1,6 @@
 async function sostav_ma_unit(dataID){
-    const data = await fetch_data_to_get(dataID,"Objects_ur_lica");
-    console.log(data);
+    const data = await fetch_data(dataID,"Objects_ur_lica",'get_data_from_db');
+    console.log("🚀 ~ sostav_ma_unit ~ data:", data)
     document.getElementById("cod_id").value = data[0]['cod_name'];
     document.getElementById("ip_id").value = data[0]['IP'];
     document.getElementById("ordan_id").value = data[0]['organization'];
@@ -11,8 +11,7 @@ async function sostav_ma_unit(dataID){
     while (tbody_new.rows.length) {tbody_new.deleteRow(0);}
     const tbody_mod = document.getElementById('new_MA_modules_tbody_id');
     while (tbody_mod.rows.length) {tbody_mod.deleteRow(0);}
-    document.getElementById("btn_to_add_new_ma_modules").setAttribute("class", "btn btn-primary");
-    
+    document.getElementById("btn_to_add_new_ma_modules").setAttribute("class", "btn btn-primary");   
     const column_name_unit = ['type_equipment','inv_number','serial_number','note'];
     const column_name_modules = ['type','inv_number','serial_number','note'];
     if (Object.keys(data[1]).length > 0){
@@ -20,7 +19,6 @@ async function sostav_ma_unit(dataID){
             let temp_list = [data[1][key]]
             create_tables(temp_list,'curent_MA_unit_tbody_id', column_name_unit, 'MA_Units', true)
             if(data[2][key].length > 0){
-                console.log('start')
                 create_tables(data[2][key],'curent_MA_modules_tbody_id', column_name_modules, 'ma_add_modules', true)
             }
             document.getElementById("btn_to_add_new_ma_modules").onclick = function(){reset_tbodys('new_MA_modules_tbody_id', 'ma_add_modules','btn_to_add_new_ma_modules',data[1][key]['id'], dataID)}; 
@@ -29,10 +27,9 @@ async function sostav_ma_unit(dataID){
 }
 
 function create_tables(moduls, table_id, column_name, db_table, busy){
+    console.log("🚀 ~ create_tables ~ moduls:", moduls)
     const tbody_current = document.getElementById(table_id);
-    console.log(moduls)
     moduls.forEach(item => {
-        console.log(item)
         const tr = document.createElement('tr');
         for (let i = 0; i < column_name.length; i++) {
             const td = document.createElement('td');
@@ -115,8 +112,7 @@ async function ma_unit_storage(table_id, stor_id, tbody_ma_id){
     const table_current = document.getElementById(table_id);
     while (table_current.rows.length > 1) {table_current.deleteRow(-1);}
     while (table_current.getElementsByTagName("tbody").length>0) {table_current.removeChild(table_current.getElementsByTagName("tbody")[0]);}
-
-    const stor_ma_unit = await fetch_data_to_get(stor_id,"Objects_ur_lica");
+    const stor_ma_unit = await fetch_data(stor_id,"Objects_ur_lica",'get_data_from_db');
     console.log("🚀 ~ ma_unit_storage ~ stor_ma_unit:", stor_ma_unit)
     const column_name = ['type_equipment','inv_number','serial_number','note'];
     const column_name_mod = ['type','inv_number','serial_number','note'];
@@ -154,37 +150,30 @@ async function ma_add_module_storage(){
     while (tbody_new.rows.length) {tbody_new.deleteRow(0);}
     while (tbody_curent.rows.length) {tbody_curent.deleteRow(0);}
     const column_name = ['type','inv_number','serial_number','note'];
-    const stor_ma_modules = await fetch_data_to_get('543',"MA_Units");
+    const stor_ma_modules = await fetch_data('543',"MA_Units",'get_data_from_db');
     if(stor_ma_modules[1].length>0){
         create_tables(stor_ma_modules[1],'current_MA_modules_tbody_storage_id', column_name, 'ma_add_modules', false)
     }
 }
 
-function invent_modal(param){
+async function invent_modal(param){
     document.getElementById("In_num").value = param;
     document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
+    const fetch_response = await fetch_data(param,'BuhUch','get_data_from_db');
+    console.log("🚀 ~ invent_modal ~ fetch_response:", fetch_response)
     var data = new FormData();
     data.append('json', JSON.stringify(document.getElementById("In_num").value))
-    fetch("/get_data_from_db/BuhUch",
-            {
-                method: "POST",
-                body: data
-            })
-            .then(function(res){ return res.json(); })
-            .then(function(data){
-                console.log("🚀 ~ .then ~ data:", data)
-                if (data === null){alert("Нет данных по этому номеру")}
-                else {
-                    document.getElementById("description_id").value = data['name'];
-                    document.getElementById("mol_id").value = data['MOL'];
-                    document.getElementById("char_id").value = data['charracter'];
-                    document.getElementById("note_id").value = data['note'];
-                }
-        })
+    if (fetch_response === null){alert("Нет данных по этому номеру")}
+    else {
+        document.getElementById("description_id").value = fetch_response['name'];
+        document.getElementById("mol_id").value = fetch_response['MOL'];
+        document.getElementById("char_id").value = fetch_response['charracter'];
+        document.getElementById("note_id").value = fetch_response['note'];
+    }
 }
 async function edit_ma_unit_modal(obj_id, row_index){
             
-            const data = await fetch_data_to_get(obj_id,"Objects_ur_lica");
+            const data = await fetch_data(obj_id,"Objects_ur_lica",'get_data_from_db');
             console.log("🚀 ~ edit_ma_unit_modal ~ data:", data)
             
             document.getElementById("id_for_edit").value = obj_id;
@@ -217,7 +206,7 @@ async function select_usage_modal(id, db_table) {
     opt_selected.selected
     opt_selected.text = 'Выберите обьект'
     select.add(opt_selected)
-    const data = await fetch_data_to_get('all','Objects_ur_lica_all')
+    const data = await fetch_data('all','Objects_ur_lica_all','get_data_from_db')
     for (const [key] of Object.entries(data)) { 
         const opt = document.createElement('option')
         
@@ -253,6 +242,4 @@ async function select_usage_modal(id, db_table) {
     });
     document.getElementById('btn_send_to_usage').onclick = function (){
         send_to_usage(id, db_table, target_id, "btn_send_to_usage")};
-    
-
 }

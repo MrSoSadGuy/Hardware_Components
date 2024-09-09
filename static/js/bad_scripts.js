@@ -65,7 +65,6 @@ function del_new_table(td_id) {
     console.log("🚀 ~ del_new_table ~ list_of_tables:", list_of_tables)
     var last = list_of_tables[list_of_tables.length - 1];
     last.parentNode.removeChild(last);
-    // list_of_tables.deleteRow(-1)
     }
 
 
@@ -174,17 +173,12 @@ function myFunction() {
         }
 
 function buh_data_table_serch(){
-    var input, filter, table, tbodies, td;
-    
-    input = document.getElementById("Input_for_buh_data_serch");
-    
-    filter = input.value.toUpperCase();
-    
+    var input, filter, table, tbodies, td;    
+    input = document.getElementById("Input_for_buh_data_serch");    
+    filter = input.value.toUpperCase();    
     const list_of_words= filter.split(" ")
-    table = document.getElementById('buh_data_tbody');
-    
-    tbodies = table.getElementsByTagName('table');
-    
+    table = document.getElementById('buh_data_tbody');    
+    tbodies = table.getElementsByTagName('table');    
     for(var i = 0; i < tbodies.length; i++){
         tds = tbodies[i].getElementsByTagName('td');
         var flag = false;
