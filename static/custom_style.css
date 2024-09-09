@@ -31,3 +31,5 @@
               width: 100%;
               background-image: url("images/krugi_mnozhestvo_uvelichenie_121454_1920x1080.jpg");
             }
+           
+            .multiline { white-space: pre-line; }

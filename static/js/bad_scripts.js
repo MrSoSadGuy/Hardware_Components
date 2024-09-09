@@ -178,7 +178,8 @@ function buh_data_table_serch(){
     filter = input.value.toUpperCase();    
     const list_of_words= filter.split(" ")
     table = document.getElementById('buh_data_tbody');    
-    tbodies = table.getElementsByTagName('table');    
+    tbodies = table.getElementsByTagName('table');
+    var number_of_records = 0;    
     for(var i = 0; i < tbodies.length; i++){
         tds = tbodies[i].getElementsByTagName('td');
         var flag = false;
@@ -190,8 +191,14 @@ function buh_data_table_serch(){
                 continue;
             } 
         }
-        if(flag){tbodies[i].removeAttribute("style");}
-            else {tbodies[i].style.display = "none";}
+        if(flag){tbodies[i].removeAttribute("style");
+            number_of_records++;
+            
+        }
+            else {tbodies[i].style.display = "none";
+                // number_of_records--;
+            }
+        document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records ;
     }
     
 }

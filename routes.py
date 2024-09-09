@@ -280,6 +280,7 @@ def buh_table_data():
             sheet["A" + str(start_row)] = row_count
             sheet["A" + str(start_row)].border = Border(top=double, bottom=thins, left=double, right=thins)
             sheet["B" + str(start_row)] = buh.inv_number
+            sheet["B" + str(start_row)].alignment = Alignment(wrap_text=True)
             sheet["B" + str(start_row)].border = Border(top=double, bottom=thins, left=thins, right=thins)
             sheet["C" + str(start_row)] = buh.name
             sheet["C" + str(start_row)].alignment = Alignment(wrap_text=True)

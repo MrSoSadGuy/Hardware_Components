@@ -25,12 +25,15 @@
     
     
     
-     <script>
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
         {# document.getElementById("Input_for_buh_data_serch").value = JSON.parse(localStorage.getItem("serch")); #}
         {# buh_data_table_serch() #}
         {# localStorage.clear() #}
         document.documentElement.setAttribute('data-bs-theme',JSON.parse(localStorage.getItem("colar_thema")))
+        const table = document.getElementById('buh_data_tbody')
+        const tbodies = table.getElementsByTagName('table');
+        document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + tbodies.length ;  
         });
     </script> 
     
@@ -240,6 +243,7 @@
                             <div class="col">
                                 <div class="container-fluid">
                                     <input  class ="input_for_serch" type="text" id="Input_for_buh_data_serch" onkeyup="buh_data_table_serch()" placeholder="Поиск по инвентарному номеру..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
+                                    <i id = 'number_of_records'>Записей отображенно: </i>
                                 </div>
                             </div>
                             
@@ -263,7 +267,7 @@
                                             <td width = '18%'>МОЛ: {{ buh.MOL }}</td>      
                                         </tr> 
                                         <tr>
-                                            <td colspan = '3'>Характеристика: {{ buh.charracter }}</td>
+                                            <td class="multiline" colspan = '3'>Характеристика: {{ buh.charracter }}</td>
                                         </tr>
                                         
                                     </tbody>

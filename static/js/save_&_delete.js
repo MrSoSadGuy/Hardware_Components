@@ -350,11 +350,11 @@ async function add_new_inv_numbers(parent_tag_id, btn_id) {
 }
 async function reset_tbodys(tbody, db_table, bt_id, add_param, obj_id){
     r = await add_new_units(tbody, db_table, bt_id, add_param)
-        console.log(r)
-        if (r === 'SUCCESS'){
-            setTimeout(function (){sostav_ma_unit(obj_id)}, 1000);
-        }
-        else{alert(r)}
+    console.log("🚀 ~ reset_tbodys ~ r:", r);
+    if (r === 'SUCCESS'){
+        setTimeout(function (){sostav_ma_unit(obj_id)}, 1000);
+    }
+    else{alert(r)}
 }
 async function add_new_units(tbody, db_table, btn_id, add_param){
     var oTable = document.getElementById(tbody);
