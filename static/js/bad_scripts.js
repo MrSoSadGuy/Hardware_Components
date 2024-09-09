@@ -132,45 +132,54 @@ function save_buh_data_table_in_file(){
 
 // Поиск по таблице
 function myFunction() {
-            var rb1 = document.getElementById("inlineRadio1").checked
-            var rb2 = document.getElementById("inlineRadio2").checked
-            var input, filter, table, tr;
-            input = document.getElementById("myInput");
-            filter = input.value.toUpperCase();
-            const list_of_words= filter.split(" ")
-            table = document.getElementById("tbody_main_table");
-            tr = table.getElementsByTagName("tr");
-            for (var i = 0; i < tr.length; i++) {
-            var tds = tr[i].getElementsByTagName("td");
-            // поиск И
-            if (rb1){
-                var flag = [];
-                list_of_words.forEach(word =>{
-                    for(var j = 0; j < tds.length; j++){
-                    var td = tds[j];
-                    if (td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
-                    flag.push(true);
-                    return;
-                    }
-                }})
-            if(flag.length >= list_of_words.length){tr[i].removeAttribute("style");}
-            else {tr[i].style.display = "none";}}
-            // поиск ИЛИ
-            if (rb2){
-                var flag = false;
-                list_of_words.forEach(word =>{
-                    for(var j = 0; j < tds.length; j++){
-                        var td = tds[j];
-                        if (td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
-                        flag = true;
-                        return;
-                        }
-                    }})
-            if(flag){tr[i].removeAttribute("style");}
-            else {tr[i].style.display = "none";}
+    var rb1 = document.getElementById("inlineRadio1").checked
+    var rb2 = document.getElementById("inlineRadio2").checked
+    var input, filter, table, tr;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    const list_of_words= filter.split(" ")
+    table = document.getElementById("tbody_main_table");
+    tr = table.getElementsByTagName("tr");
+    for (var i = 0; i < tr.length; i++) {
+    var tds = tr[i].getElementsByTagName("td");
+    var number_of_records = 0;
+    // поиск И
+    if (rb1){
+        var flag = [];
+        list_of_words.forEach(word =>{
+            for(var j = 0; j < tds.length; j++){
+            var td = tds[j];
+            if (td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
+            flag.push(true);
+            return;
             }
-            }
+        }})
+        if(flag.length >= list_of_words.length){tr[i].removeAttribute("style");
+            number_of_records++;
+            console.log(number_of_records)
         }
+        else {tr[i].style.display = "none";}}
+    // поиск ИЛИ
+    if (rb2){
+        var flag = false;
+        list_of_words.forEach(word =>{
+            for(var j = 0; j < tds.length; j++){
+                var td = tds[j];
+                if (td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
+                flag = true;
+                return;
+                }
+            }})
+        if(flag){tr[i].removeAttribute("style");
+            number_of_records++;
+        }
+        else {tr[i].style.display = "none";}
+    }
+    
+    document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records ;
+    }
+    
+}
 
 function buh_data_table_serch(){
     var input, filter, table, tbodies, td;    

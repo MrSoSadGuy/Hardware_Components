@@ -27,6 +27,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.setAttribute('data-bs-theme',JSON.parse(localStorage.getItem("colar_thema")))
+        const table = document.getElementById('tbody_main_table')
+        const tbodies = table.getElementsByTagName('tr');
+        document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + tbodies.length ;
         });
     </script>
 
@@ -566,7 +569,8 @@
                       <input class="form-check-input" type="radio" name="radio_serch" id="inlineRadio2" value="option2">
                       <label class="form-check-label" for="inlineRadio2"  >Поиск "ИЛИ"</label>
                     </div>
-                            <input class ="input_for_serch" type="text" id="myInput" onkeyup="myFunction()" placeholder="Поиск по таблице.." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
+                      <input class ="input_for_serch" type="text" id="myInput" onkeyup="myFunction()" placeholder="Поиск по таблице.." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
+                      <i id = 'number_of_records'> </i>
                     </div>
               </div>
                   <table class="table table-striped table-sm table-bordered table-sort table-hover" id="myTable">

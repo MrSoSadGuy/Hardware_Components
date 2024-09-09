@@ -243,7 +243,7 @@
                             <div class="col">
                                 <div class="container-fluid">
                                     <input  class ="input_for_serch" type="text" id="Input_for_buh_data_serch" onkeyup="buh_data_table_serch()" placeholder="Поиск по инвентарному номеру..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
-                                    <i id = 'number_of_records'>Записей отображенно: </i>
+                                    <i id = 'number_of_records'> </i>
                                 </div>
                             </div>
                             
@@ -267,7 +267,8 @@
                                             <td width = '18%'>МОЛ: {{ buh.MOL }}</td>      
                                         </tr> 
                                         <tr>
-                                            <td class="multiline" colspan = '3'>Характеристика: {{ buh.charracter }}</td>
+                                            <td class="multiline" colspan = '2'>Характеристика: {{ buh.charracter }}</td>
+                                            <td>Примечание: {{ buh.note }}</td>
                                         </tr>
                                         
                                     </tbody>
