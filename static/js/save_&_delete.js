@@ -1,12 +1,11 @@
-async function fetch_data(data, db, route_str) {
+async function fetch_data(data, route_str, method) {
     var formdata = new FormData();
     formdata.append("json", JSON.stringify(data));
-    const route = "/" + route_str + "/" + db;
-    console.log("🚀 ~ fetch_data ~ route:", route)
+    console.log("🚀 ~ fetch_data ~ route:", route_str)
     try {
-        const response = await fetch(route,
+        const response = await fetch(route_str,
         {
-            method: "POST",
+            method: method,
             body: formdata
         })
         return await response.json();
@@ -14,7 +13,7 @@ async function fetch_data(data, db, route_str) {
         return "error"}
 }
 
-function change_password(){     
+async function change_password(){     
     var old_pass = document.getElementById("old_pass_id").value;
     var new_pass = document.getElementById("new_pass_id").value;
     var new_pass_2 = document.getElementById("new_pass_2_id").value;
@@ -23,24 +22,15 @@ function change_password(){
     const data = new FormData();
     data.append("json", JSON.stringify(new_data_pass));
     if ((new_pass === new_pass_2) && (new_pass.length > 5)){
-        fetch("/change_password",
-            {
-                method: "POST",
-                body: data
-            })
-            .then(function (res) {
-                return res.json();
-            })
-            .then(function (data) {
-                if (data === "SUCCESS"){
-                    document.getElementById("raport_chang_pass").setAttribute("style", "color:green")
-                    document.getElementById("raport_chang_pass").textContent = "Пароль изменен успешно";
-                }
-                else {
-                    document.getElementById("raport_chang_pass").setAttribute("style", "color:red")
-                    document.getElementById("raport_chang_pass").textContent = data;
-                }
-            })
+        const data = await fetch_data(new_data_pass,'/change_password','POST');
+        if (data === "SUCCESS"){
+            document.getElementById("raport_chang_pass").setAttribute("style", "color:green")
+            document.getElementById("raport_chang_pass").textContent = "Пароль изменен успешно";
+        }
+        else {
+            document.getElementById("raport_chang_pass").setAttribute("style", "color:red")
+            document.getElementById("raport_chang_pass").textContent = data;
+        }
     }
     else {
         console.log("Новый пароль задан не верно");
@@ -53,7 +43,7 @@ async function delete_row(db_table, id, bt_id, tbody, row)  {
     var id_val = {id: id}
     console.log("🚀 ~ delete_row ~ id:", id)
     if (confirm("Удалить запись?")){
-        const data = await fetch_data(id_val, db_table, 'delete_row');
+        const data = await fetch_data(id_val, '/delete_row/'+db_table,'POST');
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");
@@ -69,7 +59,7 @@ async function delete_row_from_edit_mod(db_table, id, bt_id, tbody, row)  {
     var id_val = {id: id}
     console.log("🚀 ~ delete_row_from_edit_mod ~ id:", id)
     if (confirm("Удалить запись?")){
-        const data = await fetch_data(id_val, db_table, 'delete_row');
+        const data = await fetch_data(id_val,'/delete_row/'+db_table, 'POST');
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success");
@@ -85,7 +75,7 @@ async function delete_table(db_table, id, bt_id, table_id)  {
     var id_val = {id: id}
     console.log("🚀 ~ delete_table ~ id:", id)
     if (confirm("Удалить запись?")){
-        const data = await fetch_data(id_val, db_table, 'delete_row');
+        const data = await fetch_data(id_val,'/delete_row/'+db_table, 'POST');
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success");
@@ -107,7 +97,7 @@ async function edit_row(db_table, id, bt_id, tbody, row, cells)  {
     }
     console.log(edit_data)
     if (confirm("Сохранить изменнения?")){
-        const data = await fetch_data(edit_data, db_table,'save_data');
+        const data = await fetch_data(edit_data,'/save_data/'+db_table, 'POST');
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");
@@ -125,7 +115,7 @@ async function send_to_storage(db, id, bt_id, tbody, row_index, cells, dataID)  
     var edit_data = {id: id, parent_obj: 543}
     console.log("🚀 ~ send_to_storage ~ edit_data:", edit_data)
     if (confirm("Отправить на склад?")){
-        const data = await fetch_data(edit_data, db, 'save_data');
+        const data = await fetch_data(edit_data,'/save_data/'+db, 'POST');
         console.log("🚀 ~ send_to_storage ~ data:", data)
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");
@@ -143,7 +133,7 @@ async function send_to_usage(id, db_table, parent_id, bt_id) {
         var edit_data = {id: id, parent_obj :parent_id}           
         console.log("🚀 ~ send_to_usage ~ edit_data:", edit_data)
     if (confirm("Переместить устройство?")){
-        const data = await fetch_data(edit_data, db_table+ '_edited','save_data');
+        const data = await fetch_data(edit_data, '/save_data/'+db_table+ '_edited','POST');
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success");
@@ -167,7 +157,7 @@ async function save_edit_buh_data() {
     }
     console.log("🚀 ~ save_edit_buh_data ~ edit_data:", edit_data)
     if (confirm("Сохранить изменнения?")){
-    const fetch_response = await fetch_data(edit_data, "Buhuchet",'save_data');
+    const fetch_response = await fetch_data(edit_data,'/save_data/Buhuchet', 'POST');
         console.log("🚀 ~ save_edit_buh_data ~ data:", fetch_response)
         if(fetch_response==="SUCCESS"){
             document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-success");
@@ -194,7 +184,7 @@ async function save_edit_table_row(tbody ,row_index) {
     }
     console.log(edited_row)
     if (confirm("Сохранить изменнения?")){
-        const data = await fetch_data(edited_row, "sostav",'save_data');
+        const data = await fetch_data(edited_row,'/save_data/sostav', 'POST');
         console.log("🚀 ~ save_edit_table_row ~ data:", data)
         if(data==="SUCCESS"){
             document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-success");
@@ -230,7 +220,7 @@ async function save_edit_MA_table(tbody ,row) {
     }
     console.log(edited_row)
     if (confirm("Сохранить изменнения?")){
-    const data = await fetch_data(edited_row, "Objects_ur_lica_edited", 'save_data');
+    const data = await fetch_data(edited_row,'/save_data/Objects_ur_lica_edited','POST');
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-success");
@@ -267,7 +257,7 @@ async function save_kts_data() {
     }
     console.log(kts_data)
     if (confirm("Сохранить изменнения?")){
-        const fetch_response = await fetch_data(kts_data, "KTS",'save_data');
+        const fetch_response = await fetch_data(kts_data,'/save_data/KTS','POST');
         console.log("🚀 ~ save_edit_buh_data ~ data:", fetch_response)
         if(fetch_response==="SUCCESS"){
             document.getElementById("save_kts").setAttribute("class", "btn btn-success");
@@ -332,7 +322,7 @@ async function add_new_inv_numbers(parent_tag_id, btn_id) {
                 charracter: list_of_tds[3].textContent,
                 note:""
             }
-        const response = await fetch_data(new_inv_data, "Buhuchet",'save_data');
+        const response = await fetch_data(new_inv_data,'/save_data/Buhuchet','POST');
         console.log("🚀 ~ add_new_inv_numbers ~ response:", response)
         if(response==="SUCCESS"){
             document.getElementById(btn_id).setAttribute("class", "btn btn-success");
@@ -376,7 +366,7 @@ async function add_new_units(tbody, db_table, btn_id, add_param){
             continue;
         }
         console.log(new_unit);
-        const data = await fetch_data(new_unit, db_table,'save_data');
+        const data = await fetch_data(new_unit,'/save_data/'+db_table,'POST');
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById(btn_id).setAttribute("class", "btn btn-success");

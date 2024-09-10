@@ -83,9 +83,6 @@ def add_object_for_MA(req_dict, name):
     
 def add_ma_add_modules(req_dict, name):
     if request.method == 'POST':
-        # obj = Objects_ur_lica.query.get_or_404(int(req_dict["add_p"]))
-        # unit = obj.unit[0].id
-        # print(obj ,unit)
         ma_modules = ma_add_modules(ma_unit_id = req_dict["add_p"],
                                     type=req_dict["0"],
                                     inv_number=req_dict["1"],
@@ -129,8 +126,7 @@ def save_kts_data(req_dict, name):
 
 
 def save_buhuchet_data(req_dict, name):
-    buh = BuhUch.query.all()
-    
+    buh = BuhUch.query.all()    
     if request.method == 'POST':
         for b in buh:
             if b.inv_number == req_dict["inv_number"].strip():
@@ -150,9 +146,6 @@ def save_buhuchet_data(req_dict, name):
         return add_data_to_db(buh)
     else:
         return json.dumps("NOT 'POST' REQUEST")
-
-
-
 
 
 def save_sostav_data(req_dict, name):

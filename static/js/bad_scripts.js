@@ -50,7 +50,6 @@ function add_new_table(td_id, user_name){
     new_tbody.appendChild(second_line)
     const td4 = document.createElement('td');
     td4.setAttribute('contenteditable','true')
-
     td4.setAttribute('colspan', '3')
     second_line.appendChild(td4)
     console.log("🚀 ~ add_new_table ~ new_table:", new_table)
@@ -67,12 +66,10 @@ function del_new_table(td_id) {
     last.parentNode.removeChild(last);
     }
 
-
-function save_main_table_in_file(){
+async function save_main_table_in_file(){
     var oTable = document.getElementById('tbody_main_table');
     console.log($('tr:visible').length)
     var rowLength = oTable.rows.length;
-    var data = new FormData();
     var list_data = []
     for (i = 0; i < rowLength; i++){
         var style = oTable.rows.item(i).getAttribute("style")
@@ -80,29 +77,21 @@ function save_main_table_in_file(){
         var oCells = oTable.rows.item(i).cells;
         list_data.push(oCells[0].textContent)
     }}
-    data.append( "json", JSON.stringify(list_data ));
-    fetch("/main_table_data",
-        {
-            method: "POST",
-            body: data
-        })
-        .then(function(res){ return res.json(); })
-        .then(function(data){
-            if (data === "SUCCESS"){
-                const link = document.createElement('a');
-                link.href = '/download/main_table';
-                document.body.appendChild(link);
-                link.click();
-                link.remove();}
-            else {alert("ERROR");
-                console.log(data)}
-    })
+    const data = await fetch_data(list_data, "/main_table_data", "POST")
+    console.log("🚀 ~ save_main_table_in_file ~ data:", data)
+    if (data === "SUCCESS"){
+        const link = document.createElement('a');
+        link.href = '/download/main_table';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();}
+    else {alert("ERROR");}
     }
-function save_buh_data_table_in_file(){
+
+async function save_buh_data_table_in_file(){
     let table = document.getElementById('buh_data_tbody');
     let tbodies = table.getElementsByTagName('table');
     var list_data = []
-    var data = new FormData();
     for(var i = 0; i < tbodies.length; i++){
         var style = tbodies[i].getAttribute("style");
         if(style == null){
@@ -110,25 +99,16 @@ function save_buh_data_table_in_file(){
         }
     }
     console.log("🚀 ~ save_buh_data_table_in_file ~ list_data:", list_data)
-    data.append( "json", JSON.stringify(list_data));
-    fetch("/buh_table_data",
-        {
-            method: "POST",
-            body: data
-        })
-        .then(function(res){ return res.json(); })
-        .then(function(data){
-            if (data === "SUCCESS"){
-                const link = document.createElement('a');
-                link.href = '/download/buh_table';
-                document.body.appendChild(link);
-                link.click();
-                link.remove();}
-            else {alert("ERROR");
-                console.log(data)}
-    })
+    const data = await fetch_data(list_data, "/buh_table_data", "POST")
+    console.log("🚀 ~ save_main_table_in_file ~ data:", data)
+    if (data === "SUCCESS"){
+        const link = document.createElement('a');
+        link.href = '/download/buh_table';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();}
+    else {alert("ERROR");}
     }
-
 
 // Поиск по таблице
 function myFunction() {
@@ -140,45 +120,42 @@ function myFunction() {
     const list_of_words= filter.split(" ")
     table = document.getElementById("tbody_main_table");
     tr = table.getElementsByTagName("tr");
-    for (var i = 0; i < tr.length; i++) {
-    var tds = tr[i].getElementsByTagName("td");
     var number_of_records = 0;
-    // поиск И
-    if (rb1){
-        var flag = [];
-        list_of_words.forEach(word =>{
-            for(var j = 0; j < tds.length; j++){
-            var td = tds[j];
-            if (td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
-            flag.push(true);
-            return;
-            }
-        }})
-        if(flag.length >= list_of_words.length){tr[i].removeAttribute("style");
-            number_of_records++;
-            console.log(number_of_records)
-        }
-        else {tr[i].style.display = "none";}}
-    // поиск ИЛИ
-    if (rb2){
-        var flag = false;
-        list_of_words.forEach(word =>{
-            for(var j = 0; j < tds.length; j++){
+    for (var i = 0; i < tr.length; i++) {
+        var tds = tr[i].getElementsByTagName("td");        
+        // поиск И
+        if (rb1){
+            var flag = [];
+            list_of_words.forEach(word =>{
+                for(var j = 0; j < tds.length; j++){
                 var td = tds[j];
                 if (td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
-                flag = true;
+                flag.push(true);
                 return;
                 }
             }})
-        if(flag){tr[i].removeAttribute("style");
-            number_of_records++;
-        }
-        else {tr[i].style.display = "none";}
-    }
-    
-    document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records ;
-    }
-    
+            if(flag.length >= list_of_words.length){tr[i].removeAttribute("style");
+                number_of_records++;
+            }
+            else {tr[i].style.display = "none";}}
+        // поиск ИЛИ
+        if (rb2){
+            var flag = false;
+            list_of_words.forEach(word =>{
+                for(var j = 0; j < tds.length; j++){
+                    var td = tds[j];
+                    if (td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
+                    flag = true;
+                    return;
+                    }
+                }})
+            if(flag){tr[i].removeAttribute("style");
+                number_of_records++;
+            }           
+            else {tr[i].style.display = "none";}
+        }        
+        document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records ;
+    }    
 }
 
 function buh_data_table_serch(){
@@ -202,29 +179,23 @@ function buh_data_table_serch(){
         }
         if(flag){tbodies[i].removeAttribute("style");
             number_of_records++;
-            
         }
             else {tbodies[i].style.display = "none";
-                // number_of_records--;
             }
         document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records ;
-    }
-    
+    }    
 }
 //копирование в таблицу из Excel 
 function paste_to_cells_like_excel(tbody_id, data, start_r, start_c,  cells_in_row){
     let value = data.split(/\r\n|\n|\r/);
     if (value[value.length-1] === ""){value.pop()}
-    console.log(value)
     let start_row = start_r;
     let start_cell = start_c
     let oTable = document.getElementById(tbody_id);
     let rowLength = oTable.rows.length;
-    console.log('1  ',rowLength, value.length);
     for (let j = 0; j < value.length; j++) {
         var oCells = oTable.rows.item(start_row).cells;
         var words = value[j].split(/\t/);
-        console.log("wl=",words.length);
         for (let k = 0; k < words.length; k++) {
             if (k === oCells.length - start_c){
                 start_cell = start_c;

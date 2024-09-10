@@ -25,7 +25,7 @@ def login():
 @login_required
 def logout():
     user = Users.query.get_or_404(current_user.get_id())
-    print("Пользователь "+user.FIO+" вышел " + str(datetime.now()))
+    print(str(datetime.now())+": Пользователь "+user.FIO+" вышел")
     logout_user()
     return redirect(url_for('login'), 301)
 
@@ -43,7 +43,7 @@ def login_page():
         else:
             if check_password_hash(user.password, password):
                 login_user(user)
-                print("Пользователь "+user.FIO+" вошел " + str(datetime.now()))
+                print(str(datetime.now())+": Пользователь "+user.FIO+" вошел")
                 return json.dumps('SUCCESS')
             else:
                 return json.dumps('Пароль введен неправильно!')
@@ -63,7 +63,7 @@ def change_password():
     if check_password_hash(user.password, old_pass):
         if new_pass == new_pass_2:
             user.password = generate_password_hash(new_pass)
-            save_data_to_db()
+            return save_data_to_db()
         else:
             return jsonify("Новые пароли не совпадают")
     else:
@@ -133,7 +133,7 @@ def get_data_for_jinja():
 @login_required
 def get_data_from_db(db):
     req = request.form['json']
-    print("запрос на получение данных -- ", db, json.loads(req))
+    print(+ str(datetime.now())+": запрос на получение данных -- ", db, json.loads(req))
     if db == 'BuhUch':
         buh = BuhUch.query.filter_by(inv_number=json.loads(req)).first()
         return jsonify(buh)
@@ -151,14 +151,11 @@ def get_data_from_db(db):
         return jsonify(units)
     if db == 'Objects_ur_lica':
         obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
-        print(obj)
         units_list = {}
         modules_list = {}
         for un in range(0, len(obj.unit)) :
             units_list[un] = obj.unit[un]  
-            modules_list[un]= obj.unit[un].modules
-        print(modules_list)
-        print(units_list)    
+            modules_list[un]= obj.unit[un].modules    
         return jsonify(obj,units_list,modules_list)
     else:
         return None
@@ -172,7 +169,6 @@ def get_data_for_select():
             for un in obj[i].unit :                
                 unit_id_list.append(un.id)  
         obj_dict[i] = [obj[i].id, obj[i].cod_name, unit_id_list]
-    print(obj_dict)
     return obj_dict        
 
 
@@ -183,7 +179,7 @@ def delete_row(base_table):
     id = int(json.loads(name)["id"])
     user = Users.query.filter_by(id=current_user.get_id()).first()
     print(user.FIO, datetime.now())
-    print("запрос на удаление -- ", base_table, name)
+    print(str(datetime.now()) +': '+ user.FIO + " запрос на удаление -- ", base_table, name)
     db_obj = ""
     if base_table == "ma_add_modules":
         db_obj = ma_add_modules.query.get_or_404(id)
@@ -208,8 +204,7 @@ def delete_row(base_table):
 def save_data(db_name):
     req_dict = json.loads(request.form['json'])
     user = Users.query.filter_by(id=current_user.get_id()).first()
-    print(user.FIO, datetime.now())
-    print("запрос на внесение изменений или добавление новых записей -- ", db_name, req_dict)
+    print(str(datetime.now()) +': '+ user.FIO + " запрос на внесение изменений или добавление новых записей -- ", db_name, req_dict)
     if db_name == 'KTS':
         return save_kts_data(req_dict, user.FIO)
     if db_name == 'sostav':
@@ -262,9 +257,7 @@ def buh_table_data_download():
 @login_required
 def buh_table_data():
     name = request.form['json']
-    print(json.loads(name))
     list_data = json.loads(name)
-    print(type(list_data))
     start_row = 4
     row_count = 1
     step = 1
@@ -312,9 +305,7 @@ def buh_table_data():
 @login_required
 def main_table_data():
     name = request.form['json']
-    print(json.loads(name))
     list_data = json.loads(name)
-    print(type(list_data))
     start_row = 4
     path = 'files for download\шаблон Таблица оборудования PON.xlsx'
     try:
@@ -340,8 +331,6 @@ def main_table_data():
 
 def create_file_sostav(name_PON):
     unit1 = Unit.query.filter_by(name_PON=name_PON).all()
-    print(name_PON)
-    print("UL" in name_PON)
     if "UL" in name_PON:
         book = openpyxl.load_workbook('files for download\шаблон.xlsx')
         sheet = book['Huawei']
@@ -363,9 +352,7 @@ def create_file_sostav(name_PON):
 
 def create_file_KTS(name_PON):
     kts = Data_for_KTS.query.filter_by(cod_name=name_PON).first()
-    print(kts)
     user = Users.query.get(current_user.get_id())
-    print(user.FIO)
     book = openpyxl.load_workbook('files for download\КТС_шаблон.xlsx')
     sheet = book.active
     sheet['A3'] = kts.full_name
