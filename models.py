@@ -115,6 +115,16 @@ class Users (db.Model, UserMixin):
 
     def __repr__(self):
         return '<Users %r>' % self.id
+    
+@dataclass
+class MOLs (db.Model):
+    __tablename__="list_of_MOLs"
+    id = db.Column(db.Integer, primary_key=True)
+    full_name = db.Column(db.String(20), nullable=False, unique=True)
+    
+
+    def __repr__(self):
+        return '<Users %r>' % self.id
 
 @dataclass
 class Data_for_KTS (db.Model, UserMixin):

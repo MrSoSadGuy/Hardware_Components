@@ -147,11 +147,12 @@ async function send_to_usage(id, db_table, parent_id, bt_id) {
 }
 
 async function save_edit_buh_data() {
+    const sel = document.getElementById("select_mol_id");
     var edit_data = {
         id: document.getElementById("id_buh").value,
         inv_number: document.getElementById("In_num").value,
         name: document.getElementById("description_id").value,
-        MOL: document.getElementById("mol_id").value,
+        MOL: sel.options[sel.selectedIndex].text,
         charracter: document.getElementById("char_id").value,
         note: document.getElementById("note_id").value
     }

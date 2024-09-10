@@ -136,7 +136,7 @@
               </div>
               </div>
               <div class="table-responsive small">
-                <table class="table table-striped table-sm table-bordered table-sort" id="Sostav_Modal_table">
+                <table class="table table-striped table-sm table-bordered table-sort table-hover" id="Sostav_Modal_table">
                   <thead>
                     <tr>
                       <th scope="col">П/М</th>
@@ -190,7 +190,11 @@
                     <div class="col-sm">
                       <div class="mb-3">
                         <label class="col-form-label">МОЛ:</label>
-                        <input type="text"  class="form-control" id="mol_id">
+                        <select class="form-select" aria-label="Default select example" id = 'select_mol_id'>
+                          {% for mol in mols %}
+                              <option value="{{ mol.id }}">{{ mol.full_name }}</option>
+                          {% endfor %}
+                      </select>   
                       </div>
                     </div>
                   </div>
@@ -540,7 +544,7 @@
                             <i id = 'number_of_records'> </i>
                     </div>
               </div>
-                  <table class="table table-striped table-sm table-bordered table-sort" id="myTable">
+                  <table class="table table-striped table-sm table-bordered table-sort table-hover" id="myTable">
                   <thead>
                     <tr>
                       <th   scope="col">id</th>

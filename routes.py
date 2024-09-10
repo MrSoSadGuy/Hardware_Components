@@ -85,7 +85,8 @@ def pon_page():
     kts_data = Data_for_KTS.query.all()
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
-    return render_template("index.html", units=units, user_name=user_name, kts_data=kts_data)
+    mols = MOLs.query.all()
+    return render_template("index.html", units=units, user_name=user_name, kts_data=kts_data, mols = mols)
 
 
 @app.route('/multiple_access')
@@ -94,16 +95,18 @@ def ma_page():
     new_obj_list = get_data_for_jinja()
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
-    return render_template("MA_page.html",  user_name=user_name, new_obj_list=new_obj_list )
+    mols = MOLs.query.all()
+    return render_template("MA_page.html",  user_name=user_name, new_obj_list=new_obj_list, mols = mols )
 
 
 @app.route('/buh_data')
 @login_required
 def buh_data_page():
     buh_data = BuhUch.query.all()
+    mols = MOLs.query.all()
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
-    return render_template("buh_data.html",  user_name=user_name, buh_data = buh_data)
+    return render_template("buh_data.html",  user_name=user_name, buh_data = buh_data, mols = mols)
 
 
 def get_data_for_jinja():

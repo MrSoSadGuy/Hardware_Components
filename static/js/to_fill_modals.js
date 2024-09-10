@@ -159,11 +159,22 @@ async function invent_modal(param){
     document.getElementById("In_num").value = param;
     document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
     const fetch_response = await fetch_data(param,'/get_data_from_db/BuhUch',"POST");
-    console.log("🚀 ~ invent_modal ~ fetch_response:", fetch_response)
-    if (fetch_response === null){alert("Нет данных по этому номеру")}
+    const select = document.getElementById('select_mol_id')
+    var options = select.getElementsByTagName('option');
+    console.log("🚀 ~ invent_modal ~ options:", options);
+    console.log("🚀 ~ invent_modal ~ fetch_response:", fetch_response);
+    if (fetch_response === null){alert("Нет данных по этому номеру")
+        const opt_selected = document.createElement('option');
+        opt_selected.selected = 'selected';
+        opt_selected.text = 'Выберите МОЛа';
+        select.add(opt_selected);
+    }
     else {
         document.getElementById("description_id").value = fetch_response['name'];
-        document.getElementById("mol_id").value = fetch_response['MOL'];
+        for(let i=0; i < options.length; i++) {
+            if (fetch_response['MOL'] === options[i].textContent){
+                options[i].selected = 'selected'}
+        }
         document.getElementById("char_id").value = fetch_response['charracter'];
         document.getElementById("note_id").value = fetch_response['note'];
     }
@@ -175,18 +186,18 @@ async function edit_ma_unit_modal(obj_id, row_index){
     document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
     document.getElementById('button_for_delete_row').setAttribute("class", "btn btn-primary");
     console.log(document.getElementById("id_for_edit").value)
-        document.getElementById("edit_cod_id").value = data[0].cod_name;
-        document.getElementById("edit_org_id").value = data[0].organization;
-        document.getElementById("edit_address_id").value = data[0].address;
-        document.getElementById("edit_naklad_id").value = data[0].naklodnaja;
-        document.getElementById("edit_ip_id").value = data[0].IP;
-        document.getElementById("edit_inst_date_id").value = data[0].install_date;
-        document.getElementById("edit_orsh_id").value = data[0].ORSH;
-        document.getElementById("unit_note_id").value = data[0].note;
-        document.getElementById('button_for_delete_row').onclick = function (){
-            delete_row_from_edit_mod('Objects_ur_lica', obj_id , 'button_for_delete_row','tbody_main_table', row_index)};
-        document.getElementById('button_for_save_edit_row').onclick = function (){
-            save_edit_MA_table('tbody_main_table', row_index)};
+    document.getElementById("edit_cod_id").value = data[0].cod_name;
+    document.getElementById("edit_org_id").value = data[0].organization;
+    document.getElementById("edit_address_id").value = data[0].address;
+    document.getElementById("edit_naklad_id").value = data[0].naklodnaja;
+    document.getElementById("edit_ip_id").value = data[0].IP;
+    document.getElementById("edit_inst_date_id").value = data[0].install_date;
+    document.getElementById("edit_orsh_id").value = data[0].ORSH;
+    document.getElementById("unit_note_id").value = data[0].note;
+    document.getElementById('button_for_delete_row').onclick = function (){
+        delete_row_from_edit_mod('Objects_ur_lica', obj_id , 'button_for_delete_row','tbody_main_table', row_index)};
+    document.getElementById('button_for_save_edit_row').onclick = function (){
+        save_edit_MA_table('tbody_main_table', row_index)};
 }
 async function select_usage_modal(id, db_table) {
     document.getElementById("btn_send_to_usage").setAttribute("class", "btn btn-primary");
