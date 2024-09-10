@@ -133,7 +133,7 @@ def get_data_for_jinja():
 @login_required
 def get_data_from_db(db):
     req = request.form['json']
-    print(+ str(datetime.now())+": запрос на получение данных -- ", db, json.loads(req))
+    print(str(datetime.now())+": запрос на получение данных -- ", db, json.loads(req))
     if db == 'BuhUch':
         buh = BuhUch.query.filter_by(inv_number=json.loads(req)).first()
         return jsonify(buh)

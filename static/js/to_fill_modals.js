@@ -25,7 +25,6 @@ async function sostav_ma_unit(dataID){
         }            
     }
 }
-
 function create_tables(moduls, table_id, column_name, db_table, busy){
     console.log("🚀 ~ create_tables ~ moduls:", moduls)
     const tbody_current = document.getElementById(table_id);
@@ -161,8 +160,6 @@ async function invent_modal(param){
     document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
     const fetch_response = await fetch_data(param,'/get_data_from_db/BuhUch',"POST");
     console.log("🚀 ~ invent_modal ~ fetch_response:", fetch_response)
-    var data = new FormData();
-    data.append('json', JSON.stringify(document.getElementById("In_num").value))
     if (fetch_response === null){alert("Нет данных по этому номеру")}
     else {
         document.getElementById("description_id").value = fetch_response['name'];
@@ -171,31 +168,28 @@ async function invent_modal(param){
         document.getElementById("note_id").value = fetch_response['note'];
     }
 }
-async function edit_ma_unit_modal(obj_id, row_index){
-            
-            const data = await fetch_data(obj_id,'/get_data_from_db/Objects_ur_lica',"POST");
-            console.log("🚀 ~ edit_ma_unit_modal ~ data:", data)
-            
-            document.getElementById("id_for_edit").value = obj_id;
-            document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
-            document.getElementById('button_for_delete_row').setAttribute("class", "btn btn-primary");
-            console.log(document.getElementById("id_for_edit").value)
-                document.getElementById("edit_cod_id").value = data[0].cod_name;
-                document.getElementById("edit_org_id").value = data[0].organization;
-                document.getElementById("edit_address_id").value = data[0].address;
-                document.getElementById("edit_naklad_id").value = data[0].naklodnaja;
-                document.getElementById("edit_ip_id").value = data[0].IP;
-                document.getElementById("edit_inst_date_id").value = data[0].install_date;
-                document.getElementById("edit_orsh_id").value = data[0].ORSH;
-                document.getElementById("unit_note_id").value = data[0].note;
-                document.getElementById('button_for_delete_row').onclick = function (){
-                    delete_row_from_edit_mod('Objects_ur_lica', obj_id , 'button_for_delete_row','tbody_main_table', row_index)};
-                document.getElementById('button_for_save_edit_row').onclick = function (){
-                    save_edit_MA_table('tbody_main_table', row_index)};
+async function edit_ma_unit_modal(obj_id, row_index){        
+    const data = await fetch_data(obj_id,'/get_data_from_db/Objects_ur_lica',"POST");
+    console.log("🚀 ~ edit_ma_unit_modal ~ data:", data)
+    document.getElementById("id_for_edit").value = obj_id;
+    document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
+    document.getElementById('button_for_delete_row').setAttribute("class", "btn btn-primary");
+    console.log(document.getElementById("id_for_edit").value)
+        document.getElementById("edit_cod_id").value = data[0].cod_name;
+        document.getElementById("edit_org_id").value = data[0].organization;
+        document.getElementById("edit_address_id").value = data[0].address;
+        document.getElementById("edit_naklad_id").value = data[0].naklodnaja;
+        document.getElementById("edit_ip_id").value = data[0].IP;
+        document.getElementById("edit_inst_date_id").value = data[0].install_date;
+        document.getElementById("edit_orsh_id").value = data[0].ORSH;
+        document.getElementById("unit_note_id").value = data[0].note;
+        document.getElementById('button_for_delete_row').onclick = function (){
+            delete_row_from_edit_mod('Objects_ur_lica', obj_id , 'button_for_delete_row','tbody_main_table', row_index)};
+        document.getElementById('button_for_save_edit_row').onclick = function (){
+            save_edit_MA_table('tbody_main_table', row_index)};
 }
 async function select_usage_modal(id, db_table) {
     document.getElementById("btn_send_to_usage").setAttribute("class", "btn btn-primary");
-    const table_current = document.getElementById('in_usage_ma_units_table');
     const select = document.getElementById('select_send_to_usage')
     while(select.length>0){select.remove(0)}
     const opt_selected = document.createElement('option')

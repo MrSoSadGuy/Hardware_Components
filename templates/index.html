@@ -83,10 +83,10 @@
               <div class="container">
               <div class="row">
                 <div class="col-sm">
-                   <div class="mb-3">
-                       <label class="col-form-label">Устройство:</label>
-                       <input type="text" readonly class="form-control" id="PON_id" >
-                   </div>
+                  <div class="mb-3">
+                      <label class="col-form-label">Устройство:</label>
+                      <input type="text" readonly class="form-control" id="PON_id" >
+                  </div>
                 </div>
                 <div class="col-sm">
                   <div class="mb-3">
@@ -111,10 +111,10 @@
               <div class="container">
               <div class="row">
                 <div class="col-sm">
-                   <div class="mb-3">
-                       <label class="col-form-label">Наименование:</label>
-                       <input type="text"  class="form-control" id="full_name_id" name="name2">
-                   </div>
+                  <div class="mb-3">
+                      <label class="col-form-label">Наименование:</label>
+                      <input type="text"  class="form-control" id="full_name_id" name="name2">
+                  </div>
                 </div>
                 <div class="col-sm">
                   <div class="mb-3">
@@ -227,12 +227,12 @@
           <div class="modal-body">
             <form>
                 <label class="col-form-label" id="id_for_edit"></label>
-               <div class="container">
+              <div class="container">
                   <div class="row">
                       <div class="col-sm">
               <div class="mb-3">
                   <label class="col-form-label">Место нахождения:</label>
-                   <input type="text"  class="form-control"  id = "edit_UD_id">
+                  <input type="text"  class="form-control"  id = "edit_UD_id">
               </div>
                       </div>
                       <div class="col-sm">
@@ -242,49 +242,49 @@
               </div>
                       </div>
                   </div>
-               </div>
+                </div>
                 <div class="container">
-                   <div class="row">
-                       <div class="col-sm">
+                  <div class="row">
+                      <div class="col-sm">
               <div class="mb-3">
                 <label class="col-form-label">Наименование:</label>
                 <input type="text"  class="form-control" id="edit_Name_id">
               </div>
-                       </div>
-                       <div class="col-sm">
+                      </div>
+                      <div class="col-sm">
               <div class="mb-3">
                 <label class="col-form-label">Инвентарный номер:</label>
                 <input type="text"  class="form-control" id="edit_Inv_id">
               </div>
-                       </div>
-                   </div>
+                      </div>
+                  </div>
                 </div>
                 <div class="container">
-                   <div class="row">
-                       <div class="col-sm">
+                  <div class="row">
+                      <div class="col-sm">
               <div class="mb-3">
                 <label class="col-form-label">Серийный номер:</label>
                 <input type="text"  class="form-control" id="edit_Serial_id">
               </div>
-                       </div>
-                       <div class="col-sm">
+                      </div>
+                      <div class="col-sm">
               <div class="mb-3">
                 <label class="col-form-label">Ряд/Шкаф/Полка:</label>
                 <input type="text"  class="form-control" id="edit_Riad_id">
               </div>
-                       </div>
-                       <div class="col-sm">
+                      </div>
+                      <div class="col-sm">
               <div class="mb-3">
                 <label class="col-form-label">Плата-место:</label>
                 <input type="text"  class="form-control" id="edit_Mesto_id">
               </div>
-                   </div>
-                   </div>
+                  </div>
+                  </div>
                     <div class="mb-3">
                 <label  class="col-form-label">Примечание:</label>
                 <textarea  class="form-control" id="unit_note_id" cols="30" rows="3"></textarea>
               </div>
-             </div>
+            </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -377,12 +377,9 @@
                                       $('#inventModal').on('show.bs.modal', function (e) {
                                       $(this).find('form').trigger('reset');
                                       const param = $(e.relatedTarget).data('id');
-                                      invent_modal(param);
-                                        })
-                                        $(function () {
-                                          $('[data-toggle="tooltip"]').tooltip()
-                                      })
-                                        </script>
+                                      invent_modal(param);})
+                                      $(function () {$('[data-toggle="tooltip"]').tooltip()})
+    </script>
     <script type="text/javascript">
                                     $('#SostavModal').on('show.bs.modal', function (e) {
                                       $(this).find('form').trigger('reset');
