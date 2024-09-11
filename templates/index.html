@@ -378,86 +378,91 @@
     </div>
 
     <script type="text/javascript">
-                                      $('#inventModal').on('show.bs.modal', function (e) {
-                                      $(this).find('form').trigger('reset');
-                                      const param = $(e.relatedTarget).data('id');
-                                      invent_modal(param);})
-                                      $(function () {$('[data-toggle="tooltip"]').tooltip()})
+    {# Заполнение в модульное окно Инвентарного номера #}
+        $('#inventModal').on('show.bs.modal', function (e) {
+        $(this).find('form').trigger('reset');
+        const param = $(e.relatedTarget).data('id');
+        var user = {{ user_name | tojson }};
+        invent_modal(param, user);})
+    {# Всплывающие подсказки #}
+        $(function () {$('[data-toggle="tooltip"]').tooltip()})
     </script>
     <script type="text/javascript">
-                                    $('#SostavModal').on('show.bs.modal', function (e) {
-                                      $(this).find('form').trigger('reset');
-                                      var dataPon = $(e.relatedTarget).data('pon');
-                                      var dataUd = $(e.relatedTarget).data('ud');
-                                      document.getElementById('save_kts').setAttribute("class", "btn btn-primary");
-                                      document.getElementById("PON_id").value = dataPon;
-                                      document.getElementById("Ud_id").value = dataUd;
-                                      document.getElementById("t_body").remove();
-                                      var units = {{ units | tojson }};
-                                      var kts_data = {{ kts_data | tojson }};
-                                      const list_id  = ["ip_id","olt_id","inv_id","serial_id","date_pr_id","date_exp_id","full_name_id",
-                                                        "mesto_id","zavod_id","kts","save_kts"];
-                                      kts_data.forEach(item =>{
-                                            if (dataPon === item.cod_name){
-                                                console.log(item);
-                                                document.getElementById("ip_id").value = item['IP'];
-                                                document.getElementById("olt_id").value = item['OLT'];
-                                                document.getElementById("inv_id").value = item['inv_number'];
-                                                document.getElementById("serial_id").value = item['Serial'];
-                                                document.getElementById("date_pr_id").value = item['date_of_production'];
-                                                document.getElementById("date_exp_id").value = item['date_of_entry'];
-                                                document.getElementById("full_name_id").value = item['full_name'];
-                                                document.getElementById("mesto_id").value = item['mesto'];
-                                                document.getElementById("zavod_id").value = item['zavod'];
-                                            }
-                                        })
-                                        if ((dataPon.toUpperCase().includes("A5GM")) || (dataPon.toUpperCase().includes("P5GM")) || (dataPon.toUpperCase().includes("I5GM"))){
-                                            list_id.forEach(id => {document.getElementById(id).disabled = false;})
-                                            document.getElementById("sostav").disabled = !((dataPon.toUpperCase().includes("OL")) || (dataPon.toUpperCase().includes("UL")));
-                                        }
-                                        else {
-                                            list_id.forEach(id => {document.getElementById(id).disabled = true;
-                                            document.getElementById("sostav").disabled = true;})
-                                        }
-                                        var table = document.getElementById("Sostav_Modal_table");
-                                        const tbody = document.createElement('tbody');
-                                        tbody.setAttribute("id", "t_body");
-                                        table.appendChild(tbody);
-                                        const column_data = ['plata_mesto','inv_number','name_unit','serial_number','note']
-                                        units.forEach(item => {
-                                            if (dataPon === item.name_PON){
-                                                const tr = document.createElement('tr');
-                                                for (let i = 0; i < column_data.length; i++) {
-                                                    const td = document.createElement('td');
-                                                    td.textContent = item[column_data[i]];
-                                                    tr.appendChild(td);
-                                                }
-                                                tbody.appendChild(tr);}});});
+    {# Заполнить таблицу в модульном окне Соства оборудования #}
+      $('#SostavModal').on('show.bs.modal', function (e) {
+        $(this).find('form').trigger('reset');
+        var dataPon = $(e.relatedTarget).data('pon');
+        var dataUd = $(e.relatedTarget).data('ud');
+        document.getElementById('save_kts').setAttribute("class", "btn btn-primary");
+        document.getElementById("PON_id").value = dataPon;
+        document.getElementById("Ud_id").value = dataUd;
+        document.getElementById("t_body").remove();
+        var units = {{ units | tojson }};
+        var kts_data = {{ kts_data | tojson }};
+        const list_id  = ["ip_id","olt_id","inv_id","serial_id","date_pr_id","date_exp_id","full_name_id",
+                          "mesto_id","zavod_id","kts","save_kts"];
+        kts_data.forEach(item =>{
+              if (dataPon === item.cod_name){
+                  console.log(item);
+                  document.getElementById("ip_id").value = item['IP'];
+                  document.getElementById("olt_id").value = item['OLT'];
+                  document.getElementById("inv_id").value = item['inv_number'];
+                  document.getElementById("serial_id").value = item['Serial'];
+                  document.getElementById("date_pr_id").value = item['date_of_production'];
+                  document.getElementById("date_exp_id").value = item['date_of_entry'];
+                  document.getElementById("full_name_id").value = item['full_name'];
+                  document.getElementById("mesto_id").value = item['mesto'];
+                  document.getElementById("zavod_id").value = item['zavod'];
+              }
+          })
+          if ((dataPon.toUpperCase().includes("A5GM")) || (dataPon.toUpperCase().includes("P5GM")) || (dataPon.toUpperCase().includes("I5GM"))){
+              list_id.forEach(id => {document.getElementById(id).disabled = false;})
+              document.getElementById("sostav").disabled = !((dataPon.toUpperCase().includes("OL")) || (dataPon.toUpperCase().includes("UL")));
+          }
+          else {
+              list_id.forEach(id => {document.getElementById(id).disabled = true;
+              document.getElementById("sostav").disabled = true;})
+          }
+          var table = document.getElementById("Sostav_Modal_table");
+          const tbody = document.createElement('tbody');
+          tbody.setAttribute("id", "t_body");
+          table.appendChild(tbody);
+          const column_data = ['plata_mesto','inv_number','name_unit','serial_number','note']
+          units.forEach(item => {
+              if (dataPon === item.name_PON){
+                  const tr = document.createElement('tr');
+                  for (let i = 0; i < column_data.length; i++) {
+                      const td = document.createElement('td');
+                      td.textContent = item[column_data[i]];
+                      tr.appendChild(td);
+                  }
+                  tbody.appendChild(tr);}});});
     </script>
     <script type="text/javascript">
-                                    $('#EditModal').on('show.bs.modal', function (e) {
-                                      $(this).find('form').trigger('reset');
-                                      var id = $(e.relatedTarget).data('id');
-                                      const units = {{ units | tojson }}
-                                      document.getElementById("id_for_edit").value = id;
-                                      console.log(document.getElementById("id_for_edit").value);
-                                      document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
-                                      document.getElementById('button_for_delete_row').setAttribute("class", "btn btn-primary");
-                                      units.forEach((unit) => {
-                                      if ( id === unit.id){
-                                        document.getElementById("edit_UD_id").value = unit.ud_punkt;
-                                        document.getElementById("edit_COD_id").value = unit.name_PON;
-                                        document.getElementById("edit_Name_id").value = unit.name_unit;
-                                        document.getElementById("edit_Inv_id").value = unit.inv_number;
-                                        document.getElementById("edit_Serial_id").value = unit.serial_number;
-                                        document.getElementById("edit_Riad_id").value = unit.row_mesto;
-                                        document.getElementById("edit_Mesto_id").value = unit.plata_mesto;
-                                        document.getElementById("unit_note_id").value = unit.note;
-                                        }})
-                                      document.getElementById('button_for_delete_row').onclick = function (){delete_row_from_edit_mod('Unit', id , 'button_for_delete_row','tbody_main_table',
-                                        e.relatedTarget.closest("tr"))}
-                                        document.getElementById('button_for_save_edit_row').onclick = function (){save_edit_table_row('tbody_main_table',e.relatedTarget.closest("tr").rowIndex)}
-                                    });
+    {# заполнение модульного окна для редактирования записи UNITS #}
+      $('#EditModal').on('show.bs.modal', function (e) {
+        $(this).find('form').trigger('reset');
+        var id = $(e.relatedTarget).data('id');
+        const units = {{ units | tojson }}
+        document.getElementById("id_for_edit").value = id;
+        console.log(document.getElementById("id_for_edit").value);
+        document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
+        document.getElementById('button_for_delete_row').setAttribute("class", "btn btn-primary");
+        units.forEach((unit) => {
+        if ( id === unit.id){
+          document.getElementById("edit_UD_id").value = unit.ud_punkt;
+          document.getElementById("edit_COD_id").value = unit.name_PON;
+          document.getElementById("edit_Name_id").value = unit.name_unit;
+          document.getElementById("edit_Inv_id").value = unit.inv_number;
+          document.getElementById("edit_Serial_id").value = unit.serial_number;
+          document.getElementById("edit_Riad_id").value = unit.row_mesto;
+          document.getElementById("edit_Mesto_id").value = unit.plata_mesto;
+          document.getElementById("unit_note_id").value = unit.note;
+          }})
+        document.getElementById('button_for_delete_row').onclick = function (){delete_row_from_edit_mod('Unit', id , 'button_for_delete_row','tbody_main_table',
+          e.relatedTarget.closest("tr"))}
+          document.getElementById('button_for_save_edit_row').onclick = function (){save_edit_table_row('tbody_main_table',e.relatedTarget.closest("tr").rowIndex)}
+      });
     </script>
 {#    //копирование в таблицу из Excel 1#}
     <script type="text/javascript">

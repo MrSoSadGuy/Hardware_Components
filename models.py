@@ -88,23 +88,36 @@ class ma_add_modules(db.Model):
 
 @dataclass
 class BuhUch(db.Model):
-    id:int = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name:str = db.Column(db.String(300), nullable=True)
-    inv_number:str = db.Column(db.String(100), nullable=True)
-    date_buy:str = db.Column(db.String(100), nullable=True)
-    quantity:int = db.Column(db.Integer, nullable=True)
-    price_for_1:str = db.Column(db.String(100), nullable=True)
-    price_for_all:str = db.Column(db.String(100), nullable=True)
-    charracter:str = db.Column(db.String(1000), nullable=True)
+    __tablename__ = 'Accounting_data'
+    id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name: str = db.Column(db.String(300), nullable=True)
+    inv_number: str = db.Column(db.String(100), nullable=True)
+    date_buy: str = db.Column(db.String(100), nullable=True)
+    quantity: int = db.Column(db.Integer, nullable=True)
+    price_for_1: str = db.Column(db.String(100), nullable=True)
+    price_for_all: str = db.Column(db.String(100), nullable=True)
+    charracter: str = db.Column(db.String(1000), nullable=True)
     MOL:str = db.Column(db.String(100), nullable=True)
-    note:str = db.Column(db.String(300), nullable=True)
+    note: str = db.Column(db.String(300), nullable=True)
     creator = db.Column(db.String(100), nullable=True)
     editor = db.Column(db.String(100), nullable=True)
     date = db.Column(db.DateTime, default=datetime.utcnow)
     last_edit_date = db.Column(db.DateTime, nullable=True)
+    MOL_id: int= db.Column(db.Integer, db.ForeignKey('list_of_MOLs.id'))
 
     def __repr__(self):
         return '<BuhUch %r>' % self.id
+
+
+@dataclass
+class MOLs(db.Model):
+    __tablename__ = "list_of_MOLs"
+    id = db.Column(db.Integer, primary_key=True)
+    full_name = db.Column(db.String(20), nullable=False, unique=True)
+    buh_data = db.relationship('BuhUch', backref='list_of_MOLs', lazy=False)
+
+    def __repr__(self):
+        return '<MOLs %r>' % self.id
 
 @dataclass
 class Users (db.Model, UserMixin):
@@ -116,15 +129,6 @@ class Users (db.Model, UserMixin):
     def __repr__(self):
         return '<Users %r>' % self.id
     
-@dataclass
-class MOLs (db.Model):
-    __tablename__="list_of_MOLs"
-    id = db.Column(db.Integer, primary_key=True)
-    full_name = db.Column(db.String(20), nullable=False, unique=True)
-    
-
-    def __repr__(self):
-        return '<Users %r>' % self.id
 
 @dataclass
 class Data_for_KTS (db.Model, UserMixin):

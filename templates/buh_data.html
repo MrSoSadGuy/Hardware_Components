@@ -47,7 +47,7 @@
               <h5 class="modal-title" id="AddNewUnits">Добавление новых устройств   </h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
             </div>
-            <div class="modal-body">
+             <div class="modal-body">
                 <table class="table table-sm " id="buh_data_table">                
                     <tbody class="table-condensed " >
                     <tr><td id ="td_for_new_table">
@@ -180,6 +180,7 @@
                 document.getElementById('new_inv_namber_table').addEventListener('click', (e) => {
                     if (e.target.tagName === "I"){e.target.remove()}                                                                 
                 });
+                
                 document.getElementById('button_add_new_row').setAttribute('name','{{ user_name | tojson }}');
                 $(function () {
                     $('[data-toggle="tooltip"]').tooltip()
@@ -264,13 +265,13 @@
                     <tbody class="table-condensed " id="buh_data_tbody">
                     <tr><td id="td_for_buh_data_tables">
                         {% for buh in buh_data %} 
-                            {% if buh.MOL == user_name %} 
+                            {% if buh.list_of_MOLs.full_name == user_name %} 
                                     <table class="table table-sm table-bordered table-hover borderd_table" id = "inv_number_id_{{buh.id}}">
                                     <tbody >
                                         <tr>
                                             <td width = '18%'>Инв. №:  <a href="" data-bs-toggle="modal" data-bs-target="#inventModal" data-id = "{{ buh.id }}" data-inv = "{{ buh.inv_number }}" >{{ buh.inv_number }}</a></td>
                                             <td >{{ buh.name }}</td>
-                                            <td width = '18%'>МОЛ: {{ buh.MOL }}</td>      
+                                            <td width = '18%'>МОЛ: {{ buh.list_of_MOLs.full_name }}</td>      
                                         </tr> 
                                         <tr>
                                             <td class="multiline" colspan = '2'>Характеристика: {{ buh.charracter }}</td>

@@ -155,24 +155,25 @@ async function ma_add_module_storage(){
     }
 }
 
-async function invent_modal(param){
+async function invent_modal(param,user){
+    console.log("🚀 ~ invent_modal ~ user:", user)
     document.getElementById("In_num").value = param;
     document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
     const fetch_response = await fetch_data(param,'/get_data_from_db/BuhUch',"POST");
     const select = document.getElementById('select_mol_id')
     var options = select.getElementsByTagName('option');
     console.log("🚀 ~ invent_modal ~ options:", options);
-    console.log("🚀 ~ invent_modal ~ fetch_response:", fetch_response);
     if (fetch_response === null){alert("Нет данных по этому номеру")
-        // const opt_selected = document.createElement('option');
-        // opt_selected.selected = 'selected';
-        // opt_selected.text = 'Выберите МОЛа';
-        // select.add(opt_selected);
+        for(let i=0; i < options.length; i++) {
+            if (user === options[i].text){
+                options[i].selected = 'selected'}
+        }
     }
     else {
         document.getElementById("description_id").value = fetch_response['name'];
         for(let i=0; i < options.length; i++) {
-            if (fetch_response['MOL'] === options[i].textContent){
+            console.log("🚀 ~ invent_modal ~ fetch_response:",typeof fetch_response['MOL_id'], typeof options[i].value);
+            if (fetch_response['MOL_id'].toString() === options[i].value){
                 options[i].selected = 'selected'}
         }
         document.getElementById("char_id").value = fetch_response['charracter'];

@@ -64,6 +64,10 @@ async function delete_row_from_edit_mod(db_table, id, bt_id, tbody, row)  {
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success");
             document.getElementById(tbody).deleteRow(row.rowIndex-1)
+            let str = document.getElementById('number_of_records').innerHTML;
+            console.log("🚀 ~ delete_row_from_edit_mod ~ str:", str);
+            let new_str = parseInt(str.split(': ')[1])-1;
+            document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + new_str ;
             setTimeout(function (){document.getElementById('close_btn_id').click()}, 800);      
         }
         else {
@@ -79,6 +83,10 @@ async function delete_table(db_table, id, bt_id, table_id)  {
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success");
+            let str = document.getElementById('number_of_records').innerHTML;
+            console.log("🚀 ~ delete_row_from_edit_mod ~ str:", str);
+            let new_str = parseInt(str.split(': ')[1])-1;
+            document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + new_str ;
             setTimeout(function (){document.getElementById(table_id).remove()}, 500);
             setTimeout(function (){document.getElementById('close_btn_id').click()}, 800);      
         }
@@ -152,7 +160,7 @@ async function save_edit_buh_data() {
         id: document.getElementById("id_buh").value,
         inv_number: document.getElementById("In_num").value,
         name: document.getElementById("description_id").value,
-        MOL: sel.options[sel.selectedIndex].text,
+        MOL: sel.options[sel.selectedIndex].textContent,
         charracter: document.getElementById("char_id").value,
         note: document.getElementById("note_id").value
     }
