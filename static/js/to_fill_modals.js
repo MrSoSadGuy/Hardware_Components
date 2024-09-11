@@ -164,10 +164,10 @@ async function invent_modal(param){
     console.log("🚀 ~ invent_modal ~ options:", options);
     console.log("🚀 ~ invent_modal ~ fetch_response:", fetch_response);
     if (fetch_response === null){alert("Нет данных по этому номеру")
-        const opt_selected = document.createElement('option');
-        opt_selected.selected = 'selected';
-        opt_selected.text = 'Выберите МОЛа';
-        select.add(opt_selected);
+        // const opt_selected = document.createElement('option');
+        // opt_selected.selected = 'selected';
+        // opt_selected.text = 'Выберите МОЛа';
+        // select.add(opt_selected);
     }
     else {
         document.getElementById("description_id").value = fetch_response['name'];

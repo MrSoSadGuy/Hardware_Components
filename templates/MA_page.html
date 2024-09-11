@@ -143,6 +143,7 @@
                       <div class="mb-3">
                         <label class="col-form-label">МОЛ:</label>
                         <select class="form-select" aria-label="Default select example" id = 'select_mol_id'>
+                          <option value="0"></option>
                           {% for mol in mols %}
                               <option value="{{ mol.id }}">{{ mol.full_name }}</option>
                           {% endfor %}
