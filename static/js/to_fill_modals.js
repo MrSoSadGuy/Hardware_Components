@@ -200,6 +200,7 @@ async function edit_ma_unit_modal(obj_id, row_index){
     document.getElementById('button_for_save_edit_row').onclick = function (){
         save_edit_MA_table('tbody_main_table', row_index)};
 }
+
 async function select_usage_modal(id, db_table) {
     document.getElementById("btn_send_to_usage").setAttribute("class", "btn btn-primary");
     const select = document.getElementById('select_send_to_usage')
@@ -208,31 +209,23 @@ async function select_usage_modal(id, db_table) {
     opt_selected.selected
     opt_selected.text = 'Выберите обьект'
     select.add(opt_selected)
-    const data = await fetch_data('all','/get_data_from_db/Objects_ur_lica_all',"POST")
-    for (const [key] of Object.entries(data)) { 
-        const opt = document.createElement('option')
-        
-        if (db_table === "MA_Units"){
-            if (data[key][2].length === 0){
-                opt.value = data[key][0]
-                opt.text = data[key][1]
-                select.add(opt)
-            }
-        }
-        else if (data[key][2].length > 1){
-                data[key][2].forEach(id => {
-                    const opt_stor = document.createElement('option')
-                    opt_stor.value =[data[key][0], id]
-                    opt_stor.text = data[key][1] +"-" + id
-                    select.add(opt_stor)
-                })
-            }
-        else if  (data[key][2].length === 1){
-            opt.value = [data[key][0],data[key][2]]
-            opt.text = data[key][1]
+    const data = await fetch_data(id,'/get_data_from_db/'+db_table+'_to_usage',"POST")
+    if (db_table === "MA_Units"){        
+        data.forEach(item => {
+            const opt = document.createElement('option')
+            opt.value = item.id
+            opt.text = item.cod_name
             select.add(opt)
-        }   
+        })
     }
+    if (db_table === "ma_add_modules"){        
+        data.forEach(item => {
+            const opt = document.createElement('option')
+            opt.value = item.id
+            opt.text = item.cod_name
+            select.add(opt)
+        })
+    }     
     let target_id, target_list
     select.addEventListener("change", function() {
         target_list = this.value.split(",")

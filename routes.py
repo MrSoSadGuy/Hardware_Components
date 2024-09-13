@@ -149,8 +149,16 @@ def get_data_from_db(db):
     if db == 'MA_Units':
         units = MA_Units.query.get_or_404(int(json.loads(req)))
         return jsonify(units, units.modules)
-    if db == 'Objects_ur_lica_all':
-        units = get_data_for_select()
+    # if db == 'Objects_ur_lica_all':
+    #     units = get_data_for_select()
+    #     return jsonify(units)
+    if db == 'MA_Units_to_usage':
+        # units = get_data_for_select()
+        units = get_data_for_select("MA_Units", json.loads(req))
+        return jsonify(units)
+    if db == 'ma_add_modules_to_usage':
+        units = get_data_for_select('ma_add_modules', json.loads(req))
+        # units = get_data_for_select()
         return jsonify(units)
     if db == 'Objects_ur_lica':
         obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
@@ -163,16 +171,45 @@ def get_data_from_db(db):
     else:
         return None
     
-def get_data_for_select():
-    obj = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
-    obj_dict = {}
-    for i in range (0, len(obj)): 
-        unit_id_list = []
-        if len(obj[i].unit)>0:
-            for un in obj[i].unit :                
-                unit_id_list.append(un.id)  
-        obj_dict[i] = [obj[i].id, obj[i].cod_name, unit_id_list]
-    return obj_dict        
+def get_data_for_select(db, id):
+    response =[]
+    if db=='MA_Units':
+        obj = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
+        for ob in obj:
+            if len(ob.unit) == 0:
+                response.append(ob) 
+    if db == 'ma_add_modules':
+        modules = ma_add_modules.query.get_or_404(id)        
+        for unit in modules.type_of_ma_modules.type_of_ma_units2.units:
+            if modules.type_of_ma_modules.type_of_ma_units2.sockets > len(unit.modules):
+                unit_modules = {}
+                if unit.object.cod_name == "СКЛАД":
+                    unit_data = {'id': unit.id, 'cod_name': unit.object.cod_name+"-"+str(unit.id)}
+                else:
+                    unit_data = {'id': unit.id, 'cod_name': unit.object.cod_name}    
+                for m in unit.modules:
+                    if m.type_of_ma_modules.type not in unit_modules:
+                        unit_modules[m.type_of_ma_modules.type] = 1
+                    else:
+                        unit_modules[m.type_of_ma_modules.type] += 1
+                    unit_data['data'] = unit_modules
+                if (modules.type_of_ma_modules.type not in unit_modules) or (modules.type_of_ma_modules.max_number > unit_modules[modules.type_of_ma_modules.type]):
+                    response.append(unit_data.copy())
+    
+    return response    
+
+
+    
+# def get_data_for_select():
+#     obj = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
+#     obj_dict = {}
+#     for i in range (0, len(obj)): 
+#         unit_id_list = []
+#         if len(obj[i].unit)>0:
+#             for un in obj[i].unit :                
+#                 unit_id_list.append(un.id)  
+#         obj_dict[i] = [obj[i].id, obj[i].cod_name, unit_id_list]
+#     return obj_dict        
 
 
 @app.route('/delete_row/<base_table>', methods=['GET', 'POST'])

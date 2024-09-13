@@ -46,8 +46,8 @@ class Objects_ur_lica(db.Model):
 
     def __repr__(self):
         return '<Objects_ur_lica %r>' % self.id
-
-
+    
+    
 @dataclass
 class MA_Units(db.Model):
     __tablename__="MA_Units"
@@ -62,16 +62,45 @@ class MA_Units(db.Model):
     last_date_edit = db.Column(db.DateTime, nullable=True)
     modules = db.relationship('ma_add_modules', backref='MA_Units')
     object_id = db.Column(db.Integer, db.ForeignKey('Objects_ur_lic.id'))
+    type = db.Column(db.String(50), db.ForeignKey('type_of_ma_units.id'))
 
     def __repr__(self):
         return '<MA_Units %r>' % self.id
 
 
 @dataclass
+class type_of_ma_units(db.Model):
+    __tablename__ = "type_of_ma_units"
+    id: int = db.Column(db.Integer, primary_key=True)
+    sockets: int = db.Column(db.Integer)
+    name: str = db.Column(db.String(100), nullable=True, unique=False)
+    type: str = db.Column(db.String(50), nullable=False, unique=True)
+    units = db.relationship('MA_Units', backref='type_of_ma_units')
+    modules = db.relationship('type_of_ma_modules', backref='type_of_ma_units2')
+
+    def __repr__(self):
+        return '<type_of_ma_units %r>' % self.id
+    
+    
+@dataclass
+class type_of_ma_modules(db.Model):
+    __tablename__ = "type_of_ma_modules"
+    id: int = db.Column(db.Integer, primary_key=True)
+    max_number: int = db.Column(db.Integer)
+    name: str = db.Column(db.String(100), nullable=True, unique=False)
+    type: str = db.Column(db.String(50), nullable=False, unique=True)
+    type_of_ma_units: str = db.Column(db.String(50), db.ForeignKey('type_of_ma_units.type'))
+    modules = db.relationship('ma_add_modules', backref='type_of_ma_modules')
+
+    def __repr__(self):
+        return '<type_of_ma_modules %r>' % self.id
+
+@dataclass
 class ma_add_modules(db.Model):
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     modules_name: str = db.Column(db.String(20), nullable=False)
-    type: str = db.Column(db.String(20), nullable=True)
+    type: str = db.Column(db.String(50), nullable=True)
+    type_id: str = db.Column(db.Integer, db.ForeignKey('type_of_ma_modules.id'))
     serial_number: str = db.Column(db.String(50), nullable=True)
     inv_number: str = db.Column(db.String(20), nullable=True)
     port: int = db.Column(db.Integer, nullable=True)
@@ -85,7 +114,8 @@ class ma_add_modules(db.Model):
 
     def __repr__(self):
         return '<ma_add_modules %r>' % self.id
-
+    
+    
 @dataclass
 class BuhUch(db.Model):
     __tablename__ = 'Accounting_data'
