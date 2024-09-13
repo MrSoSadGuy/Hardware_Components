@@ -158,6 +158,17 @@ function myFunction() {
     }    
 }
 
+function number_of_records(tbodies){
+    let number_of_records = 0;
+    for(var i = 0; i < tbodies.length; i++){
+        var style = tbodies[i].getAttribute("style");
+        if(style == null){
+            number_of_records++;
+        }
+    }
+    return number_of_records;
+}
+
 function buh_data_table_serch(){
     var input, filter, table, tbodies, td;    
     input = document.getElementById("Input_for_buh_data_serch");    
@@ -165,25 +176,48 @@ function buh_data_table_serch(){
     const list_of_words= filter.split(" ")
     table = document.getElementById('buh_data_tbody');    
     tbodies = table.getElementsByTagName('table');
-    var number_of_records = 0;    
     for(var i = 0; i < tbodies.length; i++){
         tds = tbodies[i].getElementsByTagName('td');
+        if (tds[0].querySelector('.form-check-input').checked) {
+            console.log(tds[1])
+            continue;}
         var flag = false;
         for(var j = 0; j < list_of_words.length; j++){
-            var td = tds[0] 
+            var td = tds[1] 
             var word = list_of_words[j];
             if(td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
                 flag =true;
                 continue;
             } 
         }
-        if(flag){tbodies[i].removeAttribute("style");
-            number_of_records++;
+        if(flag){tbodies[i].removeAttribute("style");}
+        else {tbodies[i].style.display = "none";
         }
-            else {tbodies[i].style.display = "none";
-            }
-        document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records ;
+        document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records(tbodies) ;
     }    
+}
+function check_all_visible(status){
+    let table = document.getElementById('buh_data_tbody');
+    let tbodies = table.getElementsByTagName('table');
+    for(var i = 0; i < tbodies.length; i++){
+        var style = tbodies[i].getAttribute("style");
+        if(style == null){
+            var check = tbodies[i].querySelector('.form-check-input');
+            check.checked = status
+        }
+    }
+}
+function show_checked(status){
+    let table = document.getElementById('buh_data_tbody');
+    let tbodies = table.getElementsByTagName('table');
+    for(var i = 0; i < tbodies.length; i++){
+        tds = tbodies[i].getElementsByTagName('td');
+        if(tds[0].querySelector('.form-check-input').checked===false){
+            if (status)tbodies[i].style.display = "none";
+            else tbodies[i].removeAttribute("style");           
+        }
+    }
+    document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records(tbodies) ;
 }
 //копирование в таблицу из Excel 
 function paste_to_cells_like_excel(tbody_id, data, start_r, start_c,  cells_in_row){

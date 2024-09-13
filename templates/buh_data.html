@@ -246,20 +246,53 @@
                 </div></div>
                 <div class="table-responsive small">
                     <div class="container">
-                        <div class="row">
+                         <div class="row">
                             <div class="col">
                                 <div class="container-fluid">
                                     <input  class ="input_for_serch" type="text" id="Input_for_buh_data_serch" onkeyup="buh_data_table_serch()" placeholder="Поиск по инвентарному номеру..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
-                                    <i id = 'number_of_records'> </i>
                                 </div>
                             </div>
-                            
+                         </div>
+                        <div class="row">
+                            <div class="col text-start">
+                                
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheck_main">
+                                        <label class="form-check-label" >Отметить все</label>  
+                                    </div>
+                                
+                            </div>
+                            <div class="col text-start">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">Отоброзить все/отмеченные</label>
+                                </div>
+                            </div>
+                            <div class="col text-end" >
+                                <i id = 'number_of_records'> </i>
+                            </div>
                             
                         </div>
                         </div>
+                        <script type="text/javascript">
                         
-                        
-                        
+                        document.getElementById('flexCheck_main').addEventListener("change", function() {
+                            if (this.checked) {
+                                console.log("Checkbox is checked..");
+                                check_all_visible(true)
+                            } else {
+                                check_all_visible(false);
+                            }        
+                        });
+                        document.getElementById('flexSwitchCheckChecked').addEventListener("change", function() {
+                            if (this.checked) {
+                                console.log("Checkbox is checked..");
+                                show_checked(true)
+                            } else {
+                                show_checked(false);
+                            }        
+                        });
+                        </script>
                 </div>
                 <table class="table table-sm " id="buh_data_table">                
                     <tbody class="table-condensed " id="buh_data_tbody">
@@ -269,12 +302,17 @@
                                     <table class="table table-sm table-bordered table-hover borderd_table" id = "inv_number_id_{{buh.id}}">
                                     <tbody >
                                         <tr>
+                                            <td width = '2%'>
+                                            
+                                                <input class="form-check-input" type="checkbox" value="" id="flexCheck_{{ buh.id }}">
+                                            
+                                            </td>
                                             <td width = '18%'>Инв. №:  <a href="" data-bs-toggle="modal" data-bs-target="#inventModal" data-id = "{{ buh.id }}" data-inv = "{{ buh.inv_number }}" >{{ buh.inv_number }}</a></td>
                                             <td >{{ buh.name }}</td>
                                             <td width = '18%'>МОЛ: {{ buh.list_of_MOLs.full_name }}</td>      
                                         </tr> 
                                         <tr>
-                                            <td class="multiline" colspan = '2'>Характеристика: {{ buh.charracter }}</td>
+                                            <td class="multiline" colspan = '3'>Характеристика: {{ buh.charracter }}</td>
                                             <td>Примечание: {{ buh.note }}</td>
                                         </tr>
                                         
