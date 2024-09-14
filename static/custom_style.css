@@ -33,3 +33,40 @@
             }
            
             .multiline { white-space: pre-line; }
+
+           
+            .btn-change-clr {
+              border-radius: 20%;
+              inline-size: 30px;
+              block-size: 20px;
+              
+              /* Can set padding between outer circle and color swatch for Firefox here;
+               * it doesn't support a color-swarch-wrapper pseudoclass
+               */
+              padding: 3px;
+              border-width: 1px;
+              border-style: solid;
+              border-color: rgb(153, 153, 153);
+            }
+            
+            /* Affects area between outer circle and color swatch. Firefox doesn't have an equivalent. */
+            .btn-change-clr::-webkit-color-swatch-wrapper {
+              padding: 1px;
+            }
+            
+            /* Affects the inner circle, i.e. the current color selection */
+            .btn-change-clr::-webkit-color-swatch {
+              border-radius: 20%;
+            }
+            
+            .btn-change-clr::-moz-color-swatch {
+              border-radius: 20%;
+            }
+            
+            .div-change-clr {
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+            }
+            
+            

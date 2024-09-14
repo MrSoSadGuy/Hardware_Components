@@ -21,7 +21,6 @@
     <script src="{{ url_for('static', filename='js/save_&_delete.js') }}"></script>
     <script src="{{ url_for('static', filename='js/to_fill_modals.js') }}"></script>
     <script src="{{ url_for('static', filename='js/table-sort.js') }}"></script>
-    <script src='/static/js/select2.min.js'></script>
     
     
     
@@ -170,7 +169,7 @@
                 invent_modal($(e.relatedTarget).data('inv'));
                 console.log("🚀 ~ e.relatedTarget.data('id'):", $(e.relatedTarget).data('id'))
                 document.getElementById('button_for_delete_inv_number').setAttribute('class',"btn btn-primary");
-                document.getElementById('button_for_delete_inv_number').onclick = function (){delete_table('BuhUch', $(e.relatedTarget).data('id'),this.id, 'inv_number_id_'+$(e.relatedTarget).data('id'))};
+                document.getElementById('button_for_delete_inv_number').onclick = function (){delete_table('BuhUch', $(e.relatedTarget).data('id'),this.id)};
                 
                 })
                 $('#Change_pass').on('show.bs.modal', function (e) {
@@ -245,40 +244,61 @@
                     <i class="bi bi-download"></i> Сохранить в Excel</button>
                 </div></div>
                 <div class="table-responsive small">
-                    <div class="container">
-                         <div class="row">
+                    <div class="container text-start">
+                         <div class="row ">
                             <div class="col">
                                 <div class="container-fluid">
                                     <input  class ="input_for_serch" type="text" id="Input_for_buh_data_serch" onkeyup="buh_data_table_serch()" placeholder="Поиск по инвентарному номеру..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
                                 </div>
                             </div>
                          </div>
+                       
                         <div class="row">
-                            <div class="col text-start">
-                                
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheck_main">
-                                        <label class="form-check-label" >Отметить все</label>  
+                            <div class="col-md-auto">
+                                <div class="row row-cols-auto">
+                                    <div class="col text-start">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="flexCheck_main">
+                                            <label class="form-check-label" >Отметить все</label>  
+                                        </div>
                                     </div>
-                                
-                            </div>
-                            <div class="col text-start">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
-                                    <label class="form-check-label" for="flexSwitchCheckChecked">Отоброзить все/отмеченные</label>
+                                    <div class="col text-start">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">Отоброзить отмеченные</label>
+                                        </div>
+                                    </div>
+                                    <div class="col div-change-clr">
+                                        <input class="btn-change-clr" type="color" list="colors" id="favcolor" data-toggle="tooltip" data-placement="bottom" title="Выделить цветом" value="#83b3fb"/>
+                                            <datalist id="colors">
+                                                <option value="#83b3fa" label="table-primary">
+                                                <option value="#ace6f3" label="table-info">
+                                                <option value="#87ddb6" label="table-success">
+                                                <option value="#f5abb1" label="table-danger">
+                                                <option value="#f7e098" label="table-warning">
+                                            </datalist>
+                                    </div>
+                                    <div class="col div-change-clr">
+                                        <input class= 'btn-change-clr' type="button" data-toggle="tooltip" data-placement="bottom" title="Убрать выделение" id="defolt_color"/>
+                                    </div>
+                                    <div class="col">
+                                        <a href = "" id="delete_checked">Удалить отмеченные</a>
+                                    </div>
+                                </div>
+                            </div>   
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-end" >
+                                        <i id = 'number_of_records'> </i>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col text-end" >
-                                <i id = 'number_of_records'> </i>
-                            </div>
-                            
                         </div>
                         </div>
                         <script type="text/javascript">
-                        
                         document.getElementById('flexCheck_main').addEventListener("change", function() {
                             if (this.checked) {
-                                console.log("Checkbox is checked..");
+                                
                                 check_all_visible(true)
                             } else {
                                 check_all_visible(false);
@@ -286,11 +306,33 @@
                         });
                         document.getElementById('flexSwitchCheckChecked').addEventListener("change", function() {
                             if (this.checked) {
-                                console.log("Checkbox is checked..");
+                            
                                 show_checked(true)
                             } else {
                                 show_checked(false);
                             }        
+                        });
+                        document.getElementById('favcolor').addEventListener("change", function() {
+                            console.log(this.value)
+                            set_custom_bg_color(true,this.value)        
+                        });
+                        document.getElementById('defolt_color').addEventListener("click", function() {
+                            console.log(this.value)
+                            set_custom_bg_color(false)        
+                        });
+                        document.getElementById('delete_checked').addEventListener("click", function(e) {
+                            e.preventDefault();
+                            let table = document.getElementById('buh_data_tbody');
+                            let tbodies = table.getElementsByTagName('table');
+                            if(confirm('Удалить выбранные данные?')){
+                                for(var i = 0; i < tbodies.length; i++){
+                                tds = tbodies[i].getElementsByTagName('td');
+                                if(tds[0].querySelector('.form-check-input').checked===true){
+                                    delete_table_list('BuhUch',tds[1].querySelector('a').dataset.id)            
+                                }
+                            }
+                            }
+                            
                         });
                         </script>
                 </div>
@@ -299,8 +341,8 @@
                     <tr><td id="td_for_buh_data_tables">
                         {% for buh in buh_data %} 
                             {% if buh.list_of_MOLs.full_name == user_name %} 
-                                    <table class="table table-sm table-bordered table-hover borderd_table" id = "inv_number_id_{{buh.id}}">
-                                    <tbody >
+                                    <table  class="table table-sm table-bordered table-hover borderd_table"  id = "inv_number_id_{{buh.id}}" bgcolor = "{{ buh.color }}">
+                                    <tbody>
                                         <tr>
                                             <td width = '2%'>
                                             
@@ -330,3 +372,15 @@
     </div>
 </body>
 
+{# <table style="background-color:#c2136b;">
+<tr style="background-color:#BDB76B;color:#ffffff;">
+<th>Table Header</th><th>Table Header</th>
+</tr>
+<tr>
+<td>Table cell 1</td><td>Table cell 2</td>
+</tr>
+<tr>
+<td>Table cell 3</td><td>Table cell 4</td>
+</tr>
+</table> #}
+{# bgcolor = "#f7e098" #}

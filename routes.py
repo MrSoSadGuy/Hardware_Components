@@ -196,47 +196,53 @@ def get_data_for_select(db, id):
                 if (modules.type_of_ma_modules.type not in unit_modules) or (modules.type_of_ma_modules.max_number > unit_modules[modules.type_of_ma_modules.type]):
                     response.append(unit_data.copy())
     
-    return response    
-
-
-    
-# def get_data_for_select():
-#     obj = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
-#     obj_dict = {}
-#     for i in range (0, len(obj)): 
-#         unit_id_list = []
-#         if len(obj[i].unit)>0:
-#             for un in obj[i].unit :                
-#                 unit_id_list.append(un.id)  
-#         obj_dict[i] = [obj[i].id, obj[i].cod_name, unit_id_list]
-#     return obj_dict        
+    return response          
 
 
 @app.route('/delete_row/<base_table>', methods=['GET', 'POST'])
 @login_required
 def delete_row(base_table):
     name = request.form['json']
-    id = int(json.loads(name)["id"])
+    id = json.loads(name)["id"]
     user = Users.query.filter_by(id=current_user.get_id()).first()
     print(user.FIO, datetime.now())
     print(str(datetime.now()) +': '+ user.FIO + " запрос на удаление -- ", base_table, name)
     db_obj = ""
     if base_table == "ma_add_modules":
-        db_obj = ma_add_modules.query.get_or_404(id)
+        db_obj = ma_add_modules.query.get_or_404(int(id))
     if base_table == "Unit":
-        db_obj = Unit.query.get_or_404(id)
+        db_obj = Unit.query.get_or_404(int(id))
     if base_table == "BuhUch":
-        db_obj = BuhUch.query.get_or_404(id)
+        db_obj = BuhUch.query.get_or_404(int(id))
     if base_table == "MA_Units":
-        db_obj = MA_Units.query.get_or_404(id)
+        db_obj = MA_Units.query.get_or_404(int(id))
         if len(db_obj.modules) > 0:
             for modules in db_obj.modules:
                 delete_data_from_db(modules)      
     if base_table == "Objects_ur_lica":
-        db_obj = Objects_ur_lica.query.get_or_404(id)
+        db_obj = Objects_ur_lica.query.get_or_404(int(id))
         if len(db_obj.unit) > 0:
             return jsonify("На объекте установленно устройство!!!! \n Переместите его на склад")     
     return delete_data_from_db(db_obj)
+
+
+@app.route('/change_color/<base_table>', methods=['GET', 'POST'])
+@login_required
+def save_color(base_table):
+    name = request.form['json']
+    id = json.loads(name)["id"]
+    color = json.loads(name)["color"]
+    user = Users.query.filter_by(id=current_user.get_id()).first()
+    if base_table == "Unit":
+        db_obj = Unit.query.get_or_404(int(id))
+    if base_table == "BuhUch":
+        db_obj = BuhUch.query.get_or_404(int(id))
+        if  db_obj.color != color:
+            db_obj.color = color;
+            db_obj.editor = user.FIO
+    if base_table == "Objects_ur_lica":
+        db_obj = Objects_ur_lica.query.get_or_404(int(id))     
+    return save_data_to_db()
 
 
 @app.route('/save_data/<db_name>', methods=['GET', 'POST'])

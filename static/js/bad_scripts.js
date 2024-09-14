@@ -158,7 +158,9 @@ function myFunction() {
     }    
 }
 
-function number_of_records(tbodies){
+function number_of_records(){
+    let table = document.getElementById('buh_data_tbody');
+    let tbodies = table.getElementsByTagName('table');
     let number_of_records = 0;
     for(var i = 0; i < tbodies.length; i++){
         var style = tbodies[i].getAttribute("style");
@@ -166,10 +168,11 @@ function number_of_records(tbodies){
             number_of_records++;
         }
     }
-    return number_of_records;
+    document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records;
 }
 
 function buh_data_table_serch(){
+    document.getElementById('flexSwitchCheckChecked').checked = false;
     var input, filter, table, tbodies, td;    
     input = document.getElementById("Input_for_buh_data_serch");    
     filter = input.value.toUpperCase();    
@@ -193,7 +196,7 @@ function buh_data_table_serch(){
         if(flag){tbodies[i].removeAttribute("style");}
         else {tbodies[i].style.display = "none";
         }
-        document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records(tbodies) ;
+        number_of_records() ;
     }    
 }
 function check_all_visible(status){
@@ -217,8 +220,28 @@ function show_checked(status){
             else tbodies[i].removeAttribute("style");           
         }
     }
-    document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records(tbodies) ;
+    number_of_records();
 }
+function set_custom_bg_color(status, color){
+    let table = document.getElementById('buh_data_tbody');
+    let tbodies = table.getElementsByTagName('table');
+    for(var i = 0; i < tbodies.length; i++){
+        tds = tbodies[i].getElementsByTagName('td');
+        if(tds[0].querySelector('.form-check-input').checked===true){
+            if (status) {tbodies[i].setAttribute('bgcolor',color)
+                save_color_in_db(tds[1].querySelector('a').dataset.id, color)
+            }
+            else {tbodies[i].removeAttribute("bgcolor");
+                save_color_in_db(tds[1].querySelector('a').dataset.id, '')
+            }            
+        }
+    }
+}
+async function save_color_in_db(id, color){
+    const data = {id: id, color: color}
+    const fetch_color = await fetch_data(data, "change_color/BuhUch",'POST')
+}
+
 //копирование в таблицу из Excel 
 function paste_to_cells_like_excel(tbody_id, data, start_r, start_c,  cells_in_row){
     let value = data.split(/\r\n|\n|\r/);

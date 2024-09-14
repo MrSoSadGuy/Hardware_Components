@@ -75,19 +75,16 @@ async function delete_row_from_edit_mod(db_table, id, bt_id, tbody, row)  {
             alert(data);
     }}
 }
-async function delete_table(db_table, id, bt_id, table_id)  {
+async function delete_table(db_table, id, bt_id)  {
     var id_val = {id: id}
     console.log("🚀 ~ delete_table ~ id:", id)
-    if (confirm("Удалить запись?")){
+    if (confirm("Удалить данные?")){
         const data = await fetch_data(id_val,'/delete_row/'+db_table, 'POST');
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success");
-            let str = document.getElementById('number_of_records').innerHTML;
-            console.log("🚀 ~ delete_row_from_edit_mod ~ str:", str);
-            let new_str = parseInt(str.split(': ')[1])-1;
-            document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + new_str ;
-            setTimeout(function (){document.getElementById(table_id).remove()}, 500);
+            setTimeout(function (){document.getElementById('inv_number_id_'+ id).remove()}, 500);
+            number_of_records();
             setTimeout(function (){document.getElementById('close_btn_id').click()}, 800);      
         }
         else {
@@ -95,6 +92,22 @@ async function delete_table(db_table, id, bt_id, table_id)  {
             alert(data);
     }}
 }
+async function delete_table_list(db_table, id)  {
+    var id_val = {id: id}
+    console.log("🚀 ~ delete_table ~ id:", id)
+    const data = await fetch_data(id_val,'/delete_row/'+db_table, 'POST');
+    console.log(data);
+    if(data==="SUCCESS"){
+        setTimeout(function (){document.getElementById('inv_number_id_'+ id).remove()
+            number_of_records();
+        }, 500);
+        
+    }
+    else {
+        alert(data);
+    }
+}
+
 
 async function edit_row(db_table, id, bt_id, tbody, row, cells)  {
     console.log(row.cells.length)
@@ -318,7 +331,7 @@ async function add_new_inv_numbers(parent_tag_id, btn_id) {
         if(list_of_tds[j].querySelector('i') != null){list_of_tds[j].querySelector('i').remove()}    
         }
         if(list_of_tds[0].textContent === ""){
-            list_of_tables[i].setAttribute('class', 'table table-sm table-bordered table-hover borderd_table table-danger')
+            list_of_tables[i].setAttribute('bgcolor', '#f5abb1')
             alert('Поле инвентарного номера не может быть пустым!')
             continue;    
         }
@@ -335,12 +348,12 @@ async function add_new_inv_numbers(parent_tag_id, btn_id) {
         console.log("🚀 ~ add_new_inv_numbers ~ response:", response)
         if(response==="SUCCESS"){
             document.getElementById(btn_id).setAttribute("class", "btn btn-success");
-            list_of_tables[i].setAttribute('class', 'table table-sm table-bordered table-hover borderd_table table-success')
+            list_of_tables[i].setAttribute('bgcolor', '#87ddb6')
             setTimeout(function (){list_of_tables[i].remove()}, 1000);
         }
         else {
             document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
-            list_of_tables[i].setAttribute('class', 'table table-sm table-bordered table-hover borderd_table table-danger')
+            list_of_tables[i].setAttribute('bgcolor', '#f5abb1')
             alert(response);
             break;
         }
