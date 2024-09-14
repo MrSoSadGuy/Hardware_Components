@@ -69,14 +69,13 @@ function del_new_table(td_id) {
 async function save_main_table_in_file(){
     var oTable = document.getElementById('tbody_main_table');
     console.log($('tr:visible').length)
-    var rowLength = oTable.rows.length;
+    var trs = oTable.getElementsByTagName('tr');
     var list_data = []
-    for (i = 0; i < rowLength; i++){
-        var style = oTable.rows.item(i).getAttribute("style")
-        if(style == null){
-        var oCells = oTable.rows.item(i).cells;
-        list_data.push(oCells[0].textContent)
+    for (i = 0; i < trs.length; i++){
+        if(trs[i].getAttribute("style") == null){
+        list_data.push(trs[i].querySelector('td').dataset.id)
     }}
+    console.log("🚀 ~ save_main_table_in_file ~ list_data:", list_data)
     const data = await fetch_data(list_data, "/main_table_data", "POST")
     console.log("🚀 ~ save_main_table_in_file ~ data:", data)
     if (data === "SUCCESS"){
@@ -112,6 +111,7 @@ async function save_buh_data_table_in_file(){
 
 // Поиск по таблице
 function myFunction() {
+    document.getElementById('flexSwitchCheckChecked').checked = false;
     var rb1 = document.getElementById("inlineRadio1").checked
     var rb2 = document.getElementById("inlineRadio2").checked
     var input, filter, table, tr;
@@ -122,7 +122,10 @@ function myFunction() {
     tr = table.getElementsByTagName("tr");
     var number_of_records = 0;
     for (var i = 0; i < tr.length; i++) {
-        var tds = tr[i].getElementsByTagName("td");        
+        var tds = tr[i].getElementsByTagName("td"); 
+        if (tds[0].querySelector('.form-check-input').checked) {
+            console.log(tds[1])
+            continue;}       
         // поиск И
         if (rb1){
             var flag = [];
@@ -135,7 +138,7 @@ function myFunction() {
                 }
             }})
             if(flag.length >= list_of_words.length){tr[i].removeAttribute("style");
-                number_of_records++;
+                
             }
             else {tr[i].style.display = "none";}}
         // поиск ИЛИ
@@ -150,11 +153,11 @@ function myFunction() {
                     }
                 }})
             if(flag){tr[i].removeAttribute("style");
-                number_of_records++;
+                
             }           
             else {tr[i].style.display = "none";}
         }        
-        document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records ;
+        number_of_records_main_table()
     }    
 }
 
@@ -164,6 +167,18 @@ function number_of_records(){
     let number_of_records = 0;
     for(var i = 0; i < tbodies.length; i++){
         var style = tbodies[i].getAttribute("style");
+        if(style == null){
+            number_of_records++;
+        }
+    }
+    document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records;
+}
+function number_of_records_main_table(){
+    let number_of_records = 0;
+    let table = document.getElementById('tbody_main_table');
+    let tr = table.getElementsByTagName('tr');
+    for(var i = 0; i < tr.length; i++){
+        var style = tr[i].getAttribute("style");
         if(style == null){
             number_of_records++;
         }
@@ -210,6 +225,17 @@ function check_all_visible(status){
         }
     }
 }
+function check_all_visible_main_table(status){
+    let table = document.getElementById('tbody_main_table');
+    let tr = table.getElementsByTagName('tr');
+    for(var i = 0; i < tr.length; i++){
+        var style = tr[i].getAttribute("style");
+        if(style == null){
+            var check = tr[i].querySelector('.form-check-input');
+            check.checked = status
+        }
+    }
+}
 function show_checked(status){
     let table = document.getElementById('buh_data_tbody');
     let tbodies = table.getElementsByTagName('table');
@@ -222,6 +248,18 @@ function show_checked(status){
     }
     number_of_records();
 }
+function show_checked_main_table(status){
+    let table = document.getElementById('tbody_main_table');
+    let tr = table.getElementsByTagName('tr');
+    for(var i = 0; i < tr.length; i++){
+        tds = tr[i].getElementsByTagName('td');
+        if(tds[0].querySelector('.form-check-input').checked===false){
+            if (status)tr[i].style.display = "none";
+            else tr[i].removeAttribute("style");           
+        }
+    }
+    number_of_records_main_table();
+}
 function set_custom_bg_color(status, color){
     let table = document.getElementById('buh_data_tbody');
     let tbodies = table.getElementsByTagName('table');
@@ -229,17 +267,32 @@ function set_custom_bg_color(status, color){
         tds = tbodies[i].getElementsByTagName('td');
         if(tds[0].querySelector('.form-check-input').checked===true){
             if (status) {tbodies[i].setAttribute('bgcolor',color)
-                save_color_in_db(tds[1].querySelector('a').dataset.id, color)
+                save_color_in_db('BuhUch',tds[1].querySelector('a').dataset.id, color)
             }
             else {tbodies[i].removeAttribute("bgcolor");
-                save_color_in_db(tds[1].querySelector('a').dataset.id, '')
+                save_color_in_db('BuhUch',tds[1].querySelector('a').dataset.id, '')
             }            
         }
     }
 }
-async function save_color_in_db(id, color){
+function set_custom_bg_color_main_table(status, color){
+    let table = document.getElementById('tbody_main_table');
+    let tr = table.getElementsByTagName('tr');
+    for(var i = 0; i < tr.length; i++){
+        tds = tr[i].getElementsByTagName('td');
+        if(tds[0].querySelector('.form-check-input').checked===true){
+            if (status) {tr[i].setAttribute('bgcolor',color)
+                save_color_in_db('Units',tds[0].dataset.id, color)
+            }
+            else {tr[i].removeAttribute("bgcolor");
+                save_color_in_db("Units",tds[0].dataset.id, '')
+            }            
+        }
+    }
+}
+async function save_color_in_db(db_table, id, color){
     const data = {id: id, color: color}
-    const fetch_color = await fetch_data(data, "change_color/BuhUch",'POST')
+    const fetch_color = await fetch_data(data, "change_color/"+db_table,'POST')
 }
 
 //копирование в таблицу из Excel 

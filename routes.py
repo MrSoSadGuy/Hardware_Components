@@ -81,7 +81,7 @@ def main():
 @app.route('/pon_units')
 @login_required
 def pon_page():
-    units = Unit.query.order_by(Unit.id).all()
+    units = Unit.query.order_by(Unit.name_PON).all()
     kts_data = Data_for_KTS.query.all()
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
@@ -233,13 +233,20 @@ def save_color(base_table):
     id = json.loads(name)["id"]
     color = json.loads(name)["color"]
     user = Users.query.filter_by(id=current_user.get_id()).first()
-    if base_table == "Unit":
+    if base_table == "Units":
         db_obj = Unit.query.get_or_404(int(id))
+        if  db_obj.color != color:
+            db_obj.color = color;
+            db_obj.editor = user.FIO
+        else:
+            return "SUCCESS"
     if base_table == "BuhUch":
         db_obj = BuhUch.query.get_or_404(int(id))
         if  db_obj.color != color:
             db_obj.color = color;
             db_obj.editor = user.FIO
+        else:
+            return "SUCCESS"
     if base_table == "Objects_ur_lica":
         db_obj = Objects_ur_lica.query.get_or_404(int(id))     
     return save_data_to_db()
@@ -352,6 +359,7 @@ def buh_table_data():
 def main_table_data():
     name = request.form['json']
     list_data = json.loads(name)
+    print(list_data)
     start_row = 4
     path = 'files for download\шаблон Таблица оборудования PON.xlsx'
     try:

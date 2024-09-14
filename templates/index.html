@@ -546,13 +546,55 @@
                       <label class="form-check-label" for="inlineRadio2"  >Поиск "ИЛИ"</label>
                     </div>
                             <input class ="input_for_serch" type="text" id="myInput" onkeyup="myFunction()"  placeholder="Поиск по таблице..">
-                            <i id = 'number_of_records'> </i>
+                            
+                    <div class="row">
+                            <div class="col-md-auto">
+                                <div class="row row-cols-auto">
+                                    <div class="col text-start">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="flexCheck_main">
+                                            <label class="form-check-label" >Отметить все</label>  
+                                        </div>
+                                    </div>
+                                    <div class="col text-start">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">Отоброзить отмеченные</label>
+                                        </div>
+                                    </div>
+                                    <div class="col div-change-clr">
+                                        <input class="btn-change-clr" type="color" list="colors" id="favcolor" data-toggle="tooltip" data-placement="bottom" title="Выделить цветом" value="#83b3fb"/>
+                                            <datalist id="colors">
+                                                <option value="#83b3fa" label="table-primary">
+                                                <option value="#ace6f3" label="table-info">
+                                                <option value="#87ddb6" label="table-success">
+                                                <option value="#f5abb1" label="table-danger">
+                                                <option value="#f7e098" label="table-warning">
+                                            </datalist>
+                                    </div>
+                                    <div class="col div-change-clr">
+                                        <input class= 'btn-change-clr' type="button" data-toggle="tooltip" data-placement="bottom" title="Убрать выделение" id="defolt_color"/>
+                                    </div>
+                                    <div class="col">
+                                        <a href = "" id="delete_checked">Удалить отмеченные</a>
+                                    </div>
+                                </div>
+                            </div>   
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-end" >
+                                        <i id = 'number_of_records'> </i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-              </div>
+
+              </div >
                   <table class="table table-striped table-sm table-bordered table-sort table-hover" id="myTable">
                   <thead>
                     <tr>
-                      <th   scope="col">id</th>
+                      <th   scope="col" style="width: 15px"></th>
                       <th   scope="col">Узел доcтупа</th>
                       <th   scope="col">Оборудование</th>
                       <th   scope="col">Описание</th>
@@ -566,8 +608,8 @@
                   </thead>
                   <tbody class="table-condensed " id="tbody_main_table">
                     {% for un in units %}
-                    <tr >
-                      <td>{{ un.id }}</td>
+                    <tr bgcolor = "{{ un.color }}"  >
+                      <td data-id="{{ un.id }}"><input class="form-check-input" type="checkbox" value="" id="flexCheck_{{ un.id }}"></td>
                       <td>{{ un.ud_punkt }}</td>
                       <td><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"   data-ud ="{{ un.ud_punkt }}" data-pon ="{{ un.name_PON }}"  >{{ un.name_PON }}</a></td>
                       <td>{{ un.name_unit }}</td>
@@ -592,6 +634,42 @@
                         this.contentEditable = true;
                       };
                     });
+                    document.getElementById('flexCheck_main').addEventListener("change", function() {
+                            if (this.checked) {
+                                check_all_visible_main_table(true)
+                            } else {
+                                check_all_visible_main_table(false);
+                            }        
+                        });
+                        document.getElementById('flexSwitchCheckChecked').addEventListener("change", function() {
+                            if (this.checked) {
+                                show_checked_main_table(true)
+                            } else {
+                                show_checked_main_table(false);
+                            }        
+                        });
+                        document.getElementById('favcolor').addEventListener("change", function() {
+                            console.log(this.value)
+                            set_custom_bg_color_main_table(true,this.value)        
+                        });
+                        document.getElementById('defolt_color').addEventListener("click", function() {
+                            console.log(this.value)
+                            set_custom_bg_color_main_table(false)        
+                        });
+                        document.getElementById('delete_checked').addEventListener("click", function(e) {
+                            e.preventDefault();
+                            let table = document.getElementById('buh_data_tbody');
+                            let tbodies = table.getElementsByTagName('table');
+                            if(confirm('Удалить выбранные данные?')){
+                                for(var i = 0; i < tbodies.length; i++){
+                                tds = tbodies[i].getElementsByTagName('td');
+                                if(tds[0].querySelector('.form-check-input').checked===true){
+                                    delete_table_list('BuhUch',tds[1].querySelector('a').dataset.id)            
+                                }
+                            }
+                            }
+                            
+                        });
                   </script>
     </div>
 </body>
