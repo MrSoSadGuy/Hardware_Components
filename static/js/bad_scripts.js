@@ -271,22 +271,24 @@ function set_custom_bg_color(status, color){
             }
             else {tbodies[i].removeAttribute("bgcolor");
                 save_color_in_db('BuhUch',tds[1].querySelector('a').dataset.id, '')
-            }            
+            }
+            tds[0].querySelector('.form-check-input').checked=false;            
         }
     }
 }
-function set_custom_bg_color_main_table(status, color){
+function set_custom_bg_color_main_table(db_table, status, color){
     let table = document.getElementById('tbody_main_table');
     let tr = table.getElementsByTagName('tr');
     for(var i = 0; i < tr.length; i++){
         tds = tr[i].getElementsByTagName('td');
         if(tds[0].querySelector('.form-check-input').checked===true){
             if (status) {tr[i].setAttribute('bgcolor',color)
-                save_color_in_db('Units',tds[0].dataset.id, color)
+                save_color_in_db(db_table, tds[0].dataset.id, color)
             }
             else {tr[i].removeAttribute("bgcolor");
-                save_color_in_db("Units",tds[0].dataset.id, '')
-            }            
+                save_color_in_db(db_table, tds[0].dataset.id, '')
+            }
+            tds[0].querySelector('.form-check-input').checked=false;            
         }
     }
 }

@@ -14,8 +14,6 @@ app.app_context().push()
 db.create_all()
 
 
-
-
 from routes import *
 from models import *
 

@@ -650,21 +650,21 @@
                         });
                         document.getElementById('favcolor').addEventListener("change", function() {
                             console.log(this.value)
-                            set_custom_bg_color_main_table(true,this.value)        
+                            set_custom_bg_color_main_table('Units',true,this.value)        
                         });
                         document.getElementById('defolt_color').addEventListener("click", function() {
                             console.log(this.value)
-                            set_custom_bg_color_main_table(false)        
+                            set_custom_bg_color_main_table('Units',false)        
                         });
                         document.getElementById('delete_checked').addEventListener("click", function(e) {
                             e.preventDefault();
-                            let table = document.getElementById('buh_data_tbody');
-                            let tbodies = table.getElementsByTagName('table');
+                            let table = document.getElementById('tbody_main_table');
+                            let tr = table.getElementsByTagName('tr');
                             if(confirm('Удалить выбранные данные?')){
-                                for(var i = 0; i < tbodies.length; i++){
-                                tds = tbodies[i].getElementsByTagName('td');
+                                for(var i = 0; i < tr.length; i++){
+                                tds = tr[i].getElementsByTagName('td');
                                 if(tds[0].querySelector('.form-check-input').checked===true){
-                                    delete_table_list('BuhUch',tds[1].querySelector('a').dataset.id)            
+                                    delete_row_list('Unit',tds[0].dataset.id, tr[i])            
                                 }
                             }
                             }

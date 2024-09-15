@@ -122,6 +122,7 @@ def get_data_for_jinja():
         new_obj['IP'] = object[i].IP
         new_obj['naklodnaja'] = object[i].naklodnaja
         new_obj['note'] = object[i].note
+        new_obj['color'] = object[i].color
         new_obj['install_date'] = object[i].install_date
         if len(object[i].unit)>0:
             new_obj['type_equipment'] = object[i].unit[0].type_equipment
@@ -232,6 +233,7 @@ def save_color(base_table):
     name = request.form['json']
     id = json.loads(name)["id"]
     color = json.loads(name)["color"]
+    print('id: '+id,', color: '+color)
     user = Users.query.filter_by(id=current_user.get_id()).first()
     if base_table == "Units":
         db_obj = Unit.query.get_or_404(int(id))
@@ -248,7 +250,12 @@ def save_color(base_table):
         else:
             return "SUCCESS"
     if base_table == "Objects_ur_lica":
-        db_obj = Objects_ur_lica.query.get_or_404(int(id))     
+        db_obj = Objects_ur_lica.query.get_or_404(int(id))
+        if  db_obj.color != color:
+            db_obj.color = color;
+            db_obj.editor = user.FIO
+        else:
+            return "SUCCESS"    
     return save_data_to_db()
 
 

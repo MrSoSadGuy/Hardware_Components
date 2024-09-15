@@ -47,6 +47,7 @@ def add_new_unit(req_dict, name):
                     serial_number=req_dict["4"],
                     row_mesto=req_dict["5"],
                     plata_mesto=req_dict["6"],
+                    color='',
                     note="",
                     creator=name)
         return add_data_to_db(unit)
@@ -74,6 +75,7 @@ def add_object_for_MA(req_dict, name):
                         organization=req_dict["1"],
                         address=req_dict["2"],
                         ORSH=req_dict["3"],
+                        color="",
                         creator=name)
         return add_data_to_db(obj)
     else:
@@ -144,6 +146,7 @@ def save_buhuchet_data(req_dict, name):
                     charracter=req_dict["charracter"],
                     name = req_dict['name'],
                     note=req_dict["note"],
+                    color='',
                     creator=name)
         return add_data_to_db(buh)
     else:

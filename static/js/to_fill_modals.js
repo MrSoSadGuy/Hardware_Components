@@ -98,7 +98,8 @@ function create_tables2(table_id, column_name, unit_id){
     const thead_n = document.createElement('thead');
     thead_n.appendChild(tr_h) 
     const table_n = document.createElement('table');
-    table_n.setAttribute('class','table mb-0 table-striped table-bordered table-secondary table-sm' )
+    table_n.setAttribute('class','table mb-0 table-striped table-bordered table-sm')
+    table_n.setAttribute('bgcolor','#989ca2')
     const tbody_n = document.createElement('tbody');
     tbody_n.setAttribute('id',"tbody_unit_modules_"+ unit_id);
     table_n.appendChild(thead_n);

@@ -63,11 +63,8 @@ async function delete_row_from_edit_mod(db_table, id, bt_id, tbody, row)  {
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success");
-            document.getElementById(tbody).deleteRow(row.rowIndex-1)
-            let str = document.getElementById('number_of_records').innerHTML;
-            console.log("🚀 ~ delete_row_from_edit_mod ~ str:", str);
-            let new_str = parseInt(str.split(': ')[1])-1;
-            document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + new_str ;
+            document.getElementById(tbody).deleteRow(row.rowIndex-1);
+            number_of_records_main_table();
             setTimeout(function (){document.getElementById('close_btn_id').click()}, 800);      
         }
         else {
@@ -104,6 +101,21 @@ async function delete_table_list(db_table, id)  {
         
     }
     else {
+        alert(data);
+    }
+}
+async function delete_row_list(db_table, id, row)  {
+    var id_val = {id: id}
+    console.log("🚀 ~ delete_row_list ~ id:", id)
+    const data = await fetch_data(id_val,'/delete_row/'+db_table, 'POST');
+    console.log(data);
+    if(data==="SUCCESS"){
+        setTimeout(function (){row.remove()
+            number_of_records_main_table();
+        }, 500);        
+    }
+    else {
+        row.setAttribute('bgcolor', '#E51515')
         alert(data);
     }
 }
