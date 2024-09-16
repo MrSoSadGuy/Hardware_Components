@@ -110,7 +110,7 @@ def buh_data_page():
 
 
 def get_data_for_jinja():
-    object = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
+    object = Objects_ur_lica.query.order_by(Objects_ur_lica.cod_name).all()
     new_obj_list = []
     for i in range(0, len(object)):
         new_obj = {}
