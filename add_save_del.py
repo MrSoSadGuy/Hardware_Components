@@ -41,7 +41,7 @@ def delete_data_from_db(data):
 def add_new_unit(req_dict, name):
     if request.method == 'POST':
         unit = Unit(ud_punkt=req_dict["0"],
-                    name_PON=req_dict["1"],
+                    name_PON=req_dict["1"].upper().replace(' ',''),
                     name_unit=req_dict["2"],
                     inv_number=req_dict["3"],
                     serial_number=req_dict["4"],
@@ -71,7 +71,7 @@ def add_ma_unit_data(req_dict, name):
 
 def add_object_for_MA(req_dict, name):
     if request.method == 'POST':
-        obj = Objects_ur_lica(cod_name=req_dict["0"],
+        obj = Objects_ur_lica(cod_name=req_dict["0"].upper().replace(' ',''),
                         organization=req_dict["1"],
                         address=req_dict["2"],
                         ORSH=req_dict["3"],
