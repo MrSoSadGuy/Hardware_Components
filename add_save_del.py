@@ -58,7 +58,7 @@ def add_new_unit(req_dict, name):
 def add_ma_unit_data(req_dict, name):
     if request.method == 'POST':
         ma_unit = MA_Units(
-                        type_equipment=req_dict["0"],
+                        type_equipment=req_dict["0"].upper().replace(' ','').strip(),
                         inv_number=req_dict["1"],
                         serial_number=req_dict["2"],
                         note=req_dict["3"],
@@ -71,7 +71,7 @@ def add_ma_unit_data(req_dict, name):
 
 def add_object_for_MA(req_dict, name):
     if request.method == 'POST':
-        obj = Objects_ur_lica(cod_name=req_dict["0"].upper().replace(' ',''),
+        obj = Objects_ur_lica(cod_name=req_dict["0"].upper().replace(' ','').strip(),
                         organization=req_dict["1"],
                         address=req_dict["2"],
                         ORSH=req_dict["3"],
@@ -85,8 +85,12 @@ def add_object_for_MA(req_dict, name):
     
 def add_ma_add_modules(req_dict, name):
     if request.method == 'POST':
+        print(req_dict["0"].upper().replace(' ',''))
+        type = type_of_ma_modules.query.filter_by(type = req_dict["0"].upper().replace(' ','').strip()).first_or_404()
+        print(type)
         ma_modules = ma_add_modules(ma_unit_id = req_dict["add_p"],
-                                    type=req_dict["0"],
+                                    type=req_dict["0"].upper().replace(' ','').strip(),
+                                    type_id = type.id,
                                     inv_number=req_dict["1"],
                                     serial_number=req_dict["2"],
                                     note=req_dict["3"],
