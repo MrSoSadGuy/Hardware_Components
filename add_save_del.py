@@ -57,8 +57,10 @@ def add_new_unit(req_dict, name):
 
 def add_ma_unit_data(req_dict, name):
     if request.method == 'POST':
+        type = type_of_ma_units.query.filter_by(type = req_dict["0"].upper().replace(' ','').strip()).first_or_404()
         ma_unit = MA_Units(
                         type_equipment=req_dict["0"].upper().replace(' ','').strip(),
+                        type = type.id,
                         inv_number=req_dict["1"],
                         serial_number=req_dict["2"],
                         note=req_dict["3"],
