@@ -10,6 +10,11 @@ function downloadFile(file) {
     link.remove();
 }
 
+function popover_func(){
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+    }
+
 function reload_page() {
     // var serch_data = document.getElementById("myInput").value
     // localStorage.setItem("serch",JSON.stringify(serch_data));

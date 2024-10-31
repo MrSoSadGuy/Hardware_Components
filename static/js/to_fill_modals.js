@@ -64,11 +64,13 @@ function create_tables(moduls, table_id, column_name, db_table, busy){
             if (column_name[i] === 'inv_number'){
                 const a1 = document.createElement('a');
                 a1.textContent = item[column_name[i]];
-                a1.setAttribute('href',"");
-                a1.setAttribute('data-toggle',"popover");
+                a1.setAttribute('href',"#");
+                a1.setAttribute('data-bs-toggle',"popover");
                 a1.setAttribute('title',"111");
-                a1.setAttribute('data-content',"222222")
+                a1.setAttribute('data-bs-content',"222222");
+                a1.setAttribute('id',"id_"+item[column_name[i]]);
                 td.appendChild(a1);
+                popover_func();
             }
             else td.textContent = item[column_name[i]];
             console.log(item[column_name[i]])
