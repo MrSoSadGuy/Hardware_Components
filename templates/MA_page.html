@@ -438,6 +438,8 @@
           </div>
         </div>
       </div>
+          
+                  
     </div>
     <div class="modal fade" id="select_usege_Modal" tabindex="-1" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
@@ -489,6 +491,10 @@
                   $(function () {
                     $('[data-toggle="tooltip"]').tooltip()
                   })
+                  $(function () {
+                    $('[data-toggle="popover"]').popover()
+                  })
+
 
     </script>
     <script type="text/javascript">
@@ -661,7 +667,7 @@
                       <td style="width: 150px">{{ un.organization }}</td>
                       <td>{{ un.address }}</td>
                       <td>{{ un.IP}}</td>
-                      <td style="width: 100px"><a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-inv = "{{ un.inv_number }}" >{{ un.inv_number }}</a></td>
+                      <td style="width: 100px" ><a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-inv = "{{ un.inv_number }}" >{{ un.inv_number }}</a></td>
                       <td>{{ un.naklodnaja }}</td>
                       <td>{{ un.install_date }}</td>
                       <td>{{ un.ORSH }}</td>

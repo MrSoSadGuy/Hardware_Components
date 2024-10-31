@@ -25,6 +25,32 @@ async function sostav_ma_unit(dataID){
         }            
     }
 }
+async function invent_modal(param,user){
+    console.log("🚀 ~ invent_modal ~ user:", user)
+    document.getElementById("In_num").value = param;
+    document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
+    const fetch_response = await fetch_data(param,'/get_data_from_db/BuhUch',"POST");
+    const select = document.getElementById('select_mol_id')
+    var options = select.getElementsByTagName('option');
+    console.log("🚀 ~ invent_modal ~ options:", options);
+    if (fetch_response === null){alert("Нет данных по этому номеру")
+        for(let i=0; i < options.length; i++) {
+            if (user === options[i].text){
+                options[i].selected = 'selected'}
+        }
+    }
+    else {
+        document.getElementById("description_id").value = fetch_response['name'];
+        for(let i=0; i < options.length; i++) {
+            console.log("🚀 ~ invent_modal ~ fetch_response:",typeof fetch_response['MOL_id'], typeof options[i].value);
+            if (fetch_response['MOL_id'].toString() === options[i].value){
+                options[i].selected = 'selected'}
+        }
+        document.getElementById("char_id").value = fetch_response['charracter'];
+        document.getElementById("note_id").value = fetch_response['note'];
+    }
+}
+
 function create_tables(moduls, table_id, column_name, db_table, busy){
     console.log("🚀 ~ create_tables ~ moduls:", moduls)
     const tbody_current = document.getElementById(table_id);
@@ -34,7 +60,17 @@ function create_tables(moduls, table_id, column_name, db_table, busy){
             const td = document.createElement('td');
             td.setAttribute('width', '22.5%')
             td.contentEditable = true;
-            td.textContent = item[column_name[i]];
+            
+            if (column_name[i] === 'inv_number'){
+                const a1 = document.createElement('a');
+                a1.textContent = item[column_name[i]];
+                a1.setAttribute('href',"");
+                a1.setAttribute('data-toggle',"popover");
+                a1.setAttribute('title',"111");
+                a1.setAttribute('data-content',"222222")
+                td.appendChild(a1);
+            }
+            else td.textContent = item[column_name[i]];
             console.log(item[column_name[i]])
             tr.appendChild(td);
         }
@@ -156,31 +192,7 @@ async function ma_add_module_storage(){
     }
 }
 
-async function invent_modal(param,user){
-    console.log("🚀 ~ invent_modal ~ user:", user)
-    document.getElementById("In_num").value = param;
-    document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
-    const fetch_response = await fetch_data(param,'/get_data_from_db/BuhUch',"POST");
-    const select = document.getElementById('select_mol_id')
-    var options = select.getElementsByTagName('option');
-    console.log("🚀 ~ invent_modal ~ options:", options);
-    if (fetch_response === null){alert("Нет данных по этому номеру")
-        for(let i=0; i < options.length; i++) {
-            if (user === options[i].text){
-                options[i].selected = 'selected'}
-        }
-    }
-    else {
-        document.getElementById("description_id").value = fetch_response['name'];
-        for(let i=0; i < options.length; i++) {
-            console.log("🚀 ~ invent_modal ~ fetch_response:",typeof fetch_response['MOL_id'], typeof options[i].value);
-            if (fetch_response['MOL_id'].toString() === options[i].value){
-                options[i].selected = 'selected'}
-        }
-        document.getElementById("char_id").value = fetch_response['charracter'];
-        document.getElementById("note_id").value = fetch_response['note'];
-    }
-}
+
 async function edit_ma_unit_modal(obj_id, row_index){        
     const data = await fetch_data(obj_id,'/get_data_from_db/Objects_ur_lica',"POST");
     console.log("🚀 ~ edit_ma_unit_modal ~ data:", data)

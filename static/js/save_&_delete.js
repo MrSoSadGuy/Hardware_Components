@@ -265,8 +265,8 @@ async function save_edit_MA_table(tbody ,row) {
             oCells[4].textContent = document.getElementById("edit_address_id").value;
             oCells[5].textContent = document.getElementById("edit_ip_id").value;
             oCells[7].textContent = document.getElementById("edit_naklad_id").value;
-            oCells[8].textContent = document.getElementById("edit_orsh_id").value;
-            oCells[9].textContent = document.getElementById("edit_inst_date_id").value;
+            oCells[9].textContent = document.getElementById("edit_orsh_id").value;
+            oCells[8].textContent = document.getElementById("edit_inst_date_id").value;
             oCells[10].textContent = document.getElementById("unit_note_id").value;
         }
         else {
