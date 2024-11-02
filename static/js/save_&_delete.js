@@ -142,7 +142,14 @@ async function edit_row(db_table, id, bt_id, tbody, row, cells)  {
         }
     }
 }
-
+async function reset_tbodys(tbody, db_table, bt_id, add_param, obj_id){
+    r = await add_new_units(tbody, db_table, bt_id, add_param)
+    console.log("🚀 ~ reset_tbodys ~ r:", r);
+    if (r === 'SUCCESS'){
+        setTimeout(function (){sostav_ma_unit(obj_id)}, 1000);
+    }
+    else{alert(r)}
+}
 async function send_to_storage(db, id, bt_id, tbody, row_index, cells, dataID)  {
     console.log("🚀 ~ send_to_storage ~ row_index:", row_index)
     var edit_data = {id: id, parent_obj: 543}
@@ -153,6 +160,7 @@ async function send_to_storage(db, id, bt_id, tbody, row_index, cells, dataID)  
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");
             setTimeout(function (){document.getElementById(tbody).deleteRow(row_index.rowIndex-1)}, 500);
+            // setTimeout(function (){sostav_ma_unit(id)}, 500);
             ma_add_module_storage();
         }
         else {
@@ -372,14 +380,7 @@ async function add_new_inv_numbers(parent_tag_id, btn_id) {
         }    
     }
 }
-async function reset_tbodys(tbody, db_table, bt_id, add_param, obj_id){
-    r = await add_new_units(tbody, db_table, bt_id, add_param)
-    console.log("🚀 ~ reset_tbodys ~ r:", r);
-    if (r === 'SUCCESS'){
-        setTimeout(function (){sostav_ma_unit(obj_id)}, 1000);
-    }
-    else{alert(r)}
-}
+
 async function add_new_units(tbody, db_table, btn_id, add_param){
     var oTable = document.getElementById(tbody);
         //gets rows of table

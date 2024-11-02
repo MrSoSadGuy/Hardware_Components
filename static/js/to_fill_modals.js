@@ -30,6 +30,7 @@ async function invent_modal(param,user){
     document.getElementById("In_num").value = param;
     document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
     const fetch_response = await fetch_data(param,'/get_data_from_db/BuhUch',"POST");
+    console.log("🚀 ~ invent_modal ~ fetch_response:", fetch_response)
     const select = document.getElementById('select_mol_id')
     var options = select.getElementsByTagName('option');
     console.log("🚀 ~ invent_modal ~ options:", options);
@@ -51,8 +52,24 @@ async function invent_modal(param,user){
     }
 }
 
+async function invent_popover(param, attr, table_id){
+    const fetch_response = await fetch_data(param,'/get_data_from_db/BuhUch',"POST");
+    console.log("🚀 ~ invent_popover ~ fetch_response:", fetch_response)
+    var list_data = []
+    if (fetch_response === null){list_data = ["Нет данных","Нет данных","Нет данных"]}
+    else {
+        list_data = [fetch_response['MOL'],fetch_response['name'],fetch_response['charracter']]
+    }
+    attr.setAttribute('data-bs-toggle',"popover-bg");
+    attr.setAttribute('tabindex',"0");
+    attr.setAttribute('data-bs-trigger',"hover");
+    attr.setAttribute('title',"МОЛ: " + list_data[0]);
+    attr.setAttribute('data-bs-content', "Наименование: " + list_data[1] + "\n Характеристика: " + list_data[2]); 
+    popover_func(table_id)
+}
+
+
 function create_tables(moduls, table_id, column_name, db_table, busy){
-    console.log("🚀 ~ create_tables ~ moduls:", moduls)
     const tbody_current = document.getElementById(table_id);
     moduls.forEach(item => {
         const tr = document.createElement('tr');
@@ -64,16 +81,12 @@ function create_tables(moduls, table_id, column_name, db_table, busy){
             if (column_name[i] === 'inv_number'){
                 const a1 = document.createElement('a');
                 a1.textContent = item[column_name[i]];
-                a1.setAttribute('href',"#");
-                a1.setAttribute('data-bs-toggle',"popover");
-                a1.setAttribute('title',"111");
-                a1.setAttribute('data-bs-content',"222222");
-                a1.setAttribute('id',"id_"+item[column_name[i]]);
+                a1.setAttribute('href',"");
+                invent_popover(item[column_name[i]], a1, table_id);
                 td.appendChild(a1);
-                popover_func();
             }
             else td.textContent = item[column_name[i]];
-            console.log(item[column_name[i]])
+            // console.log(item[column_name[i]])
             tr.appendChild(td);
         }
         const td8 = document.createElement('td');
@@ -87,12 +100,12 @@ function create_tables(moduls, table_id, column_name, db_table, busy){
         div.setAttribute('class','d-grid gap-1 d-md-flex');
         a1.setAttribute('id','btn_edit_ma_mod_'+item['id']);
         a1.setAttribute('class','btn btn-primary btn-sm');
-        a1.setAttribute('data-toggle','tooltip');
+        a1.setAttribute('data-toggle','tooltip2');
         a1.setAttribute('data-placement','top');
         a1.setAttribute('title','Редактировать');
-        a2.setAttribute('data-toggle','tooltip');
+        a2.setAttribute('data-toggle','tooltip2');
         a2.setAttribute('data-placement','top');
-        a3.setAttribute('data-toggle','tooltip');
+        a3.setAttribute('data-toggle','tooltip2');
         a3.setAttribute('data-placement','top');
         a2.setAttribute('title','Удалить запись');
         a2.setAttribute('id','btn_del_ma_mod_'+item['id']);
@@ -125,7 +138,8 @@ function create_tables(moduls, table_id, column_name, db_table, busy){
         tr.appendChild(td8);
         td8.setAttribute('style',"width:70px")
         tbody_current.appendChild(tr);
-    })       
+    }) 
+    tooltip_func(table_id)      
 }
 function create_tables2(table_id, column_name, unit_id){
     const tbody_current = document.getElementById(table_id);       
@@ -179,7 +193,7 @@ async function ma_unit_storage(table_id, stor_id, tbody_ma_id){
     }
     const tfoot_for_new_ma_unit = document.createElement('tfoot');
     tfoot_for_new_ma_unit.setAttribute('id','new_MA_unit_tbody_storage_id')
-    table_current.appendChild(tfoot_for_new_ma_unit);   
+    table_current.appendChild(tfoot_for_new_ma_unit);
 }
 
 async function ma_add_module_storage(){

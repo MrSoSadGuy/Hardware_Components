@@ -15,12 +15,15 @@
     <link rel="stylesheet" href="../static/bootstrap.css">
     <link rel="stylesheet" href="../static/custom_style.css">
     <link rel="stylesheet" href="../static/select2.min.css">
-    <script type=text/javascript src="{{ url_for('static', filename='js/jquery-3.7.1.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+    <script type=text/javascript src="{{ url_for('static', filename='js/library/jquery-3.7.1.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/library/bootstrap.bundle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bad_scripts.js') }}"></script>
     <script src="{{ url_for('static', filename='js/save_&_delete.js') }}"></script>
     <script src="{{ url_for('static', filename='js/to_fill_modals.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/table-sort.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/library/table-sort.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/for_serch_scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/for_buh_data_page_scripts.js') }}"></script>
+    
     
     
     
@@ -33,7 +36,18 @@
         const table = document.getElementById('buh_data_tbody')
         const tbodies = table.getElementsByTagName('table');
         document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + tbodies.length ;  
+        const sel = document.getElementById("select_mol_id2");
+        for (i=0; i<sel.options.length; i++) {
+
+            console.log("🚀 ~ document.addEventListener ~ item:", sel.options[i].textContent)
+        
+            if (sel.options[i].textContent === JSON.parse(localStorage.getItem("selected_mol_name"))){sel.options[i].selected = true}
+            
+        }
+        if (JSON.parse(localStorage.getItem("selected_mol_name")) !== "Все записи"){hide_table_rows(JSON.parse(localStorage.getItem("selected_mol_name")))}
+        
         });
+        
     </script> 
     
 
@@ -185,8 +199,6 @@
                     $('[data-toggle="tooltip"]').tooltip()
                 })
     </script>
-
-
     <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
         <div class="d-grid gap-2 d-md-flex float-left">
         <a href="" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions" style="display: inline-block;" class="icon-link">
@@ -240,19 +252,18 @@
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button type="button" class="btn btn-primary btn-lg"  data-bs-toggle="modal" data-bs-target="#add_new_inv_number_Modal" data-toggle="tooltip" data-placement="bottom" title="Окно добавления новых записей" >
                     <i class="bi bi-plus-square-fill"></i>  Добавить</button>
-                    <button type="button" class="btn btn-primary btn-lg" onclick="save_buh_data_table_in_file()" data-toggle="tooltip" data-placement="bottom" title="Скачсть файл с текущими данными">
+                    <button type="button" class="btn btn-primary btn-lg" onclick="save_buh_data_table_in_file()" data-toggle="tooltip" data-placement="bottom" title="Скачать файл с текущими данными">
                     <i class="bi bi-download"></i> Сохранить в Excel</button>
                 </div></div>
                 <div class="table-responsive small">
                     <div class="container text-start">
-                         <div class="row ">
+                        <div class="row ">
                             <div class="col">
                                 <div class="container-fluid">
                                     <input  class ="input_for_serch" type="text" id="Input_for_buh_data_serch" onkeyup="buh_data_table_serch()" placeholder="Поиск по инвентарному номеру..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
                                 </div>
                             </div>
-                         </div>
-                       
+                        </div>
                         <div class="row">
                             <div class="col-md-auto">
                                 <div class="row row-cols-auto">
@@ -285,10 +296,20 @@
                                         <a href = "" id="delete_checked">Удалить отмеченные</a>
                                     </div>
                                 </div>
-                            </div>   
-                            <div class="col">
+                            </div> 
+                            
+                            <div class="col  text-end">
                                 <div class="row">
-                                    <div class="col text-end" >
+                                    <div class="col" >
+                                        <select class="form-select" aria-label="Default select example" id = 'select_mol_id2'>
+                                                <option value="0">Все записи</option>
+                                            {% for mol in mols %}
+                                                <option value="{{ mol.id }}">{{ mol.full_name }}</option>
+                                            {% endfor %}
+                                    </select> 
+                                    </div>
+
+                                    <div class="col" >
                                         <i id = 'number_of_records'> </i>
                                     </div>
                                 </div>
@@ -296,6 +317,11 @@
                         </div>
                         </div>
                         <script type="text/javascript">
+                        document.getElementById('select_mol_id2').addEventListener("change", function() {
+                            target_name = this.options[this.selectedIndex].textContent
+                            localStorage.setItem("selected_mol_name",JSON.stringify(target_name));
+                            reload_page()
+                        });
                         document.getElementById('flexCheck_main').addEventListener("change", function() {
                             if (this.checked) {
                                 
@@ -340,7 +366,7 @@
                     <tbody class="table-condensed " id="buh_data_tbody">
                     <tr><td id="td_for_buh_data_tables">
                         {% for buh in buh_data %} 
-                            {% if buh.list_of_MOLs.full_name == user_name %} 
+                            {# {% if buh.list_of_MOLs.full_name == JSON.parse(localStorage.getItem("selected_mol_name")) %}  #}
                                     <table  class="table table-sm table-bordered table-hover borderd_table"  id = "inv_number_id_{{buh.id}}" bgcolor = "{{ buh.color }}">
                                     <tbody>
                                         <tr>
@@ -361,7 +387,7 @@
                                     </tbody>
                                     
                                 </table>
-                            {% endif %}                                                   
+                            {# {% endif %}                                                    #}
                         {% endfor %}
                     </td></tr>
                     </tbody>
