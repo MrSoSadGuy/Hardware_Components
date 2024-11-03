@@ -140,6 +140,7 @@ def save_buhuchet_data(req_dict, name):
         for b in buh:
             if b.inv_number == req_dict["inv_number"].strip():
                 b.MOL_id = m_name.id
+                b.MOL = req_dict['MOL']
                 b.charracter = req_dict["charracter"]
                 b.name = req_dict['name']
                 b.note = req_dict["note"]
@@ -149,6 +150,7 @@ def save_buhuchet_data(req_dict, name):
         print(m_name, m_name.id)
         buh = BuhUch(inv_number=req_dict["inv_number"].strip(),
                     MOL_id=m_name.id,
+                    MOL = req_dict['MOL'],
                     charracter=req_dict["charracter"],
                     name = req_dict['name'],
                     note=req_dict["note"],
