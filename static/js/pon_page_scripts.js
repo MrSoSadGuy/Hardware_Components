@@ -4,6 +4,7 @@ async function to_fill_sostav_modal(p_name, ud) {
     document.getElementById("t_body").remove();
     const list_of_modules = await fetch_data(p_name,'/get_data_from_db/olt_data',"POST");
     const kts_data = await fetch_data(p_name,'/get_data_from_db/kts_data',"POST");
+    console.log(kts_data);
     document.getElementById("Ud_id").value = kts_data['UD'];
     document.getElementById("ip_id").value = kts_data['IP'];
     document.getElementById("olt_id").value = kts_data['OLT'];
@@ -18,9 +19,7 @@ async function to_fill_sostav_modal(p_name, ud) {
     const tbody = document.createElement('tbody');
     tbody.setAttribute("id", "t_body");
     table.appendChild(tbody);
-    const column_data = ['plata_mesto','inv_number','name_unit','serial_number','note']
     for (let item in  list_of_modules){
-        // console.log(list_of_modules[item]);
         let tr = document.createElement('tr');
         let td = document.createElement('td');
         td.textContent = item;
@@ -31,11 +30,6 @@ async function to_fill_sostav_modal(p_name, ud) {
             tr.appendChild(td);
         }
         tbody.appendChild(tr);
-
     }
-    // list_of_modules.forEach(item => {
-    //     console.log(item);
-
-    // })
 }
 

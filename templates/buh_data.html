@@ -61,7 +61,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
             </div>
              <div class="modal-body">
-                <table class="table table-sm " id="buh_data_table">                
+                <table class="table table-sm " id="buh_data_table2">
                     <tbody class="table-condensed " >
                     <tr><td id ="td_for_new_table">
                             <table class="table table-sm table-bordered table-hover borderd_table" id = "new_inv_namber_table">
@@ -246,7 +246,7 @@
     </div>
     <div class="container-fluid">
     <div class="row">
-        <div class="col" ></div>
+        <div class="col bg-dark-subtle" ></div>
         <div class="col-8">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Бухгалтерские данные</h1>
@@ -261,7 +261,7 @@
                         <div class="row ">
                             <div class="col">
                                 <div class="container-fluid">
-                                    <input  class ="input_for_serch" type="text" id="Input_for_buh_data_serch" onkeyup="buh_data_table_serch()" placeholder="Поиск по инвентарному номеру..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
+                                    <input  class ="input_for_serch shadow_for_the_table"  type="text" id="Input_for_buh_data_serch" onkeyup="buh_data_table_serch()" placeholder="Поиск по инвентарному номеру..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
                                 </div>
                             </div>
                         </div>
@@ -367,9 +367,9 @@
                     <tbody class="table-condensed " id="buh_data_tbody">
                     <tr><td id="td_for_buh_data_tables">
                         {% for buh in buh_data %} 
-                            {# {% if buh.list_of_MOLs.full_name == JSON.parse(localStorage.getItem("selected_mol_name")) %}  #}
-                                    <table  class="table table-sm table-bordered table-hover borderd_table"  id = "inv_number_id_{{buh.id}}" bgcolor = "{{ buh.color }}">
-                                    <tbody>
+
+                                    <table  class="table table-sm table-bordered table-hover borderd_table "  id = "inv_number_id_{{buh.id}}" bgcolor = "{{ buh.color }}">
+                                    <tbody class="shadow_for_the_table">
                                         <tr>
                                             <td width = '2%'>
                                             
@@ -388,13 +388,13 @@
                                     </tbody>
                                     
                                 </table>
-                            {# {% endif %}                                                    #}
+
                         {% endfor %}
                     </td></tr>
                     </tbody>
                 </table>
             </div>
-            <div class="col" ></div>     
+            <div class="col bg-dark-subtle" ></div>
     </div>
     </div>
 </body>
