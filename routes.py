@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app import app
 from models import *
 from add_save_del import *
-
+from pon_models import *
 
 @app.route('/')
 def index():
@@ -87,7 +87,15 @@ def pon_page():
     user_name = user.FIO
     mols = MOLs.query.all()
     return render_template("index.html", units=units, user_name=user_name, kts_data=kts_data, mols = mols)
-
+@app.route('/pon_units_new')
+@login_required
+def pon_page_new():
+    ud = Uzel_dostupa.query.order_by(Uzel_dostupa.id).all()
+    kts_data = Data_for_KTS.query.all()
+    user = Users.query.get_or_404(current_user.get_id())
+    user_name = user.FIO
+    mols = MOLs.query.all()
+    return render_template("pon_page.html", ud=ud, user_name=user_name,  mols = mols)
 
 @app.route('/multiple_access')
 @login_required
@@ -141,6 +149,11 @@ def get_data_from_db(db):
     if db == 'BuhUch':
         buh = BuhUch.query.filter_by(inv_number=json.loads(req)).first()
         return jsonify(buh)
+    if db == 'olt_data':
+        return jsonify(get_data_for_sostav(req))
+    if db == 'kts_data':
+        kts = Data_for_KTS.query.filter_by(cod_name=json.loads(req).upper()).first()
+        return jsonify(kts)
     if db == 'ma_add_modules':
         modules = ma_add_modules.query.filter_by(cod_name=json.loads(req).upper()).all()
         return jsonify(modules)
@@ -171,7 +184,15 @@ def get_data_from_db(db):
         return jsonify(obj,units_list,modules_list)
     else:
         return None
-    
+
+
+def get_data_for_sostav(req):
+    olt = List_of_olt.query.filter_by(cod_name_of_olt=json.loads(req).upper()).first()
+    data_list ={}
+    for mod in olt.list_of_modules:
+        data_list[mod.Olt_sockets.socket] = [mod.inv_number, mod.name_of_modules, mod.serial_number, mod.note]
+    return data_list
+
 def get_data_for_select(db, id):
     response =[]
     if db=='MA_Units':

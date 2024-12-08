@@ -25,15 +25,32 @@
               border-collapse: collapse;
               border: 2px solid rgb(90, 88, 88);
             }
-            .start_page_body{
-  
-              min-height: 100vh;
-              width: 100%;
-              background-image: url("images/krugi_mnozhestvo_uvelichenie_121454_1920x1080.jpg");
-            }
-           
-            .multiline { white-space: pre-line; }
+            /*.table_radius {*/
 
+            /*    */
+
+            /*}*/
+            /*.start_page_body{*/
+
+            /*  min-height: 100vh;*/
+            /*  width: 100%;*/
+            /*  background-image: url("images/krugi_mnozhestvo_uvelichenie_121454_1920x1080.jpg");*/
+            /*}*/
+           
+            /*.multiline { white-space: pre-line; }*/
+            .shadow_for_the_table {
+                box-shadow: 8px 7px 17px rgba(50, 41, 41, 0.46);
+                border-radius: 12px 12px 12px 12px;
+                /*transform: scale(0.2)*/
+            }
+            /*.scale {*/
+            /*    !*z-index: 1;*!*/
+            /*    !*position: relative;*!*/
+            /*    transition: 1s; !* Время эффекта *!*/
+            /*}*/
+            /*.scale:hover {*/
+            /*    transform: scale(1.005); !* Увеличиваем масштаб *!*/
+            /*}*/
            
             .btn-change-clr {
               border-radius: 20%;
@@ -69,11 +86,45 @@
               gap: 0.5rem;
             }
 
-            #select_mol_id2 {
-              max-width: 160px;
-              font-size: small;
-              max-height: 40px;
+            /*#select_mol_id2 {*/
+            /*  max-width: 160px;*/
+            /*  font-size: small;*/
+            /*  max-height: 40px;*/
+            /*}*/
+
+            .serch_scrolled {
+                position:fixed;
+                top: 43px;
+                left: 200px;
+                width: 81.2%;
+                /*animation-name: fadeInUp;*/
+                /*animation-duration: 1s;*/
             }
-            
-          
-          
+            .side_nav_bar{
+                position:sticky;
+                top: 45px;
+                left: 8px;
+                max-width: 140px;
+                align-self: start;
+            }
+            #sidebar ul{
+                list-style: none;
+                text-align: left;
+            }
+            #sidebar a{
+                border-radius: .5em;
+                padding: .40em;
+                text-decoration: none;
+                /*color: #000000;*/
+                display: flex;
+                align-items: center;
+                gap: 1em;
+            }
+
+            #sidebar ul li.active a{
+                color: #9b9f1a;
+            }
+            #sidebar a:hover{
+                background-color: #043e79;
+                color: #ffffff;
+            }

@@ -502,7 +502,7 @@
     </header>
     <script type="text/javascript">
       document.getElementById('switch_to_dark_mod').addEventListener('click',()=>{
-          if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
+          if (document.documentElement.getAttribute('data-bs-theme') === 'dark') {
               document.documentElement.setAttribute('data-bs-theme','light')
               localStorage.setItem("colar_thema",JSON.stringify('light'));
           }
@@ -522,6 +522,7 @@
                 <button class="btn btn-primary" type="submit"  formaction="/multiple_access">Многопортовые устройства доступа</button>
                 <button class="btn btn-primary" type="submit"  formaction="/buh_data" >Бухгалтерские данные</button>
                 <button class="btn btn-primary" type="submit" disabled formaction="/other_property">Прочее имущество</button>
+                <button class="btn btn-primary"  type="submit" formaction="/pon_units_new">Тэст</button>
               </div>
             </form>
         </div>

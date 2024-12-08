@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from dataclasses import dataclass
 from datetime import datetime
 
-
 db = SQLAlchemy()
 
 @dataclass
@@ -163,21 +162,5 @@ class Users (db.Model, UserMixin):
         return '<Users %r>' % self.id
     
 
-@dataclass
-class Data_for_KTS (db.Model, UserMixin):
-    id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    UD: str = db.Column(db.String(200), nullable=True)
-    inv_number: str = db.Column(db.String(100), nullable=True)
-    IP: str = db.Column(db.String(20), nullable=True)
-    Serial: str = db.Column(db.String(100), nullable=True)
-    OLT: str = db.Column(db.String(100), nullable=True)
-    full_name: str = db.Column(db.String(200), nullable=True)
-    cod_name: str = db.Column(db.String(50), nullable=True)
-    zavod: str = db.Column(db.String(50), nullable=True)
-    date_of_production: str = db.Column(db.String(20), nullable=True)
-    date_of_entry: str = db.Column(db.String(20), nullable=True)
-    mesto: str = db.Column(db.String(20), nullable=True)
-    date = db.Column(db.DateTime, default=datetime.utcnow)
 
-    def __repr__(self):
-        return '<Data_for_KTS %r>' % self.id
+

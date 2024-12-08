@@ -569,6 +569,7 @@
                   <button class="btn btn-secondary" type="submit" disabled >Многопортовые устройства доступа</button>
                   <button class="btn btn-primary" type="submit"  formaction="/buh_data" >Бухгалтерские данные</button>      
                   <button class="btn btn-primary" type="submit" disabled formaction="/other_property">Прочее имущество</button>
+                  <button class="btn btn-primary"  type="submit" formaction="/pon_units_new">Тэст</button>
               </div>            
             </form>
         </div>
@@ -594,7 +595,7 @@
                       <input class="form-check-input" type="radio" name="radio_serch" id="inlineRadio2" value="option2">
                       <label class="form-check-label" for="inlineRadio2"  >Поиск "ИЛИ"</label>
                     </div>
-                      <input class ="input_for_serch" type="text" id="myInput" onkeyup="myFunction()" placeholder="Поиск по таблице.." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
+                      <input class ="input_for_serch shadow_for_the_table" type="text" id="myInput" onkeyup="myFunction()" placeholder="Поиск по таблице.." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
                       <div class="row">
                             <div class="col-md-auto">
                                 <div class="row row-cols-auto">
@@ -686,6 +687,13 @@
 
     </div>
 <script>
+    let serch_line = document.getElementById('myInput').classList
+    let active_class = "serch_scrolled"
+    window.addEventListener('scroll', e => {
+        // console.log(pageYOffset)
+        if(pageYOffset > 111.1) serch_line.add(active_class)
+        else serch_line.remove(active_class)
+    })
                     document.querySelectorAll('td').forEach(td => {
                       td.ondblclick = function() {
                         this.contentEditable = true;

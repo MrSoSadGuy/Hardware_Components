@@ -25,6 +25,7 @@ async function sostav_ma_unit(dataID){
         }            
     }
 }
+
 async function invent_modal(param,user){
     console.log("🚀 ~ invent_modal ~ user:", user)
     document.getElementById("In_num").value = param;
@@ -37,7 +38,7 @@ async function invent_modal(param,user){
     if (fetch_response === null){alert("Нет данных по этому номеру")
         for(let i=0; i < options.length; i++) {
             if (user === options[i].text){
-                options[i].selected = 'selected'}
+                options[i].selected = true}
         }
     }
     else {

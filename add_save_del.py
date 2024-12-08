@@ -2,7 +2,7 @@ from flask import request, json, jsonify
 
 from app import app
 from models import *
-
+from pon_models import *
 
 def add_data_to_db(data):
     try:

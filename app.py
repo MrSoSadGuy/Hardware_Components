@@ -7,7 +7,9 @@ from werkzeug.exceptions import NotFound
 
 app = Flask(__name__)
 app.secret_key = 'some secret salt'
-app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///sostav_PON.db'
+# app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///sostav_PON.db'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///GOM_ZUES_STAN_GRP_BD.db'
+
 db.init_app(app)
 manager = LoginManager(app)
 app.app_context().push()
@@ -15,6 +17,7 @@ db.create_all()
 
 from routes import *
 from models import *
+
 
 
 @manager.user_loader
