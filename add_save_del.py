@@ -2,7 +2,7 @@ from flask import request, json, jsonify
 
 from app import app
 from models import *
-
+from pon_models import *
 
 def add_data_to_db(data):
     try:
@@ -41,12 +41,13 @@ def delete_data_from_db(data):
 def add_new_unit(req_dict, name):
     if request.method == 'POST':
         unit = Unit(ud_punkt=req_dict["0"],
-                    name_PON=req_dict["1"],
+                    name_PON=req_dict["1"].upper().replace(' ',''),
                     name_unit=req_dict["2"],
                     inv_number=req_dict["3"],
                     serial_number=req_dict["4"],
                     row_mesto=req_dict["5"],
                     plata_mesto=req_dict["6"],
+                    color='',
                     note="",
                     creator=name)
         return add_data_to_db(unit)
@@ -56,8 +57,10 @@ def add_new_unit(req_dict, name):
 
 def add_ma_unit_data(req_dict, name):
     if request.method == 'POST':
+        type = type_of_ma_units.query.filter_by(type = req_dict["0"].upper().replace(' ','').strip()).first_or_404()
         ma_unit = MA_Units(
-                        type_equipment=req_dict["0"],
+                        type_equipment=req_dict["0"].upper().replace(' ','').strip(),
+                        type = type.id,
                         inv_number=req_dict["1"],
                         serial_number=req_dict["2"],
                         note=req_dict["3"],
@@ -70,10 +73,11 @@ def add_ma_unit_data(req_dict, name):
 
 def add_object_for_MA(req_dict, name):
     if request.method == 'POST':
-        obj = Objects_ur_lica(cod_name=req_dict["0"],
+        obj = Objects_ur_lica(cod_name=req_dict["0"].upper().replace(' ','').strip(),
                         organization=req_dict["1"],
                         address=req_dict["2"],
                         ORSH=req_dict["3"],
+                        color="",
                         creator=name)
         return add_data_to_db(obj)
     else:
@@ -83,8 +87,12 @@ def add_object_for_MA(req_dict, name):
     
 def add_ma_add_modules(req_dict, name):
     if request.method == 'POST':
+        print(req_dict["0"].upper().replace(' ',''))
+        type = type_of_ma_modules.query.filter_by(type = req_dict["0"].upper().replace(' ','').strip()).first_or_404()
+        print(type)
         ma_modules = ma_add_modules(ma_unit_id = req_dict["add_p"],
-                                    type=req_dict["0"],
+                                    type=req_dict["0"].upper().replace(' ','').strip(),
+                                    type_id = type.id,
                                     inv_number=req_dict["1"],
                                     serial_number=req_dict["2"],
                                     note=req_dict["3"],
@@ -128,20 +136,25 @@ def save_kts_data(req_dict, name):
 def save_buhuchet_data(req_dict, name):
     buh = BuhUch.query.all()    
     if request.method == 'POST':
+        m_name = MOLs.query.filter_by(full_name = req_dict["MOL"].strip()).first()
         for b in buh:
             if b.inv_number == req_dict["inv_number"].strip():
-                b.MOL = req_dict["MOL"].strip()
+                b.MOL_id = m_name.id
+                b.MOL = req_dict['MOL']
                 b.charracter = req_dict["charracter"]
                 b.name = req_dict['name']
                 b.note = req_dict["note"]
                 b.editor = name
                 b.last_edit_date = datetime.now()
                 return save_data_to_db()
+        print(m_name, m_name.id)
         buh = BuhUch(inv_number=req_dict["inv_number"].strip(),
-                    MOL=req_dict["MOL"].strip(),
+                    MOL_id=m_name.id,
+                    MOL = req_dict['MOL'],
                     charracter=req_dict["charracter"],
                     name = req_dict['name'],
                     note=req_dict["note"],
+                    color='',
                     creator=name)
         return add_data_to_db(buh)
     else:
@@ -164,6 +177,39 @@ def save_sostav_data(req_dict, name):
         return save_data_to_db()
     else:
         return json.dumps("NOT 'POST' REQUEST")
+
+def save_pon_modules(req_dict, name):
+    mod = List_of_modules.query.get_or_404(int(req_dict["id"]))
+    if request.method == 'POST':
+        mod.name_of_modules = req_dict["name"]
+        mod.serial_number = req_dict["serial"]
+        mod.note = req_dict["note"]
+        mod.inv_number = req_dict["inv_number"]
+        mod.editor = name
+        mod.last_date_edit = datetime.now()
+        save_data_to_db()
+        return save_data_to_db()
+    else:
+        return json.dumps("NOT 'POST' REQUEST")
+
+
+def save_pon_olt_data(req_dict, name):
+    olt = List_of_olt.query.get_or_404(int(req_dict["id"]))
+    if request.method == 'POST':
+        olt.cod_name_of_olt = req_dict["cod_name_of_olt"]
+        olt.name = req_dict["name"]
+        olt.serial_number = req_dict["serial"]
+        olt.note = req_dict["note"]
+        olt.inv_number = req_dict["inv_number"]
+        olt.IP = req_dict["IP"]
+        olt.row_box_shelf = req_dict["riad"]
+        olt.editor = name
+        olt.last_date_edit = datetime.now()
+        save_data_to_db()
+        return save_data_to_db()
+    else:
+        return json.dumps("NOT 'POST' REQUEST")
+
 
 
 def save_ma_add_modules(req_dict, name):

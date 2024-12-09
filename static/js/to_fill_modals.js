@@ -25,8 +25,52 @@ async function sostav_ma_unit(dataID){
         }            
     }
 }
+
+async function invent_modal(param,user){
+    console.log("🚀 ~ invent_modal ~ user:", user)
+    document.getElementById("In_num").value = param;
+    document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
+    const fetch_response = await fetch_data(param,'/get_data_from_db/BuhUch',"POST");
+    console.log("🚀 ~ invent_modal ~ fetch_response:", fetch_response)
+    const select = document.getElementById('select_mol_id')
+    var options = select.getElementsByTagName('option');
+    console.log("🚀 ~ invent_modal ~ options:", options);
+    if (fetch_response === null){alert("Нет данных по этому номеру")
+        for(let i=0; i < options.length; i++) {
+            if (user === options[i].text){
+                options[i].selected = true}
+        }
+    }
+    else {
+        document.getElementById("description_id").value = fetch_response['name'];
+        for(let i=0; i < options.length; i++) {
+            console.log("🚀 ~ invent_modal ~ fetch_response:",typeof fetch_response['MOL_id'], typeof options[i].value);
+            if (fetch_response['MOL_id'].toString() === options[i].value){
+                options[i].selected = 'selected'}
+        }
+        document.getElementById("char_id").value = fetch_response['charracter'];
+        document.getElementById("note_id").value = fetch_response['note'];
+    }
+}
+
+async function invent_popover(param, attr, table_id){
+    const fetch_response = await fetch_data(param,'/get_data_from_db/BuhUch',"POST");
+    console.log("🚀 ~ invent_popover ~ fetch_response:", fetch_response)
+    var list_data = []
+    if (fetch_response === null){list_data = ["Нет данных","Нет данных","Нет данных"]}
+    else {
+        list_data = [fetch_response['MOL'],fetch_response['name'],fetch_response['charracter']]
+    }
+    attr.setAttribute('data-bs-toggle',"popover-bg");
+    attr.setAttribute('tabindex',"0");
+    attr.setAttribute('data-bs-trigger',"hover");
+    attr.setAttribute('title',"МОЛ: " + list_data[0]);
+    attr.setAttribute('data-bs-content', "Наименование: " + list_data[1] + "\n Характеристика: " + list_data[2]); 
+    popover_func(table_id)
+}
+
+
 function create_tables(moduls, table_id, column_name, db_table, busy){
-    console.log("🚀 ~ create_tables ~ moduls:", moduls)
     const tbody_current = document.getElementById(table_id);
     moduls.forEach(item => {
         const tr = document.createElement('tr');
@@ -34,8 +78,16 @@ function create_tables(moduls, table_id, column_name, db_table, busy){
             const td = document.createElement('td');
             td.setAttribute('width', '22.5%')
             td.contentEditable = true;
-            td.textContent = item[column_name[i]];
-            console.log(item[column_name[i]])
+            
+            if (column_name[i] === 'inv_number'){
+                const a1 = document.createElement('a');
+                a1.textContent = item[column_name[i]];
+                a1.setAttribute('href',"");
+                invent_popover(item[column_name[i]], a1, table_id);
+                td.appendChild(a1);
+            }
+            else td.textContent = item[column_name[i]];
+            // console.log(item[column_name[i]])
             tr.appendChild(td);
         }
         const td8 = document.createElement('td');
@@ -49,12 +101,12 @@ function create_tables(moduls, table_id, column_name, db_table, busy){
         div.setAttribute('class','d-grid gap-1 d-md-flex');
         a1.setAttribute('id','btn_edit_ma_mod_'+item['id']);
         a1.setAttribute('class','btn btn-primary btn-sm');
-        a1.setAttribute('data-toggle','tooltip');
+        a1.setAttribute('data-toggle','tooltip2');
         a1.setAttribute('data-placement','top');
         a1.setAttribute('title','Редактировать');
-        a2.setAttribute('data-toggle','tooltip');
+        a2.setAttribute('data-toggle','tooltip2');
         a2.setAttribute('data-placement','top');
-        a3.setAttribute('data-toggle','tooltip');
+        a3.setAttribute('data-toggle','tooltip2');
         a3.setAttribute('data-placement','top');
         a2.setAttribute('title','Удалить запись');
         a2.setAttribute('id','btn_del_ma_mod_'+item['id']);
@@ -87,7 +139,8 @@ function create_tables(moduls, table_id, column_name, db_table, busy){
         tr.appendChild(td8);
         td8.setAttribute('style',"width:70px")
         tbody_current.appendChild(tr);
-    })       
+    }) 
+    tooltip_func(table_id)      
 }
 function create_tables2(table_id, column_name, unit_id){
     const tbody_current = document.getElementById(table_id);       
@@ -98,7 +151,8 @@ function create_tables2(table_id, column_name, unit_id){
     const thead_n = document.createElement('thead');
     thead_n.appendChild(tr_h) 
     const table_n = document.createElement('table');
-    table_n.setAttribute('class','table mb-0 table-striped table-bordered table-secondary table-sm' )
+    table_n.setAttribute('class','table mb-0 table-striped table-bordered table-sm')
+    table_n.setAttribute('bgcolor','#989ca2')
     const tbody_n = document.createElement('tbody');
     tbody_n.setAttribute('id',"tbody_unit_modules_"+ unit_id);
     table_n.appendChild(thead_n);
@@ -140,7 +194,7 @@ async function ma_unit_storage(table_id, stor_id, tbody_ma_id){
     }
     const tfoot_for_new_ma_unit = document.createElement('tfoot');
     tfoot_for_new_ma_unit.setAttribute('id','new_MA_unit_tbody_storage_id')
-    table_current.appendChild(tfoot_for_new_ma_unit);   
+    table_current.appendChild(tfoot_for_new_ma_unit);
 }
 
 async function ma_add_module_storage(){
@@ -155,30 +209,7 @@ async function ma_add_module_storage(){
     }
 }
 
-async function invent_modal(param){
-    document.getElementById("In_num").value = param;
-    document.getElementById("button_for_save_edit_buh_data").setAttribute("class", "btn btn-primary");
-    const fetch_response = await fetch_data(param,'/get_data_from_db/BuhUch',"POST");
-    const select = document.getElementById('select_mol_id')
-    var options = select.getElementsByTagName('option');
-    console.log("🚀 ~ invent_modal ~ options:", options);
-    console.log("🚀 ~ invent_modal ~ fetch_response:", fetch_response);
-    if (fetch_response === null){alert("Нет данных по этому номеру")
-        // const opt_selected = document.createElement('option');
-        // opt_selected.selected = 'selected';
-        // opt_selected.text = 'Выберите МОЛа';
-        // select.add(opt_selected);
-    }
-    else {
-        document.getElementById("description_id").value = fetch_response['name'];
-        for(let i=0; i < options.length; i++) {
-            if (fetch_response['MOL'] === options[i].textContent){
-                options[i].selected = 'selected'}
-        }
-        document.getElementById("char_id").value = fetch_response['charracter'];
-        document.getElementById("note_id").value = fetch_response['note'];
-    }
-}
+
 async function edit_ma_unit_modal(obj_id, row_index){        
     const data = await fetch_data(obj_id,'/get_data_from_db/Objects_ur_lica',"POST");
     console.log("🚀 ~ edit_ma_unit_modal ~ data:", data)
@@ -199,6 +230,7 @@ async function edit_ma_unit_modal(obj_id, row_index){
     document.getElementById('button_for_save_edit_row').onclick = function (){
         save_edit_MA_table('tbody_main_table', row_index)};
 }
+
 async function select_usage_modal(id, db_table) {
     document.getElementById("btn_send_to_usage").setAttribute("class", "btn btn-primary");
     const select = document.getElementById('select_send_to_usage')
@@ -207,31 +239,23 @@ async function select_usage_modal(id, db_table) {
     opt_selected.selected
     opt_selected.text = 'Выберите обьект'
     select.add(opt_selected)
-    const data = await fetch_data('all','/get_data_from_db/Objects_ur_lica_all',"POST")
-    for (const [key] of Object.entries(data)) { 
-        const opt = document.createElement('option')
-        
-        if (db_table === "MA_Units"){
-            if (data[key][2].length === 0){
-                opt.value = data[key][0]
-                opt.text = data[key][1]
-                select.add(opt)
-            }
-        }
-        else if (data[key][2].length > 1){
-                data[key][2].forEach(id => {
-                    const opt_stor = document.createElement('option')
-                    opt_stor.value =[data[key][0], id]
-                    opt_stor.text = data[key][1] +"-" + id
-                    select.add(opt_stor)
-                })
-            }
-        else if  (data[key][2].length === 1){
-            opt.value = [data[key][0],data[key][2]]
-            opt.text = data[key][1]
+    const data = await fetch_data(id,'/get_data_from_db/'+db_table+'_to_usage',"POST")
+    if (db_table === "MA_Units"){        
+        data.forEach(item => {
+            const opt = document.createElement('option')
+            opt.value = item.id
+            opt.text = item.cod_name
             select.add(opt)
-        }   
+        })
     }
+    if (db_table === "ma_add_modules"){        
+        data.forEach(item => {
+            const opt = document.createElement('option')
+            opt.value = item.id
+            opt.text = item.cod_name
+            select.add(opt)
+        })
+    }     
     let target_id, target_list
     select.addEventListener("change", function() {
         target_list = this.value.split(",")

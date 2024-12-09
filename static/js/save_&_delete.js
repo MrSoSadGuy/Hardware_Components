@@ -12,6 +12,21 @@ async function fetch_data(data, route_str, method) {
         } catch (error){console.log("🚀 ~ fetch_data ~ error:", error);
         return "error"}
 }
+async function fetch_data_2(data, route_str, method) {
+    var formdata = new FormData();
+    formdata.append("json", JSON.stringify(data));
+    console.log("🚀 ~ fetch_data ~ route:", route_str)
+    try {
+        const response = await fetch(route_str,
+        {
+            method: method,
+            body: formdata
+        })
+        return await response;
+        } catch (error){console.error("🚀 ~ fetch_data ~ error:", error);
+        return "Error is:"+ error
+        }
+}
 
 async function change_password(){     
     var old_pass = document.getElementById("old_pass_id").value;
@@ -63,7 +78,8 @@ async function delete_row_from_edit_mod(db_table, id, bt_id, tbody, row)  {
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success");
-            document.getElementById(tbody).deleteRow(row.rowIndex-1)
+            document.getElementById(tbody).deleteRow(row.rowIndex-1);
+            number_of_records_main_table();
             setTimeout(function (){document.getElementById('close_btn_id').click()}, 800);      
         }
         else {
@@ -71,15 +87,16 @@ async function delete_row_from_edit_mod(db_table, id, bt_id, tbody, row)  {
             alert(data);
     }}
 }
-async function delete_table(db_table, id, bt_id, table_id)  {
+async function delete_table(db_table, id, bt_id)  {
     var id_val = {id: id}
     console.log("🚀 ~ delete_table ~ id:", id)
-    if (confirm("Удалить запись?")){
+    if (confirm("Удалить данные?")){
         const data = await fetch_data(id_val,'/delete_row/'+db_table, 'POST');
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success");
-            setTimeout(function (){document.getElementById(table_id).remove()}, 500);
+            setTimeout(function (){document.getElementById('inv_number_id_'+ id).remove()}, 500);
+            number_of_records();
             setTimeout(function (){document.getElementById('close_btn_id').click()}, 800);      
         }
         else {
@@ -87,6 +104,37 @@ async function delete_table(db_table, id, bt_id, table_id)  {
             alert(data);
     }}
 }
+async function delete_table_list(db_table, id)  {
+    var id_val = {id: id}
+    console.log("🚀 ~ delete_table ~ id:", id)
+    const data = await fetch_data(id_val,'/delete_row/'+db_table, 'POST');
+    console.log(data);
+    if(data==="SUCCESS"){
+        setTimeout(function (){document.getElementById('inv_number_id_'+ id).remove()
+            number_of_records();
+        }, 500);
+        
+    }
+    else {
+        alert(data);
+    }
+}
+async function delete_row_list(db_table, id, row)  {
+    var id_val = {id: id}
+    console.log("🚀 ~ delete_row_list ~ id:", id)
+    const data = await fetch_data(id_val,'/delete_row/'+db_table, 'POST');
+    console.log(data);
+    if(data==="SUCCESS"){
+        setTimeout(function (){row.remove()
+            number_of_records_main_table();
+        }, 500);        
+    }
+    else {
+        row.setAttribute('bgcolor', '#E51515')
+        alert(data);
+    }
+}
+
 
 async function edit_row(db_table, id, bt_id, tbody, row, cells)  {
     console.log(row.cells.length)
@@ -109,7 +157,14 @@ async function edit_row(db_table, id, bt_id, tbody, row, cells)  {
         }
     }
 }
-
+async function reset_tbodys(tbody, db_table, bt_id, add_param, obj_id){
+    r = await add_new_units(tbody, db_table, bt_id, add_param)
+    console.log("🚀 ~ reset_tbodys ~ r:", r);
+    if (r === 'SUCCESS'){
+        setTimeout(function (){sostav_ma_unit(obj_id)}, 1000);
+    }
+    else{alert(r)}
+}
 async function send_to_storage(db, id, bt_id, tbody, row_index, cells, dataID)  {
     console.log("🚀 ~ send_to_storage ~ row_index:", row_index)
     var edit_data = {id: id, parent_obj: 543}
@@ -120,6 +175,7 @@ async function send_to_storage(db, id, bt_id, tbody, row_index, cells, dataID)  
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");
             setTimeout(function (){document.getElementById(tbody).deleteRow(row_index.rowIndex-1)}, 500);
+            // setTimeout(function (){sostav_ma_unit(id)}, 500);
             ma_add_module_storage();
         }
         else {
@@ -152,7 +208,7 @@ async function save_edit_buh_data() {
         id: document.getElementById("id_buh").value,
         inv_number: document.getElementById("In_num").value,
         name: document.getElementById("description_id").value,
-        MOL: sel.options[sel.selectedIndex].text,
+        MOL: sel.options[sel.selectedIndex].textContent,
         charracter: document.getElementById("char_id").value,
         note: document.getElementById("note_id").value
     }
@@ -232,8 +288,8 @@ async function save_edit_MA_table(tbody ,row) {
             oCells[4].textContent = document.getElementById("edit_address_id").value;
             oCells[5].textContent = document.getElementById("edit_ip_id").value;
             oCells[7].textContent = document.getElementById("edit_naklad_id").value;
-            oCells[8].textContent = document.getElementById("edit_orsh_id").value;
-            oCells[9].textContent = document.getElementById("edit_inst_date_id").value;
+            oCells[9].textContent = document.getElementById("edit_orsh_id").value;
+            oCells[8].textContent = document.getElementById("edit_inst_date_id").value;
             oCells[10].textContent = document.getElementById("unit_note_id").value;
         }
         else {
@@ -310,7 +366,7 @@ async function add_new_inv_numbers(parent_tag_id, btn_id) {
         if(list_of_tds[j].querySelector('i') != null){list_of_tds[j].querySelector('i').remove()}    
         }
         if(list_of_tds[0].textContent === ""){
-            list_of_tables[i].setAttribute('class', 'table table-sm table-bordered table-hover borderd_table table-danger')
+            list_of_tables[i].setAttribute('bgcolor', '#f5abb1')
             alert('Поле инвентарного номера не может быть пустым!')
             continue;    
         }
@@ -327,26 +383,19 @@ async function add_new_inv_numbers(parent_tag_id, btn_id) {
         console.log("🚀 ~ add_new_inv_numbers ~ response:", response)
         if(response==="SUCCESS"){
             document.getElementById(btn_id).setAttribute("class", "btn btn-success");
-            list_of_tables[i].setAttribute('class', 'table table-sm table-bordered table-hover borderd_table table-success')
+            list_of_tables[i].setAttribute('bgcolor', '#87ddb6')
             setTimeout(function (){list_of_tables[i].remove()}, 1000);
         }
         else {
             document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
-            list_of_tables[i].setAttribute('class', 'table table-sm table-bordered table-hover borderd_table table-danger')
+            list_of_tables[i].setAttribute('bgcolor', '#f5abb1')
             alert(response);
             break;
         }
         }    
     }
 }
-async function reset_tbodys(tbody, db_table, bt_id, add_param, obj_id){
-    r = await add_new_units(tbody, db_table, bt_id, add_param)
-    console.log("🚀 ~ reset_tbodys ~ r:", r);
-    if (r === 'SUCCESS'){
-        setTimeout(function (){sostav_ma_unit(obj_id)}, 1000);
-    }
-    else{alert(r)}
-}
+
 async function add_new_units(tbody, db_table, btn_id, add_param){
     var oTable = document.getElementById(tbody);
         //gets rows of table

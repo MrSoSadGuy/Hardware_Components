@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app import app
 from models import *
 from add_save_del import *
-
+from pon_models import *
 
 @app.route('/')
 def index():
@@ -81,13 +81,21 @@ def main():
 @app.route('/pon_units')
 @login_required
 def pon_page():
-    units = Unit.query.order_by(Unit.id).all()
+    units = Unit.query.order_by(Unit.name_PON).all()
     kts_data = Data_for_KTS.query.all()
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
     mols = MOLs.query.all()
     return render_template("index.html", units=units, user_name=user_name, kts_data=kts_data, mols = mols)
-
+@app.route('/pon_units_new')
+@login_required
+def pon_page_new():
+    ud = Uzel_dostupa.query.order_by(Uzel_dostupa.id).all()
+    kts_data = Data_for_KTS.query.all()
+    user = Users.query.get_or_404(current_user.get_id())
+    user_name = user.FIO
+    mols = MOLs.query.all()
+    return render_template("pon_page.html", ud=ud, user_name=user_name,  mols = mols)
 
 @app.route('/multiple_access')
 @login_required
@@ -110,7 +118,7 @@ def buh_data_page():
 
 
 def get_data_for_jinja():
-    object = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
+    object = Objects_ur_lica.query.order_by(Objects_ur_lica.cod_name).all()
     new_obj_list = []
     for i in range(0, len(object)):
         new_obj = {}
@@ -122,6 +130,7 @@ def get_data_for_jinja():
         new_obj['IP'] = object[i].IP
         new_obj['naklodnaja'] = object[i].naklodnaja
         new_obj['note'] = object[i].note
+        new_obj['color'] = object[i].color
         new_obj['install_date'] = object[i].install_date
         if len(object[i].unit)>0:
             new_obj['type_equipment'] = object[i].unit[0].type_equipment
@@ -140,6 +149,17 @@ def get_data_from_db(db):
     if db == 'BuhUch':
         buh = BuhUch.query.filter_by(inv_number=json.loads(req)).first()
         return jsonify(buh)
+    if db == 'olt_data':
+        return jsonify(get_data_for_sostav(req))
+    if db == 'list_of_modules':
+        modules = List_of_modules.query.get_or_404(int(json.loads(req)))
+        return jsonify(modules)
+    if db == 'olt_list':
+        olt = List_of_olt.query.get_or_404(int(json.loads(req)))
+        return jsonify(olt)
+    if db == 'kts_data':
+        kts = Data_for_KTS.query.filter_by(cod_name=json.loads(req).upper()).first()
+        return jsonify(kts)
     if db == 'ma_add_modules':
         modules = ma_add_modules.query.filter_by(cod_name=json.loads(req).upper()).all()
         return jsonify(modules)
@@ -149,8 +169,16 @@ def get_data_from_db(db):
     if db == 'MA_Units':
         units = MA_Units.query.get_or_404(int(json.loads(req)))
         return jsonify(units, units.modules)
-    if db == 'Objects_ur_lica_all':
-        units = get_data_for_select()
+    # if db == 'Objects_ur_lica_all':
+    #     units = get_data_for_select()
+    #     return jsonify(units)
+    if db == 'MA_Units_to_usage':
+        # units = get_data_for_select()
+        units = get_data_for_select("MA_Units", json.loads(req))
+        return jsonify(units)
+    if db == 'ma_add_modules_to_usage':
+        units = get_data_for_select('ma_add_modules', json.loads(req))
+        # units = get_data_for_select()
         return jsonify(units)
     if db == 'Objects_ur_lica':
         obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
@@ -162,44 +190,100 @@ def get_data_from_db(db):
         return jsonify(obj,units_list,modules_list)
     else:
         return None
+
+
+def get_data_for_sostav(req):
+    olt = List_of_olt.query.filter_by(cod_name_of_olt=json.loads(req).upper()).first()
+    data_list ={}
+    for mod in olt.list_of_modules:
+        data_list[mod.Olt_sockets.socket] = [mod.inv_number, mod.name_of_modules, mod.serial_number, mod.note]
+    return data_list
+
+def get_data_for_select(db, id):
+    response =[]
+    if db=='MA_Units':
+        obj = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
+        for ob in obj:
+            if len(ob.unit) == 0:
+                response.append(ob) 
+    if db == 'ma_add_modules':
+        modules = ma_add_modules.query.get_or_404(id)        
+        for unit in modules.type_of_ma_modules.type_of_ma_units2.units:
+            if modules.type_of_ma_modules.type_of_ma_units2.sockets > len(unit.modules):
+                unit_modules = {}
+                if unit.object.cod_name == "СКЛАД":
+                    unit_data = {'id': unit.id, 'cod_name': unit.object.cod_name+"-"+str(unit.id)}
+                else:
+                    unit_data = {'id': unit.id, 'cod_name': unit.object.cod_name}    
+                for m in unit.modules:
+                    if m.type_of_ma_modules.type not in unit_modules:
+                        unit_modules[m.type_of_ma_modules.type] = 1
+                    else:
+                        unit_modules[m.type_of_ma_modules.type] += 1
+                    unit_data['data'] = unit_modules
+                if (modules.type_of_ma_modules.type not in unit_modules) or (modules.type_of_ma_modules.max_number > unit_modules[modules.type_of_ma_modules.type]):
+                    response.append(unit_data.copy())
     
-def get_data_for_select():
-    obj = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
-    obj_dict = {}
-    for i in range (0, len(obj)): 
-        unit_id_list = []
-        if len(obj[i].unit)>0:
-            for un in obj[i].unit :                
-                unit_id_list.append(un.id)  
-        obj_dict[i] = [obj[i].id, obj[i].cod_name, unit_id_list]
-    return obj_dict        
+    return response          
 
 
 @app.route('/delete_row/<base_table>', methods=['GET', 'POST'])
 @login_required
 def delete_row(base_table):
     name = request.form['json']
-    id = int(json.loads(name)["id"])
+    id = json.loads(name)["id"]
     user = Users.query.filter_by(id=current_user.get_id()).first()
     print(user.FIO, datetime.now())
     print(str(datetime.now()) +': '+ user.FIO + " запрос на удаление -- ", base_table, name)
     db_obj = ""
     if base_table == "ma_add_modules":
-        db_obj = ma_add_modules.query.get_or_404(id)
+        db_obj = ma_add_modules.query.get_or_404(int(id))
     if base_table == "Unit":
-        db_obj = Unit.query.get_or_404(id)
+        db_obj = Unit.query.get_or_404(int(id))
     if base_table == "BuhUch":
-        db_obj = BuhUch.query.get_or_404(id)
+        db_obj = BuhUch.query.get_or_404(int(id))
     if base_table == "MA_Units":
-        db_obj = MA_Units.query.get_or_404(id)
+        db_obj = MA_Units.query.get_or_404(int(id))
         if len(db_obj.modules) > 0:
             for modules in db_obj.modules:
                 delete_data_from_db(modules)      
     if base_table == "Objects_ur_lica":
-        db_obj = Objects_ur_lica.query.get_or_404(id)
+        db_obj = Objects_ur_lica.query.get_or_404(int(id))
         if len(db_obj.unit) > 0:
             return jsonify("На объекте установленно устройство!!!! \n Переместите его на склад")     
     return delete_data_from_db(db_obj)
+
+
+@app.route('/change_color/<base_table>', methods=['GET', 'POST'])
+@login_required
+def save_color(base_table):
+    name = request.form['json']
+    id = json.loads(name)["id"]
+    color = json.loads(name)["color"]
+    print('id: '+id,', color: '+color)
+    user = Users.query.filter_by(id=current_user.get_id()).first()
+    if base_table == "Units":
+        db_obj = Unit.query.get_or_404(int(id))
+        if  db_obj.color != color:
+            db_obj.color = color;
+            db_obj.editor = user.FIO
+        else:
+            return "SUCCESS"
+    if base_table == "BuhUch":
+        db_obj = BuhUch.query.get_or_404(int(id))
+        if  db_obj.color != color:
+            db_obj.color = color;
+            db_obj.editor = user.FIO
+        else:
+            return "SUCCESS"
+    if base_table == "Objects_ur_lica":
+        db_obj = Objects_ur_lica.query.get_or_404(int(id))
+        if  db_obj.color != color:
+            db_obj.color = color;
+            db_obj.editor = user.FIO
+        else:
+            return "SUCCESS"    
+    return save_data_to_db()
 
 
 @app.route('/save_data/<db_name>', methods=['GET', 'POST'])
@@ -228,6 +312,11 @@ def save_data(db_name):
         return add_object_for_MA(req_dict, user.FIO)
     if db_name == 'Objects_ur_lica_edited':
         return save_object_for_MA(req_dict, user.FIO)
+    if db_name == 'list_of_modules':
+        return save_pon_modules(req_dict, user.FIO)
+    if db_name == 'olt_list':
+        return save_pon_olt_data(req_dict, user.FIO)
+
     
     
 
@@ -309,6 +398,7 @@ def buh_table_data():
 def main_table_data():
     name = request.form['json']
     list_data = json.loads(name)
+    print(list_data)
     start_row = 4
     path = 'files for download\шаблон Таблица оборудования PON.xlsx'
     try:

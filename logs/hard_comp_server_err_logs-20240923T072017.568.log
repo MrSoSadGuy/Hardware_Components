@@ -1,0 +1,88 @@
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 2
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 2
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 2
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 2
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 2
+ERROR:app:Exception on /get_data_from_db/ma_add_modules_to_usage [POST]
+Traceback (most recent call last):
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Hardware_Components\routes.py", line 161, in get_data_from_db
+    units = get_data_for_select('ma_add_modules', json.loads(req))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Hardware_Components\routes.py", line 184, in get_data_for_select
+    for unit in modules.type_of_ma_modules.type_of_ma_units2.units:
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'type_of_ma_units2'
+ERROR:app:Exception on /get_data_from_db/ma_add_modules_to_usage [POST]
+Traceback (most recent call last):
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Hardware_Components\routes.py", line 161, in get_data_from_db
+    units = get_data_for_select('ma_add_modules', json.loads(req))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Hardware_Components\routes.py", line 184, in get_data_for_select
+    for unit in modules.type_of_ma_modules.type_of_ma_units2.units:
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'type_of_ma_units2'
+ERROR:app:Exception on /get_data_from_db/ma_add_modules_to_usage [POST]
+Traceback (most recent call last):
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\filimonov\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Hardware_Components\routes.py", line 161, in get_data_from_db
+    units = get_data_for_select('ma_add_modules', json.loads(req))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Hardware_Components\routes.py", line 184, in get_data_for_select
+    for unit in modules.type_of_ma_modules.type_of_ma_units2.units:
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'type_of_ma_units2'
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 2
+WARNING:waitress.queue:Task queue depth is 1
