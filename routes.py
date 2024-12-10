@@ -151,6 +151,12 @@ def get_data_from_db(db):
         return jsonify(buh)
     if db == 'olt_data':
         return jsonify(get_data_for_sostav(req))
+    if db == 'list_of_modules':
+        modules = List_of_modules.query.get_or_404(int(json.loads(req)))
+        return jsonify(modules)
+    if db == 'olt_list':
+        olt = List_of_olt.query.get_or_404(int(json.loads(req)))
+        return jsonify(olt)
     if db == 'kts_data':
         kts = Data_for_KTS.query.filter_by(cod_name=json.loads(req).upper()).first()
         return jsonify(kts)
@@ -306,6 +312,11 @@ def save_data(db_name):
         return add_object_for_MA(req_dict, user.FIO)
     if db_name == 'Objects_ur_lica_edited':
         return save_object_for_MA(req_dict, user.FIO)
+    if db_name == 'list_of_modules':
+        return save_pon_modules(req_dict, user.FIO)
+    if db_name == 'olt_list':
+        return save_pon_olt_data(req_dict, user.FIO)
+
     
     
 
