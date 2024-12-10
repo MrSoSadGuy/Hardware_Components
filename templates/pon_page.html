@@ -50,7 +50,89 @@
 
 </head>
 <body>
-
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" data-bs-backdrop="static" id="EditModal"
+     role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EditModalLabel">Изменение данных об устройстве </h5>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <label class="col-form-label" id="id_for_edit"></label>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="mb-3">
+                                    <label class="col-form-label">Место нахождения:</label>
+                                    <input class="form-control" id="edit_UD_id" type="text">
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="mb-3">
+                                    <label class="col-form-label">Устройство/ЗИП/Склад:</label>
+                                    <input class="form-control" id="edit_COD_id" type="text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="mb-3">
+                                    <label class="col-form-label">Наименование:</label>
+                                    <input class="form-control" id="edit_Name_id" type="text">
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="mb-3">
+                                    <label class="col-form-label">Инвентарный номер:</label>
+                                    <input class="form-control" id="edit_Inv_id" type="text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="mb-3">
+                                    <label class="col-form-label">Серийный номер:</label>
+                                    <input class="form-control" id="edit_Serial_id" type="text">
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="mb-3">
+                                    <label class="col-form-label">Ряд/Шкаф/Полка:</label>
+                                    <input class="form-control" id="edit_Riad_id" type="text">
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="mb-3">
+                                    <label class="col-form-label">Плата-место:</label>
+                                    <input class="form-control" id="edit_Mesto_id" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="col-form-label">Примечание:</label>
+                            <textarea class="form-control" cols="30" id="unit_note_id" rows="3"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-placement="top" data-toggle="tooltip"
+                        id="button_for_save_edit_row" name="button_for_save_edit_row" title='Сохранить изменения'
+                        type="button">Сохранить
+                </button>
+                <button class="btn btn-primary" id="button_for_delete_row" type="button">Удалить</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal" id="close_btn_id" type="button">Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" data-bs-backdrop="static" id="add_new_units_Modal"
      role="dialog" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
@@ -348,13 +430,14 @@
                                     <td class="h6" width='15%'> {{ olt.note }}</td>
                                     <td width='2%'>
                                         <div class="d-grid gap-1 d-md-flex">
-                                            <a class="btn btn-primary btn-sm" id="edir_olt_data_btn" data-id="{{olt.id}}" data-db="olt_list" data-bs-toggle="modal" data-bs-target="#edit_row_data_modal">
+                                            <a class="btn btn-primary btn-sm" onclick="x()">
                                                 <i class="bi bi-pen"></i>
                                             </a>
-                                            <a class="btn btn-primary btn-sm" id="move_olt_btn" data-id="{{olt.id}}"  data-bs-toggle="modal" data-bs-target="#move_item_modal">
+                                            <a class="btn btn-primary btn-sm" onclick="x()">
                                                 <i class="bi bi-box-arrow-up-right"></i>
                                             </a>
                                         </div>
+
                                     </td>
                                 </tr>
                                 <tr>
@@ -395,7 +478,7 @@
                                                 <td > {{ m.note }}</td>
                                                 <td >
                                                     <div class="d-grid gap-1 d-md-flex">
-                                                        <a class="btn btn-primary btn-sm" id="edir_row_data_btn" data-id="{{m.id}}" data-db="list_of_modules" data-bs-toggle="modal" data-bs-target="#edit_row_data_modal">
+                                                        <a class="btn btn-primary btn-sm" id="edir_row_data_btn" data-id="{{m.id}}"  data-bs-toggle="modal" data-bs-target="#edir_row_data_modal">
                                                             <i class="bi bi-pen"></i>
                                                         </a>
                                                         <a class="btn btn-primary btn-sm" id="move_item_btn" data-id="{{m.id}}"  data-bs-toggle="modal" data-bs-target="#move_item_modal">
@@ -478,56 +561,6 @@
         });
     </script>
 </div>
-<div class="modal fade" id="edit_row_data_modal" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="EditModalLabel">Изменение данных об устройстве   </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-          </div>
-          <div class="modal-body">
-            <form>
-                <label class="col-form-label" id="id_for_edit"></label>
-                <div class="container">
-                  <div class="row" id="first_row">
-                      <div class="col-sm">
-                          <div class="mb-3">
-                            <label class="col-form-label">Наименование:</label>
-                            <input type="text"  class="form-control" id="edit_Name_id">
-                          </div>
-                      </div>
-                  </div>
-                </div>
-                <div class="container">
-                  <div class="row" id="second_row">
-                      <div class="col-sm">
-                          <div class="mb-3">
-                            <label class="col-form-label">Серийный номер:</label>
-                            <input type="text"  class="form-control" id="edit_Serial_id">
-                          </div>
-                      </div>
-                      <div class="col-sm">
-                          <div class="mb-3">
-                            <label class="col-form-label">Инвентарный номер:</label>
-                            <input type="text"  class="form-control" id="edit_Inv_id">
-                          </div>
-                      </div>
-                  </div>
-            <div class="mb-3">
-                <label  class="col-form-label">Примечание:</label>
-                <textarea  class="form-control" id="unit_note_id" cols="30" rows="3"></textarea>
-            </div>
-            </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="button_for_save_edit_row" name="button_for_save_edit_row" data-toggle="tooltip" data-placement="top" title='Сохранить изменения'>Сохранить</button>
-            <button type="button" class="btn btn-primary" id="button_for_delete_row">Удалить</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_btn_id">Закрыть</button>
-          </div>
-        </div>
-      </div>
-    </div>
 <div class="modal fade" id="inventModal" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
         <div class="modal-content">
@@ -690,7 +723,7 @@
                                 <th scope="col">5</th>
                             </tr>
                             </thead>
-                            <tbody id="t_sostav_body"></tbody>
+                            <tbody id="t_body"></tbody>
                         </table>
                     </div>
                 </form>
@@ -719,13 +752,6 @@
         var dataPon = $(e.relatedTarget).data('pon');
         var dataUd = $(e.relatedTarget).data('ud');
         to_fill_sostav_modal(dataPon, dataUd)})
-
-    // заполнение модульного окна для редактирования записи UNITS  
-    $('#edit_row_data_modal').on('show.bs.modal', function (e) {
-        $(this).find('form').trigger('reset');
-        to_fill_edit_modal($(e.relatedTarget).data('id'), $(e.relatedTarget).data('db'),(e.relatedTarget).closest('tr'))
-        });
-    </script>
 
 </script>
 </body>
