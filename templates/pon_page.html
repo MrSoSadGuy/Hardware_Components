@@ -225,25 +225,25 @@
 </div>
 <div class="container-fluid">
     <div class="row ">
-      <div class="col bg-dark-subtle" >
-          <div class="container side_nav_bar" >
-              <nav>
-                  <div class="row bg-light-subtle shadow_for_the_table" id="sidebar">
-                          <header>
-                              <h5 >Объекты:</h5>
-                          </header>
-                      <ul>
-                          {% for u in ud %}
-                              <li >
-                                  <a href="#ud-{{ u.number_ud }}-id">{{u.name}}</a>
-                              </li>
-                          {% endfor %}
-                      </ul>
+        <div class="col bg-dark-subtle" >
+            <div class="container side_nav_bar" >
+                <nav>
+                    <div class="row bg-light-subtle shadow_for_the_table" id="sidebar">
+                            <header>
+                                <h5 >Объекты:</h5>
+                            </header>
+                        <ul>
+                            {% for u in ud %}
+                                <li >
+                                    <a href="#ud-{{ u.number_ud }}-id">{{u.name}}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
 
-                  </div>
-              </nav>
-          </div>
-      </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
         <main class="col-10 bg-body-tertiary">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Список оборудования PON</h1>
@@ -326,7 +326,7 @@
 
                 <table class="table table-sm table-borderless" id="main_pon_table">
                     {% for u in ud %}
-                    <tbody>
+                    <tbody class="ud_tbody">
                     <tr>
                         <td class="h5" width='7%' id="ud-{{ u.number_ud }}-id">{{ u.name }}</td>
                         <td class="h5">адрес: {{ u.Adress }}</td>
@@ -336,8 +336,8 @@
                     <tr >
                         <td  colspan='2' id="td_for_pon_mod">
                             <table class="table table-sm table-hover table-borderless scale">
-                                <tbody class="shadow_for_the_table ">
-                                <tr>
+                                <tbody class="shadow_for_the_table olt_tbody">
+                                <tr class="shassi_row">
                                     <td class="h6" width='5%'> OLT №</td>
                                     <td class="h6" width='12%'><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-pon ="{{ olt.cod_name_of_olt }}" > {{ olt.cod_name_of_olt }}</a></td>
                                     <td class="h6" width='12%'> {{ olt.name }}</td>
@@ -357,14 +357,13 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr class="platy_row">
                                     <td class="multiline" colspan='9'>
                                         <table class="table table-sm table-bordered table-hover ">
                                             <thead>
                                                 <tr>
                                                     <td width='2%'>
-                                                        <input class="form-check-input" id="flexCheck_olt{{ olt.id }}" type="checkbox"
-                                                               value="">
+                                                        <input class="form-check-input" id="flexCheck_olt{{ olt.id }}" type="checkbox"value="">
                                                     </td>
                                                     <td scope="col" width='2%'> №</td>
                                                     <td scope="col" width='11%'> Тип</td>
@@ -376,12 +375,11 @@
                                                 </tr>
 
                                             </thead>
-                                            <tbody>
+                                            <tbody class="plata_tbody">
                                             {% for m in olt.list_of_modules %}
                                             <tr>
                                                 <td width='2%'>
-                                                    <input class="form-check-input" id="flexCheck_modul{{ m.id }}" type="checkbox"
-                                                           value="">
+                                                    <input class="form-check-input" id="flexCheck_modul{{ m.id }}" type="checkbox" value="">
                                                 </td>
                                                 {% if m.Olt_sockets.socket == -1 %}
                                                 <td > fun</td>
