@@ -53,23 +53,3 @@ function number_of_records_main_table(){
     document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records;
 }
 
-async function save_main_table_in_file(){
-    var oTable = document.getElementById('tbody_main_table');
-    console.log($('tr:visible').length)
-    var trs = oTable.getElementsByTagName('tr');
-    var list_data = []
-    for (i = 0; i < trs.length; i++){
-        if(trs[i].getAttribute("style") == null){
-        list_data.push(trs[i].querySelector('td').dataset.id)
-    }}
-    console.log("🚀 ~ save_main_table_in_file ~ list_data:", list_data)
-    const data = await fetch_data(list_data, "/main_table_data", "POST")
-    console.log("🚀 ~ save_main_table_in_file ~ data:", data)
-    if (data === "SUCCESS"){
-        const link = document.createElement('a');
-        link.href = '/download/main_table';
-        document.body.appendChild(link);
-        link.click();
-        link.remove();}
-    else {alert("ERROR");}
-    }

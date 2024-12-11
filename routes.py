@@ -398,22 +398,42 @@ def buh_table_data():
 def main_table_data():
     name = request.form['json']
     list_data = json.loads(name)
-    print(list_data)
+
     start_row = 4
     path = 'files for download\шаблон Таблица оборудования PON.xlsx'
     try:
         wb_obj = openpyxl.load_workbook(path)
         sheet = wb_obj.active
-        for id in list_data:
-            print(id)
-            unit = Unit.query.get_or_404(int(id))
-            sheet["B" + str(start_row)] = unit.ud_punkt
-            sheet["C" + str(start_row)] = unit.name_PON
-            sheet["D" + str(start_row)] = unit.name_unit
-            sheet["E" + str(start_row)] = unit.inv_number
-            sheet["F" + str(start_row)] = unit.serial_number
-            sheet["A" + str(start_row)] = unit.row_mesto
-            sheet["G" + str(start_row)] = unit.plata_mesto
+        for row in list_data:            
+            if(row[1] == 'List_of_olt'):
+                olt = List_of_olt.query.get_or_404(str(row[0]))
+                N_ud = olt.Uzel_dostupa.name
+                adr_ud = olt.Uzel_dostupa.Adress
+                cod = olt.cod_name_of_olt
+                name = olt.name
+                inv_number = olt.inv_number
+                ser_num = olt.serial_number
+                p_mesto = ''
+                note = olt.note
+                r_mesto = olt.row_box_shelf
+            if(row[1] == 'List_of_modules'):
+                mod = List_of_modules.query.get_or_404(str(row[0]))
+                N_ud = mod.List_of_olt.Uzel_dostupa.name
+                adr_ud = mod.List_of_olt.Uzel_dostupa.Adress
+                cod = mod.List_of_olt.cod_name_of_olt
+                name = mod.name_of_modules
+                inv_number = mod.inv_number
+                ser_num = mod.serial_number
+                p_mesto = mod.Olt_sockets.socket
+                note = mod.note
+                r_mesto = mod.List_of_olt.row_box_shelf
+            sheet["B" + str(start_row)] = N_ud + ' ' + adr_ud
+            sheet["C" + str(start_row)] = cod
+            sheet["D" + str(start_row)] = name
+            sheet["E" + str(start_row)] = inv_number
+            sheet["F" + str(start_row)] = ser_num
+            sheet["A" + str(start_row)] = r_mesto
+            sheet["G" + str(start_row)] = p_mesto
             start_row = start_row + 1
         wb_obj.save('files for download\Таблица оборудования PON.xlsx')
         return json.dumps("SUCCESS")

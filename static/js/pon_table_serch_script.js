@@ -1,14 +1,7 @@
 function serch_pon_table() {
-    let ud_tbodies = document.getElementsByClassName('ud_tbody')
-    for(let i =0; i<ud_tbodies.length; i++){
-        let olt_tbodies = ud_tbodies[i].getElementsByClassName('olt_tbody')
-        if(serch_olt_tbodies(olt_tbodies)){
-            ud_tbodies[i].removeAttribute("style");
-        }
-        else{
-            ud_tbodies[i].style.display = "none"
-        }
-    }
+    [].forEach.call(document.getElementsByClassName('ud_tbody'), function (ud_tb) {
+        serch_olt_tbodies(ud_tb.getElementsByClassName('olt_tbody')) ? ud_tb.removeAttribute("style") : ud_tb.style.display = "none"
+    });
 }
 function serch_olt_tbodies(olt_tbodies){
     var flag = [];
@@ -16,34 +9,16 @@ function serch_olt_tbodies(olt_tbodies){
         let shassy = olt_tbodies[i].querySelector('.shassi_row')
         let platy = olt_tbodies[i].querySelector('.plata_tbody')
         let answ = serch_plata_tbodies(platy)
+        let cells = shassy.getElementsByTagName('td')
+        let answ2 = serch_cell_data(cells)
         flag.push(answ)
-        if(!answ){
-            let cells = shassy.getElementsByTagName('td')
-            let answ2 = serch_cell_data(cells)
-            // console.log("🚀 ~ serch_olt_tbodies ~ shassy:", shassy)
-            flag.push(answ2)
-            if(answ2){shassy.removeAttribute("style");}
-            else{shassy.style.display = "none"}
-            if(!answ2){ olt_tbodies[i].closest('tr').style.display = "none"}
-            else {olt_tbodies[i].closest('tr').removeAttribute("style");
-            }
-        }
-        else{
-            shassy.removeAttribute("style");
-            olt_tbodies[i].closest('tr').removeAttribute("style")}
+        answ2 ? shassy.classList.add('for_file_download'): shassy.classList.remove('for_file_download')
+        flag.push(answ2)
+        !answ && !answ2 ? olt_tbodies[i].closest('tr').style.display = "none" : olt_tbodies[i].closest('tr').removeAttribute("style")
     }
-    // console.log("🚀 ~ serch_olt_tbodies ~ flag:", flag)
-    if(flag.indexOf(true) > -1){
-        return true
-    }
-    else{
-        return false
-    }
-
-
+    return flag.indexOf(true) > -1 
 }
 function serch_plata_tbodies(plata_tbody){
-
     let rows = plata_tbody.getElementsByTagName('tr')
     var flag = [];
     for(let i =0; i<rows.length; i++){
@@ -51,10 +26,12 @@ function serch_plata_tbodies(plata_tbody){
         if(serch_cell_data(cells)){
             flag.push(true)
             rows[i].removeAttribute("style");
+            rows[i].setAttribute('class', 'for_file_download')
         }
         else{
             flag.push(false)
             rows[i].style.display = "none";
+            rows[i].classList.remove('for_file_download')
         }
     }
 
@@ -75,7 +52,10 @@ function serch_cell_data(tds){
     input = document.getElementById("serch_pon_table");
     filter = input.value.toUpperCase();
     const list_of_words= filter.split(" ")
-
+    let result = rb1? serch_and(list_of_words, tds):serch_or(list_of_words, tds)
+    return result
+}
+function serch_and(list_of_words, tds){
     var flag = [];
     list_of_words.forEach(word =>{
         for(var j = 0; j < tds.length; j++){
@@ -87,3 +67,30 @@ function serch_cell_data(tds){
         }})
     return flag.length >= list_of_words.length;
 }
+function serch_or(list_of_words, tds){
+    var flag = false;
+    list_of_words.forEach(word =>{
+        for(var j = 0; j < tds.length; j++){
+            var td = tds[j];
+            if (td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
+            flag = true;
+            return;
+            }
+        }})
+    return flag
+}
+
+async function save_main_table_in_file(){
+    let list_data =[];
+    [].forEach.call(document.getElementsByClassName('for_file_download'), function (row) {
+        list_data.push([row.dataset.id, row.dataset.db])
+    })
+    const data = await fetch_data_2(list_data, "/main_table_data", "POST")
+    if (data.ok){
+        const link = document.createElement('a');
+        link.href = '/download/main_table';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();}
+    else {alert("ERROR");}
+    }

@@ -674,14 +674,11 @@
                             <td style="width: 15px"><a href="" data-bs-toggle="modal" data-bs-target="#EditModal"  data-id = "{{ un.id }}" >
                                 <i class="bi bi-pencil-square h5"></i>
                             </a></td>
-
                           </tr>
                         {% endif %}
                     {% endfor %}
-
                   </tbody>
                 </table>
-
         </main>
     </div>
 
@@ -694,47 +691,47 @@
         if(pageYOffset > 111.1) serch_line.add(active_class)
         else serch_line.remove(active_class)
     })
-                    document.querySelectorAll('td').forEach(td => {
-                      td.ondblclick = function() {
-                        this.contentEditable = true;
-                      };
-                    });
-                    document.getElementById('flexCheck_main').addEventListener("change", function() {
-                            if (this.checked) {
-                                check_all_visible_main_table(true)
-                            } else {
-                                check_all_visible_main_table(false);
-                            }        
-                        });
-                        document.getElementById('flexSwitchCheckChecked').addEventListener("change", function() {
-                            if (this.checked) {
-                                show_checked_main_table(true)
-                            } else {
-                                show_checked_main_table(false);
-                            }        
-                        });
-                        document.getElementById('favcolor').addEventListener("change", function() {
-                            console.log(this.value)
-                            set_custom_bg_color_main_table('Objects_ur_lica',true,this.value)        
-                        });
-                        document.getElementById('defolt_color').addEventListener("click", function() {
-                            console.log(this.value)
-                            set_custom_bg_color_main_table('Objects_ur_lica',false)        
-                        });
-                        document.getElementById('delete_checked').addEventListener("click", function(e) {
-                            e.preventDefault();
-                            let table = document.getElementById('tbody_main_table');
-                            let tr = table.getElementsByTagName('tr');
-                            if(confirm('Удалить выбранные данные?')){
-                                for(var i = 0; i < tr.length; i++){
-                                tds = tr[i].getElementsByTagName('td');
-                                if(tds[0].querySelector('.form-check-input').checked===true){
-                                    delete_row_list('Objects_ur_lica',tds[0].dataset.id, tr[i])            
-                                }
-                            }
-                            }
-                            
-                        });
-                  </script>
+    document.querySelectorAll('td').forEach(td => {
+      td.ondblclick = function() {
+        this.contentEditable = true;
+      };
+    });
+    document.getElementById('flexCheck_main').addEventListener("change", function() {
+            if (this.checked) {
+                check_all_visible_main_table(true)
+            } else {
+                check_all_visible_main_table(false);
+            }        
+        });
+        document.getElementById('flexSwitchCheckChecked').addEventListener("change", function() {
+            if (this.checked) {
+                show_checked_main_table(true)
+            } else {
+                show_checked_main_table(false);
+            }        
+        });
+        document.getElementById('favcolor').addEventListener("change", function() {
+            console.log(this.value)
+            set_custom_bg_color_main_table('Objects_ur_lica',true,this.value)        
+        });
+        document.getElementById('defolt_color').addEventListener("click", function() {
+            console.log(this.value)
+            set_custom_bg_color_main_table('Objects_ur_lica',false)        
+        });
+        document.getElementById('delete_checked').addEventListener("click", function(e) {
+            e.preventDefault();
+            let table = document.getElementById('tbody_main_table');
+            let tr = table.getElementsByTagName('tr');
+            if(confirm('Удалить выбранные данные?')){
+                for(var i = 0; i < tr.length; i++){
+                tds = tr[i].getElementsByTagName('td');
+                if(tds[0].querySelector('.form-check-input').checked===true){
+                    delete_row_list('Objects_ur_lica',tds[0].dataset.id, tr[i])            
+                }
+            }
+            }
+            
+        });
+  </script>
 </body>
 

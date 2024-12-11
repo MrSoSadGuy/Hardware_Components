@@ -147,3 +147,20 @@ async function save_edit_data_pon(db, id ,row_index) {
         }
     }
 }
+function colaps_olt_tbody(status, bat){
+    let table = bat.closest('table')
+    let t_bod = table.querySelector('tbody');
+    let tr = t_bod.querySelectorAll('tr');
+    [].forEach.call(tr, function (row) {
+        if(status){
+            row.style.display = "none"
+            bat.setAttribute('data-status','plus')
+            bat.setAttribute('src','/static/images/stat_plus_.svg')
+        }
+        else{
+            row.removeAttribute("style")
+            bat.setAttribute('data-status','minus')
+            bat.setAttribute('src','/static/images/stat_minus_.svg')
+        }
+    })  
+}
