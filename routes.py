@@ -182,7 +182,7 @@ def get_data_from_db(db):
     if db == 'list_of_modules_move':
         # units = get_data_for_select()
         units = get_data_for_move(json.loads(req))
-        # return jsonify(units)
+        return jsonify(units)
 
     if db == 'Objects_ur_lica':
         obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
@@ -195,12 +195,25 @@ def get_data_from_db(db):
     else:
         return None
 
+
 def get_data_for_move(req):
     mod = List_of_modules.query.get_or_404(req)
-    print(mod.Type_of_modules.Type_of_olt.type)
-    
-    for i in Type_of_modules.Type_of_olt.list_of_olt.cod_name_of_olt:
-        print(i)
+    data ={}
+    for i in mod.Type_of_modules.Type_of_olt.list_of_olt:
+        # print(i.cod_name_of_olt)
+        map_s = {}
+        for w in i.Type_of_olt.olt_sockets:
+            if (mod.Type_of_modules.Type_of_olt.id == i.type_of_olt and
+                    mod.Type_of_modules.first_socket <= w.socket <= mod.Type_of_modules.last_socket):
+                map_s[w.id] = w.socket
+            for n in w.list_of_modules:
+                if n.olt_cod == i.cod_name_of_olt and n.socket in map_s:
+                    map_s.pop(n.socket)
+        if len(map_s)>0:
+            data[i.cod_name_of_olt] = map_s
+    print(data)
+    return data
+
 
 def get_data_for_sostav(req):
     olt = List_of_olt.query.filter_by(cod_name_of_olt=json.loads(req).upper()).first()

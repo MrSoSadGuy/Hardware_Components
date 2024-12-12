@@ -154,11 +154,11 @@ function colaps_olt_tbody(status, bat){
     [].forEach.call(tr, function (row) {
         status? hide_rows(row) :show_rows(row)
         colaps_btn_chng(bat, status)
-    })  
+    })
 }
 function hide_rows(row){
-    row.style.display = "none" 
-    row.classList.remove('for_file_download')           
+    row.style.display = "none"
+    row.classList.remove('for_file_download')
 }
 function show_rows(row){
     row.removeAttribute("style")
@@ -178,6 +178,8 @@ function colaps_btn_chng(btn, status){
 async function move_obj_modal(id, db){
     document.getElementById("btn_send_to_usage").setAttribute("class", "btn btn-primary");
     const slct_unit = document.getElementById('select_unit')
+    const slct_sock = document.getElementById('select_socket')
+    slct_sock.disabled = true;
     while(slct_unit.length>0){slct_unit.remove(0)}
     const opt_slct_unit = document.createElement('option')
     opt_slct_unit.selected
@@ -185,28 +187,43 @@ async function move_obj_modal(id, db){
     slct_unit.add(opt_slct_unit)
     const data = await fetch_data_2(id,'/get_data_from_db/'+db+'_move',"POST")
     let list_of_data = await data.json();
-    if (db === "list_of_modules"){        
-        list_of_data.forEach(item => {
+    console.log(list_of_data)
+    if (db === "list_of_modules"){
+        Object.keys(list_of_data).forEach(item => {
             const opt = document.createElement('option')
-            opt.value = item.id
-            opt.text = item.cod_name
-            select.add(opt)
+            // opt.value = item.id
+            opt.text = item
+            slct_unit.add(opt)
         })
     }
-    if (db_table === "list_of_olt"){        
-        data.forEach(item => {
-            const opt = document.createElement('option')
-            opt.value = item.id
-            opt.text = item.cod_name
-            select.add(opt)
-        })
-    }     
+    // if (db_table === "list_of_olt"){
+    //     data.forEach(item => {
+    //         const opt = document.createElement('option')
+    //         opt.value = item.id
+    //         opt.text = item.cod_name
+    //         slct_unit.add(opt)
+    //     })
+    // }
     let target_id, target_list
-    select.addEventListener("change", function() {
-        target_list = this.value.split(",")
-        if (target_list.length>1){target_id = target_list[1]}
-        else {target_id = target_list[0]}        
+    slct_unit.addEventListener("change", function() {
+        while(slct_sock.length>0){slct_sock.remove(0)}
+        const opt_slct_sock = document.createElement('option')
+        opt_slct_sock.selected
+        opt_slct_sock.text = 'Выберите coket'
+        slct_sock.add(opt_slct_sock)
+        target_list = this.options[this.selectedIndex].textContent
+        slct_sock.disabled = false;
+        console.log(list_of_data[target_list])
+        for(i in list_of_data[target_list]){
+            console.log(i)
+            const opt = document.createElement('option')
+            opt.value = i
+            opt.text = list_of_data[target_list][i]
+            slct_sock.add(opt)
+        }
+
+
     });
-    document.getElementById('btn_send_to_usage').onclick = function (){
-        send_to_usage(id, db_table, target_id, "btn_send_to_usage")};
+    // document.getElementById('btn_send_to_usage').onclick = function (){
+    //     send_to_usage(id, db_table, target_id, "btn_send_to_usage")};
 }
