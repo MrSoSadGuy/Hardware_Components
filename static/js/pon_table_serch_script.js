@@ -5,44 +5,40 @@ function serch_pon_table() {
 }
 function serch_olt_tbodies(olt_tbodies){
     var flag = [];
+
     for(let i =0; i<olt_tbodies.length; i++){
         let shassy = olt_tbodies[i].querySelector('.shassi_row')
         let platy = olt_tbodies[i].querySelector('.plata_tbody')
-        let answ = serch_plata_tbodies(platy)
+        let btn = olt_tbodies[i].querySelectorAll('img')
+        let answ = serch_plata_tbodies(btn[0], platy)
         let cells = shassy.getElementsByTagName('td')
         let answ2 = serch_cell_data(cells)
         flag.push(answ)
         answ2 ? shassy.classList.add('for_file_download'): shassy.classList.remove('for_file_download')
         flag.push(answ2)
         !answ && !answ2 ? olt_tbodies[i].closest('tr').style.display = "none" : olt_tbodies[i].closest('tr').removeAttribute("style")
+        
     }
+    
+    
     return flag.indexOf(true) > -1 
 }
-function serch_plata_tbodies(plata_tbody){
+function serch_plata_tbodies(btn, plata_tbody){
     let rows = plata_tbody.getElementsByTagName('tr')
     var flag = [];
     for(let i =0; i<rows.length; i++){
         let cells = rows[i].getElementsByTagName('td')
         if(serch_cell_data(cells)){
             flag.push(true)
-            rows[i].removeAttribute("style");
-            rows[i].setAttribute('class', 'for_file_download')
+            show_rows(rows[i])
         }
         else{
             flag.push(false)
-            rows[i].style.display = "none";
-            rows[i].classList.remove('for_file_download')
+            hide_rows(rows[i])
         }
     }
-
-    if(flag.indexOf(true) > -1){
-        plata_tbody.removeAttribute("style");
-        return true
-    }
-    else{
-        plata_tbody.style.display = "none"
-        return false
-    }
+    flag.indexOf(false) > -1? colaps_btn_chng(btn,true):colaps_btn_chng(btn,false);
+    return flag.indexOf(true) > -1
 }
 function serch_cell_data(tds){
     document.getElementById('flexSwitchCheckChecked').checked = false;

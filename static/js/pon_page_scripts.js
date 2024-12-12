@@ -152,15 +152,61 @@ function colaps_olt_tbody(status, bat){
     let t_bod = table.querySelector('tbody');
     let tr = t_bod.querySelectorAll('tr');
     [].forEach.call(tr, function (row) {
-        if(status){
-            row.style.display = "none"
-            bat.setAttribute('data-status','plus')
-            bat.setAttribute('src','/static/images/stat_plus_.svg')
-        }
-        else{
-            row.removeAttribute("style")
-            bat.setAttribute('data-status','minus')
-            bat.setAttribute('src','/static/images/stat_minus_.svg')
-        }
+        status? hide_rows(row) :show_rows(row)
+        colaps_btn_chng(bat, status)
     })  
+}
+function hide_rows(row){
+    row.style.display = "none" 
+    row.classList.remove('for_file_download')           
+}
+function show_rows(row){
+    row.removeAttribute("style")
+    row.classList.add('for_file_download')
+}
+function colaps_btn_chng(btn, status){
+    if(status){
+        btn.setAttribute('data-status','plus')
+        btn.setAttribute('src','/static/images/stat_plus_.svg')
+    }
+    else{
+        btn.setAttribute('data-status','minus')
+        btn.setAttribute('src','/static/images/stat_minus_.svg')
+    }
+}
+
+async function move_obj_modal(id, db){
+    document.getElementById("btn_send_to_usage").setAttribute("class", "btn btn-primary");
+    const slct_unit = document.getElementById('select_unit')
+    while(slct_unit.length>0){slct_unit.remove(0)}
+    const opt_slct_unit = document.createElement('option')
+    opt_slct_unit.selected
+    opt_slct_unit.text = 'Выберите обьект'
+    slct_unit.add(opt_slct_unit)
+    const data = await fetch_data_2(id,'/get_data_from_db/'+db+'_move',"POST")
+    let list_of_data = await data.json();
+    if (db === "list_of_modules"){        
+        list_of_data.forEach(item => {
+            const opt = document.createElement('option')
+            opt.value = item.id
+            opt.text = item.cod_name
+            select.add(opt)
+        })
+    }
+    if (db_table === "list_of_olt"){        
+        data.forEach(item => {
+            const opt = document.createElement('option')
+            opt.value = item.id
+            opt.text = item.cod_name
+            select.add(opt)
+        })
+    }     
+    let target_id, target_list
+    select.addEventListener("change", function() {
+        target_list = this.value.split(",")
+        if (target_list.length>1){target_id = target_list[1]}
+        else {target_id = target_list[0]}        
+    });
+    document.getElementById('btn_send_to_usage').onclick = function (){
+        send_to_usage(id, db_table, target_id, "btn_send_to_usage")};
 }

@@ -179,7 +179,11 @@ def get_data_from_db(db):
     if db == 'ma_add_modules_to_usage':
         units = get_data_for_select('ma_add_modules', json.loads(req))
         # units = get_data_for_select()
-        return jsonify(units)
+    if db == 'list_of_modules_move':
+        # units = get_data_for_select()
+        units = get_data_for_move(json.loads(req))
+        # return jsonify(units)
+
     if db == 'Objects_ur_lica':
         obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
         units_list = {}
@@ -191,6 +195,12 @@ def get_data_from_db(db):
     else:
         return None
 
+def get_data_for_move(req):
+    mod = List_of_modules.query.get_or_404(req)
+    print(mod.Type_of_modules.Type_of_olt.type)
+    
+    for i in Type_of_modules.Type_of_olt.list_of_olt.cod_name_of_olt:
+        print(i)
 
 def get_data_for_sostav(req):
     olt = List_of_olt.query.filter_by(cod_name_of_olt=json.loads(req).upper()).first()

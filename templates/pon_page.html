@@ -397,7 +397,7 @@
                                                         <a class="btn btn-primary btn-sm" id="edir_row_data_btn" data-id="{{m.id}}" data-db="list_of_modules" data-bs-toggle="modal" data-bs-target="#edit_row_data_modal">
                                                             <i class="bi bi-pen"></i>
                                                         </a>
-                                                        <a class="btn btn-primary btn-sm" id="move_item_btn" data-id="{{m.id}}"  data-bs-toggle="modal" data-bs-target="#move_item_modal">
+                                                        <a class="btn btn-primary btn-sm" id="move_item_btn" data-id="{{m.id}}"  data-bs-toggle="modal" data-db="list_of_modules" data-bs-target="#move_obj_Modal">
                                                             <i class="bi bi-box-arrow-up-right"></i>
                                                         </a>
                                                     </div>
@@ -704,7 +704,46 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="move_obj_Modal" tabindex="-1" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Перемещение</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="mb-3">
+                                <select class="form-select" aria-label="Default select example" id = 'select_unit'>
+                                    <option selected>Выберите устройство</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="mb-3">
+                                <select class="form-select" aria-label="Default select example" id = 'select_socket' disabled>
+                                    <option selected>Выберите плато-место</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ma_storage_Modal" id="btn_to_close_mod_send_to_usage">Закрыть</button>
+                <button type="button" class="btn btn-primary" id="btn_send_to_usage" >Применить</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    // Модульное окно перемещения оборудования
+    $('#move_obj_Modal').on('show.bs.modal', function (e) {
+        move_obj_modal($(e.relatedTarget).data('id'), $(e.relatedTarget).data('db'));
+    })
+    // Заполнение модульного окна данных инвентарного номера
     $('#inventModal').on('show.bs.modal', function (e) {
         $(this).find('form').trigger('reset');
         const param = $(e.relatedTarget).data('id');
