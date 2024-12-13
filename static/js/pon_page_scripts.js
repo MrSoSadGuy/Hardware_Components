@@ -38,7 +38,21 @@ async function to_fill_sostav_modal(p_name, ud) {
         table.appendChild(tbody);
     }
 }
-
+async function to_fill_ud_edit_modal(id, row) {
+    document.getElementById('button_for_save_edit_ud').setAttribute("class", "btn btn-primary");
+    document.getElementById('button_for_delete_ud').setAttribute("class", "btn btn-primary");
+    const data = await fetch_data_2(id,'/get_data_from_db/Uzel_dostupa',"POST");
+    if(data.ok){
+        let db_data = await data.json();
+        console.log(db_data);
+        document.getElementById("edit_ud_Name_id").value = db_data.name;
+        document.getElementById("edit_ud_adr_id").value = db_data.Adress;
+        document.getElementById("edit_ud_cod_id").value = db_data.cod_ud;
+        document.getElementById('button_for_save_edit_ud').onclick = function (){save_edit_ud_data('Uzel_dostupa', id ,row)}
+        document.getElementById('button_for_delete_ud').onclick = function (){delete_ud('Uzel_dostupa', id , 'button_for_delete_row','tbody_main_table',
+            row)}
+    }
+}
 
 async function to_fill_edit_modal(id, db, row) {
     document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
@@ -105,7 +119,27 @@ function delete_inputs_from_edit_modal(){
     document.getElementById("div_row").remove();
     document.getElementById("div_ip").remove();
 }
-
+async function save_edit_ud_data(db, id ,row_index) {
+    var edited_row = {
+        id: id,
+        name: document.getElementById("edit_ud_Name_id").value,
+        Adress: document.getElementById("edit_ud_adr_id").value,
+        cod_ud: document.getElementById("edit_ud_cod_id").value,
+    }
+    if(confirm("Сохранить изменнения?")){
+        const data = await fetch_data_2(edited_row,'/save_data/'+db, 'POST');
+        if(data.ok){
+            document.getElementById("button_for_save_edit_ud").setAttribute("class", "btn btn-success");
+            var oCells = row_index.getElementsByTagName('td');
+            oCells[0].textContent = document.getElementById("edit_ud_Name_id").value;
+            oCells[1].textContent = document.getElementById("edit_ud_adr_id").value;
+        }
+        else{
+            document.getElementById("button_for_save_edit_ud").setAttribute("class", "btn btn-danger");
+            alert(data);
+        }
+    }
+}
 
 async function save_edit_data_pon(db, id ,row_index) {
     var edited_row = {
@@ -176,7 +210,7 @@ function colaps_btn_chng(btn, status){
 }
 
 async function move_obj_modal(id, db){
-    document.getElementById("btn_send_to_usage").setAttribute("class", "btn btn-primary");
+    document.getElementById("apply_move_modul_btn").setAttribute("class", "btn btn-primary");
     const slct_unit = document.getElementById('select_unit')
     const slct_sock = document.getElementById('select_socket')
     slct_sock.disabled = true;
@@ -185,6 +219,11 @@ async function move_obj_modal(id, db){
     opt_slct_unit.selected
     opt_slct_unit.text = 'Выберите обьект'
     slct_unit.add(opt_slct_unit)
+    while(slct_sock.length>0){slct_sock.remove(0)}
+    const opt_slct_sock = document.createElement('option')
+    opt_slct_sock.selected
+    opt_slct_sock.text = 'Выберите место'
+    slct_sock.add(opt_slct_sock)
     const data = await fetch_data_2(id,'/get_data_from_db/'+db+'_move',"POST")
     let list_of_data = await data.json();
     console.log(list_of_data)
@@ -196,34 +235,39 @@ async function move_obj_modal(id, db){
             slct_unit.add(opt)
         })
     }
-    // if (db_table === "list_of_olt"){
-    //     data.forEach(item => {
-    //         const opt = document.createElement('option')
-    //         opt.value = item.id
-    //         opt.text = item.cod_name
-    //         slct_unit.add(opt)
-    //     })
-    // }
-    let target_id, target_list
+    let target
     slct_unit.addEventListener("change", function() {
-        while(slct_sock.length>0){slct_sock.remove(0)}
-        const opt_slct_sock = document.createElement('option')
-        opt_slct_sock.selected
-        opt_slct_sock.text = 'Выберите coket'
-        slct_sock.add(opt_slct_sock)
-        target_list = this.options[this.selectedIndex].textContent
+        
+        target = this.options[this.selectedIndex].textContent
         slct_sock.disabled = false;
-        console.log(list_of_data[target_list])
-        for(i in list_of_data[target_list]){
+        console.log(list_of_data[target])
+        for(i in list_of_data[target]){
             console.log(i)
             const opt = document.createElement('option')
             opt.value = i
-            opt.text = list_of_data[target_list][i]
+            opt.text = list_of_data[target][i]
             slct_sock.add(opt)
         }
-
-
     });
-    // document.getElementById('btn_send_to_usage').onclick = function (){
-    //     send_to_usage(id, db_table, target_id, "btn_send_to_usage")};
+    document.getElementById('apply_move_modul_btn').onclick = function (){
+        let socket = slct_sock.options[slct_sock.selectedIndex].value
+        console.log("🚀 ~ move_obj_modal ~ socket:", socket)
+        apply_move_modul(id, target, socket, db,  this)};
+}
+async function apply_move_modul(id, target, socket, db,  btn){
+    var edit_data = {id: id, target : target, socket:socket}           
+        console.log("🚀 ~ apply_move_modul ~ edit_data:", edit_data)
+    if (confirm("Переместить устройство?")){
+        const data = await fetch_data_2(edit_data, '/save_data/'+ db,'POST');
+        if(data.ok){
+            btn.setAttribute("class", "btn btn-success");
+            setTimeout(function (){document.getElementById('close_mv_mod_btn').click()
+                reload_page()
+            }, 700);
+        }
+        else {
+            btn.setAttribute("class", "btn btn-danger");
+            alert(data);
+        }
+    }
 }

@@ -169,9 +169,9 @@ def get_data_from_db(db):
     if db == 'MA_Units':
         units = MA_Units.query.get_or_404(int(json.loads(req)))
         return jsonify(units, units.modules)
-    # if db == 'Objects_ur_lica_all':
-    #     units = get_data_for_select()
-    #     return jsonify(units)
+    if db == 'Uzel_dostupa':
+        ud = Uzel_dostupa.query.get_or_404(int(json.loads(req)))
+        return jsonify(ud)
     if db == 'MA_Units_to_usage':
         # units = get_data_for_select()
         units = get_data_for_select("MA_Units", json.loads(req))
@@ -339,7 +339,8 @@ def save_data(db_name):
         return save_pon_modules(req_dict, user.FIO)
     if db_name == 'olt_list':
         return save_pon_olt_data(req_dict, user.FIO)
-
+    if db_name == 'Uzel_dostupa':
+        return save_ud_data(req_dict)
     
     
 

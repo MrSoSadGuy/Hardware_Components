@@ -181,13 +181,16 @@ def save_sostav_data(req_dict, name):
 def save_pon_modules(req_dict, name):
     mod = List_of_modules.query.get_or_404(int(req_dict["id"]))
     if request.method == 'POST':
-        mod.name_of_modules = req_dict["name"]
-        mod.serial_number = req_dict["serial"]
-        mod.note = req_dict["note"]
-        mod.inv_number = req_dict["inv_number"]
-        mod.editor = name
-        mod.last_date_edit = datetime.now()
-        save_data_to_db()
+        if 'target' in req_dict :
+            mod.olt_cod = req_dict['target']
+            mod.socket = int(req_dict['socket'])
+        else:
+            mod.name_of_modules = req_dict["name"]
+            mod.serial_number = req_dict["serial"]
+            mod.note = req_dict["note"]
+            mod.inv_number = req_dict["inv_number"]
+            mod.editor = name
+            mod.last_date_edit = datetime.now()
         return save_data_to_db()
     else:
         return json.dumps("NOT 'POST' REQUEST")
@@ -206,6 +209,17 @@ def save_pon_olt_data(req_dict, name):
         olt.editor = name
         olt.last_date_edit = datetime.now()
         save_data_to_db()
+        return save_data_to_db()
+    else:
+        return json.dumps("NOT 'POST' REQUEST")
+
+def save_ud_data(req_dict):
+    print(req_dict)
+    ud = Uzel_dostupa.query.get_or_404(int(req_dict["id"]))
+    if request.method == 'POST':
+        ud.cod_ud = req_dict["cod_ud"]
+        ud.Adress = req_dict["Adress"]
+        ud.name = req_dict["name"]
         return save_data_to_db()
     else:
         return json.dumps("NOT 'POST' REQUEST")

@@ -330,11 +330,15 @@
                     <tr>
                         <td class="h5" width='7%' id="ud-{{ u.number_ud }}-id">{{ u.name }}</td>
                         <td class="h5">адрес: {{ u.Adress }}</td>
-
+                        <td width='2%'>
+                            <a >
+                                <img id="ud_settings" data-status="minus" data-id="{{ u.id }}" data-bs-toggle="modal" data-bs-target="#edit_ud_data_modal" src = "/static/images/settings.svg"/>
+                            </a>
+                        </td>
                     </tr>
                     {% for olt in u.cod_name_of_olt %}
                     <tr >
-                        <td  colspan='2' id="td_for_pon_mod">
+                        <td  colspan='3' id="td_for_pon_mod">
                             <table class="table table-sm table-hover table-borderless scale">
                                 <tbody class="shadow_for_the_table olt_tbody">
                                 <tr class="shassi_row for_file_download" data-id="{{ olt.id }}", data-db="List_of_olt">
@@ -358,7 +362,7 @@
                                     </td>
                                 </tr>
                                 <tr class="platy_row">
-                                    <td class="multiline" colspan='9'>
+                                    <td  colspan='9'>
                                         <table class="table table-sm table-bordered table-hover ">
                                             <thead>
                                                 <tr>
@@ -377,32 +381,43 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="plata_tbody">
-                                            {% for m in olt.list_of_modules %}
-                                            <tr class="for_file_download" data-id="{{ m.id }}" data-db="List_of_modules">
+                                            <tr>
                                                 <td width='2%'>
-                                                    <input class="form-check-input" id="flexCheck_modul{{ m.id }}" type="checkbox" value="">
+                                                        <input class="form-check-input" id="flexCheck_modul{{ olt.id }}" type="checkbox" value="">
                                                 </td>
-                                                {% if m.Olt_sockets.socket == -1 %}
-                                                <td > fun</td>
-                                                {% else %}
-                                                <td > {{ m.Olt_sockets.socket }}</td>
-                                                {% endif %}
-                                                <td > {{ m.type_of_modules }}</td>
-                                                <td > {{ m.name_of_modules }}</td>
-                                                <td > {{ m.serial_number }}</td>
-                                                <td><a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-id = "{{ m.inv_number }}" > {{ m.inv_number }}</a></td>
-                                                <td > {{ m.note }}</td>
-                                                <td >
-                                                    <div class="d-grid gap-1 d-md-flex">
-                                                        <a class="btn btn-primary btn-sm" id="edir_row_data_btn" data-id="{{m.id}}" data-db="list_of_modules" data-bs-toggle="modal" data-bs-target="#edit_row_data_modal">
-                                                            <i class="bi bi-pen"></i>
-                                                        </a>
-                                                        <a class="btn btn-primary btn-sm" id="move_item_btn" data-id="{{m.id}}"  data-bs-toggle="modal" data-db="list_of_modules" data-bs-target="#move_obj_Modal">
-                                                            <i class="bi bi-box-arrow-up-right"></i>
-                                                        </a>
-                                                    </div>
-                                                </td>
+                                                <td>-</td>
+                                                <td scope="col" > {{ olt.Type_of_olt.type }}</td>
+                                                <td scope="col" > {{ olt.name }}</td>
+                                                <td scope="col" > {{ olt.serial_number }}</td>
+                                                <td scope="col" > <a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-id = "{{ olt.inv_number }}" > {{ olt.inv_number }}</a></td>
+                                                <td scope="col" > {{ olt.note }}</td>
                                             </tr>
+                                            {% for m in olt.list_of_modules|sort(attribute='socket') %}
+                                                <tr class="for_file_download" data-id="{{ m.id }}" data-db="List_of_modules">
+                                                    <td width='2%'>
+                                                        <input class="form-check-input" id="flexCheck_modul{{ m.id }}" type="checkbox" value="">
+                                                    </td>
+                                                    {% if m.Olt_sockets.socket == -1 %}
+                                                    <td > fun</td>
+                                                    {% else %}
+                                                    <td > {{ m.Olt_sockets.socket }}</td>
+                                                    {% endif %}
+                                                    <td > {{ m.type_of_modules }}</td>
+                                                    <td > {{ m.name_of_modules }}</td>
+                                                    <td > {{ m.serial_number }}</td>
+                                                    <td><a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-id = "{{ m.inv_number }}" > {{ m.inv_number }}</a></td>
+                                                    <td > {{ m.note }}</td>
+                                                    <td >
+                                                        <div class="d-grid gap-1 d-md-flex">
+                                                            <a class="btn btn-primary btn-sm" id="edir_row_data_btn" data-id="{{m.id}}" data-db="list_of_modules" data-bs-toggle="modal" data-bs-target="#edit_row_data_modal">
+                                                                <i class="bi bi-pen"></i>
+                                                            </a>
+                                                            <a class="btn btn-primary btn-sm" id="move_item_btn" data-id="{{m.id}}"  data-bs-toggle="modal" data-db="list_of_modules" data-bs-target="#move_obj_Modal">
+                                                                <i class="bi bi-box-arrow-up-right"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                             {% endfor %}
                                             </tbody>
                                         </table>
@@ -410,7 +425,6 @@
                                 </tr>
                                 </tbody>
                             </table>
-
                         </td>
                     </tr>
                     {% endfor %}
@@ -419,9 +433,9 @@
                 </table>
             </div>
         </main>
-      <div class="col bg-dark-subtle" >
+    <div class="col bg-dark-subtle" >
 
-      </div>
+    </div>
     </div>
     <!--   редактировать ячейки таблицы двойным кликом-->
     <script>
@@ -521,6 +535,55 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" id="button_for_save_edit_row" name="button_for_save_edit_row" data-toggle="tooltip" data-placement="top" title='Сохранить изменения'>Сохранить</button>
             <button type="button" class="btn btn-primary" id="button_for_delete_row">Удалить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_btn_id">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </div>
+<div class="modal fade" id="edit_ud_data_modal" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable " role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="EditModalLabel">Изменение данных об Объекте   </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+                <div class="container">
+                  <div class="row" id="first_row">
+                      <div class="col-sm">
+                          <div class="mb-3">
+                            <label class="col-form-label">Название:</label>
+                            <input type="text"  class="form-control" id="edit_ud_Name_id">
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                <div class="container">
+                  <div class="row" id="second_row">
+                      <div class="col-sm">
+                          <div class="mb-3">
+                            <label class="col-form-label">Адрес:</label>
+                            <input type="text"  class="form-control" id="edit_ud_adr_id">
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                <div class="container">
+                  <div class="row" id="second_row">
+                      <div class="col-sm">
+                          <div class="mb-3">
+                            <label class="col-form-label">Код в ТМ:</label>
+                            <input type="text"  class="form-control" id="edit_ud_cod_id">
+                          </div>
+                      </div>
+                  </div>
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="button_for_save_edit_ud" name="button_for_save_edit_row" data-toggle="tooltip" data-placement="top" title='Сохранить изменения'>Сохранить</button>
+            <button type="button" class="btn btn-primary" id="button_for_delete_ud">Удалить</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_btn_id">Закрыть</button>
           </div>
         </div>
@@ -732,8 +795,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ma_storage_Modal" id="btn_to_close_mod_send_to_usage">Закрыть</button>
-                <button type="button" class="btn btn-primary" id="btn_send_to_usage" >Применить</button>
+                <button type="button" data-bs-dismiss="modal" class="btn btn-secondary" id="close_mv_mod_btn">Закрыть</button>
+                <button type="button" class="btn btn-primary" id="apply_move_modul_btn" >Применить</button>
             </div>
         </div>
     </div>
@@ -761,6 +824,10 @@
     $('#edit_row_data_modal').on('show.bs.modal', function (e) {
         $(this).find('form').trigger('reset');
         to_fill_edit_modal($(e.relatedTarget).data('id'), $(e.relatedTarget).data('db'),(e.relatedTarget).closest('tr'))
+        });
+     $('#edit_ud_data_modal').on('show.bs.modal', function (e) {
+        $(this).find('form').trigger('reset');
+        to_fill_ud_edit_modal($(e.relatedTarget).data('id'),(e.relatedTarget).closest('tr'))
         });
     </script>
 

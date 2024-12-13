@@ -23,8 +23,6 @@ function tooltip_func(table_id){
 }
 
 function reload_page() {
-    // var serch_data = document.getElementById("myInput").value
-    // localStorage.setItem("serch",JSON.stringify(serch_data));
     location.reload();
 }
 

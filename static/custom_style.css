@@ -36,8 +36,8 @@
               width: 100%;
               background-image: url("images/krugi_mnozhestvo_uvelichenie_121454_1920x1080.jpg");
             }
-           
-            /*.multiline { white-space: pre-line; }*/
+          
+            .multiline { white-space: pre-line; }
             .shadow_for_the_table {
                 box-shadow: 8px 7px 17px rgba(50, 41, 41, 0.46);
                 border-radius: 12px 12px 12px 12px;
