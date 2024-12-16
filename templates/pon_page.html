@@ -342,12 +342,16 @@
                             <table class="table table-sm table-hover table-borderless scale">
                                 <tbody class="shadow_for_the_table olt_tbody">
                                 <tr class="shassi_row for_file_download" data-id="{{ olt.id }}", data-db="List_of_olt">
-                                    <td class="h6" width='5%'> OLT №</td>
+                                    {% if olt.type_of_olt == 4 %}
+                                        <td class="h6" width='5%'> NE </td>
+                                    {% else %}
+                                        <td class="h6" width='5%'> OLT № </td>
+                                    {% endif %}
                                     <td class="h6" width='12%'><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-pon ="{{ olt.cod_name_of_olt }}" > {{ olt.cod_name_of_olt }}</a></td>
-                                    <td class="h6" width='12%'> {{ olt.name }}</td>
+                                    <td class="h6" width='12%'> {{ olt.Type_of_olt.type }}</td>
                                     <td class="h6" width='12%'> IP: {{ olt.IP }}</td>
-                                    <td class="h6" width='15%'> s/n {{ olt.serial_number }}</td>
-                                    <td class="h6" width='12%'>Инв. № <a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-id = "{{ olt.inv_number }}" > {{ olt.inv_number }}</a></td>
+                                    <td class="h6" width='15%'> </td>
+                                    <td class="h6" width='12%'></td>
                                     <td class="h6" width='15%'> Ряд/Шкаф/Полка: {{ olt.row_box_shelf }}</td>
                                     <td class="h6" width='15%'> {{ olt.note }}</td>
                                     <td width='2%'>
@@ -535,7 +539,7 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" id="button_for_save_edit_row" name="button_for_save_edit_row" data-toggle="tooltip" data-placement="top" title='Сохранить изменения'>Сохранить</button>
             <button type="button" class="btn btn-primary" id="button_for_delete_row">Удалить</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_btn_id">Закрыть</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Закрыть</button>
           </div>
         </div>
       </div>
@@ -544,13 +548,13 @@
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable " role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="EditModalLabel">Изменение данных об Объекте   </h5>
+            <h5 class="modal-title" >Изменение данных об Объекте   </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
           </div>
           <div class="modal-body">
             <form>
                 <div class="container">
-                  <div class="row" id="first_row">
+                  <div class="row">
                       <div class="col-sm">
                           <div class="mb-3">
                             <label class="col-form-label">Название:</label>
@@ -560,7 +564,7 @@
                   </div>
                 </div>
                 <div class="container">
-                  <div class="row" id="second_row">
+                  <div class="row">
                       <div class="col-sm">
                           <div class="mb-3">
                             <label class="col-form-label">Адрес:</label>
@@ -570,7 +574,7 @@
                   </div>
                 </div>
                 <div class="container">
-                  <div class="row" id="second_row">
+                  <div class="row">
                       <div class="col-sm">
                           <div class="mb-3">
                             <label class="col-form-label">Код в ТМ:</label>
@@ -767,11 +771,11 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="move_obj_Modal" tabindex="-1" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="move_obj_Modal"  data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Перемещение</h1>
+            <h1 class="modal-title fs-5" >Перемещение</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
