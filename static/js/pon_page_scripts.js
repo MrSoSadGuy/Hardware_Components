@@ -93,7 +93,7 @@ function add_inputs_to_edit_modal(){
         "                   <input type=\"text\"  class=\"form-control\" id=\"edit_Cod_id\">\n" +
         "               </div>" +
     divF.appendChild(div1);
-     let div2 = document.createElement("div");
+    let div2 = document.createElement("div");
     div2.setAttribute('class', 'col-sm');
     div2.setAttribute('id', 'div_row');
     div2.innerHTML = " <div class=\"mb-3\">\n" +
@@ -218,28 +218,30 @@ async function move_obj_modal(id, db){
     const opt_slct_unit = document.createElement('option')
     opt_slct_unit.selected
     opt_slct_unit.text = 'Выберите обьект'
+    opt_slct_unit.value = 0
     slct_unit.add(opt_slct_unit)
-    while(slct_sock.length>0){slct_sock.remove(0)}
-    const opt_slct_sock = document.createElement('option')
-    opt_slct_sock.selected
-    opt_slct_sock.text = 'Выберите место'
-    slct_sock.add(opt_slct_sock)
     const data = await fetch_data_2(id,'/get_data_from_db/'+db+'_move',"POST")
     let list_of_data = await data.json();
     console.log(list_of_data)
     if (db === "list_of_modules"){
         Object.keys(list_of_data).forEach(item => {
             const opt = document.createElement('option')
-            // opt.value = item.id
+            opt.value = 1
             opt.text = item
             slct_unit.add(opt)
         })
     }
-    let target
+    let target, target_val
     slct_unit.addEventListener("change", function() {
-        
+        while(slct_sock.length>0){slct_sock.remove(0)}
+        const opt_slct_sock = document.createElement('option')
+        opt_slct_sock.selected
+        opt_slct_sock.text = 'Выберите место'
+        opt_slct_sock.value = '0'
+        slct_sock.add(opt_slct_sock)
+        this.options[this.selectedIndex].value === '0' ? slct_sock.disabled = true : slct_sock.disabled = false;
         target = this.options[this.selectedIndex].textContent
-        slct_sock.disabled = false;
+        target_val = this.options[this.selectedIndex].value
         console.log(list_of_data[target])
         for(i in list_of_data[target]){
             console.log(i)
@@ -252,8 +254,10 @@ async function move_obj_modal(id, db){
     document.getElementById('apply_move_modul_btn').onclick = function (){
         let socket = slct_sock.options[slct_sock.selectedIndex].value
         console.log("🚀 ~ move_obj_modal ~ socket:", socket)
-        apply_move_modul(id, target, socket, db,  this)};
-}
+        if (target_val !== '0' && socket !== '0'){apply_move_modul(id, target, socket, db,  this)}
+        else{alert('Выберите объект и плата-место')}
+        
+}}
 async function apply_move_modul(id, target, socket, db,  btn){
     var edit_data = {id: id, target : target, socket:socket}           
         console.log("🚀 ~ apply_move_modul ~ edit_data:", edit_data)

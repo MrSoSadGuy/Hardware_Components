@@ -341,7 +341,7 @@
                         <td  colspan='3' id="td_for_pon_mod">
                             <table class="table table-sm table-hover table-borderless scale">
                                 <tbody class="shadow_for_the_table olt_tbody">
-                                <tr class="shassi_row for_file_download" data-id="{{ olt.id }}", data-db="List_of_olt">
+                                <tr class="shassi_row" data-id="{{ olt.id }}", data-db="List_of_olt">
                                     {% if olt.type_of_olt == 4 %}
                                         <td class="h6" width='5%'> NE </td>
                                     {% else %}
@@ -385,7 +385,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="plata_tbody">
-                                            <tr>
+                                            <tr class="for_file_download" data-id="{{ olt.id }}", data-db="List_of_olt">
                                                 <td width='2%'>
                                                         <input class="form-check-input" id="flexCheck_modul{{ olt.id }}" type="checkbox" value="">
                                                 </td>
@@ -784,14 +784,14 @@
                         <div class="col-sm">
                             <div class="mb-3">
                                 <select class="form-select" aria-label="Default select example" id = 'select_unit'>
-                                    <option selected>Выберите устройство</option>
+                                    
                                 </select>
                             </div>
                         </div>
                         <div class="col-sm">
                             <div class="mb-3">
                                 <select class="form-select" aria-label="Default select example" id = 'select_socket' disabled>
-                                    <option selected>Выберите плато-место</option>
+                                    <option selected>Выберите место</option>
                                 </select>
                             </div>
                         </div>
