@@ -213,7 +213,7 @@ def save_pon_olt_data(req_dict, name):
     else:
         return json.dumps("NOT 'POST' REQUEST")
 
-def save_ud_data(req_dict):
+def save_ud_data(req_dict, user):
     print(req_dict)
     ud = Uzel_dostupa.query.get_or_404(int(req_dict["id"]))
     if request.method == 'POST':

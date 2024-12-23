@@ -91,8 +91,8 @@ function add_inputs_to_edit_modal(){
     div1.innerHTML = "  <div class=\"mb-3\">\n" +
         "                   <label class=\"col-form-label\">Код:</label>\n" +
         "                   <input type=\"text\"  class=\"form-control\" id=\"edit_Cod_id\">\n" +
-        "               </div>" +
-    divF.appendChild(div1);
+        "               </div>" 
+    // divF.appendChild(div1);
     let div2 = document.createElement("div");
     div2.setAttribute('class', 'col-sm');
     div2.setAttribute('id', 'div_row');
@@ -274,4 +274,60 @@ async function apply_move_modul(id, target, socket, db,  btn){
             alert(data);
         }
     }
+}
+
+async function add_new_modal() {
+    const slct_ud = document.getElementById('select_ud')
+    const slct_unit = document.getElementById('select_unit')
+    while(slct_ud.length>0){slct_ud.remove(0)}
+    const opt_slct_ud = document.createElement('option')
+    opt_slct_ud.selected
+    opt_slct_ud.text = 'Выберите обьект'
+    opt_slct_ud.value = 0
+    slct_ud.add(opt_slct_ud)
+    const data = await fetch_data_2("all",'/get_data_from_db/Uzel_dostupa_all',"POST")
+    let list_of_data = await data.json();
+    
+    list_of_data.forEach(item => {
+        console.log("🚀 ~ Object.keys ~ item:", item)
+        const opt = document.createElement('option')
+        opt.value = item['id']
+        opt.text = item['name'] + ' ' + item['Adress']
+        slct_ud.add(opt)
+    })
+    const opt_new = document.createElement('option')
+    opt_new.value = "new"
+    opt_new.text = "Добавить новый"
+    slct_ud.add(opt_new)
+    slct_ud.addEventListener("change", function() {
+        while(slct_unit.length>0){slct_unit.remove(0)}
+        const opt_slct_unit = document.createElement('option')
+        opt_slct_unit.selected
+        opt_slct_unit.text = 'Выберите место'
+        opt_slct_unit.value = '0'
+        slct_unit.add(opt_slct_unit)
+        if(this.options[this.selectedIndex].value === '0'){
+            slct_unit.disabled = true
+        }
+        if (this.options[this.selectedIndex].value === 'new') {
+            create_new_ud()
+        } else {
+            select_units(this.options[this.selectedIndex].value, slct_unit)
+        }  
+    })
+}
+function create_new_ud(){}
+async function select_units(id, slct_unit) {
+    slct_unit.disabled = false
+    const data1 = await fetch_data_2(id,'/get_data_from_db/Uzel_dostupa_lst',"POST")
+    let list_of_data1 = await data1.json();
+    console.log(list_of_data1)
+    
+        Object.keys(list_of_data1).forEach(item => {
+            const opt = document.createElement('option')
+            opt.value = item
+            opt.text = list_of_data1[item]
+            slct_unit.add(opt)
+        })
+    
 }

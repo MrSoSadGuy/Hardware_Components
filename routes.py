@@ -91,7 +91,6 @@ def pon_page():
 @login_required
 def pon_page_new():
     ud = Uzel_dostupa.query.order_by(Uzel_dostupa.id).all()
-    kts_data = Data_for_KTS.query.all()
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
     mols = MOLs.query.all()
@@ -146,6 +145,20 @@ def get_data_for_jinja():
 def get_data_from_db(db):
     req = request.form['json']
     print(str(datetime.now())+": запрос на получение данных -- ", db, json.loads(req))
+    # db_req_lst = {
+    #     'BuhUch':BuhUch.query.filter_by(inv_number=json.loads(req)).first(),
+    #     # 'olt_data': get_data_for_sostav(req),
+    #     'list_of_modules': List_of_modules.query.get_or_404(int(json.loads(req))),
+    #     'olt_list': List_of_olt.query.get_or_404(int(json.loads(req))),
+    #     'kts_data': Data_for_KTS.query.filter_by(cod_name=json.loads(req).upper()).first(),
+    #     'ma_add_modules':  ma_add_modules.query.filter_by(cod_name=json.loads(req).upper()).all(),
+    #     'MA_Unit_stor': MA_Units.query.filter_by(cod_name=json.loads(req).upper()).all(),
+    #     'MA_Units': MA_Units.query.get_or_404(int(json.loads(req))),
+    #     'Uzel_dostupa': Uzel_dostupa.query.get_or_404(int(json.loads(req))),
+    #     # 'MA_Units_to_usage': get_data_for_select("MA_Units", json.loads(req)),
+    #     # 'ma_add_modules_to_usage': get_data_for_select('ma_add_modules', json.loads(req)),
+    #     # 'list_of_modules_move': get_data_for_move(json.loads(req))
+    # }
     if db == 'BuhUch':
         buh = BuhUch.query.filter_by(inv_number=json.loads(req)).first()
         return jsonify(buh)
@@ -172,6 +185,15 @@ def get_data_from_db(db):
     if db == 'Uzel_dostupa':
         ud = Uzel_dostupa.query.get_or_404(int(json.loads(req)))
         return jsonify(ud)
+    if db == 'Uzel_dostupa_all':
+        ud = Uzel_dostupa.query.order_by(Uzel_dostupa.id).all()
+        return ud
+    if db == 'Uzel_dostupa_lst':
+        ud = Uzel_dostupa.query.get_or_404(int(json.loads(req)))
+        answ ={}
+        for i in ud.cod_name_of_olt:
+            answ[i.id] = i.cod_name_of_olt
+        return jsonify(answ)
     if db == 'MA_Units_to_usage':
         # units = get_data_for_select()
         units = get_data_for_select("MA_Units", json.loads(req))
@@ -183,7 +205,8 @@ def get_data_from_db(db):
         # units = get_data_for_select()
         units = get_data_for_move(json.loads(req))
         return jsonify(units)
-
+    # if db in db_req_lst:
+    #     return jsonify(db_req_lst[db])
     if db == 'Objects_ur_lica':
         obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
         units_list = {}
@@ -315,32 +338,52 @@ def save_data(db_name):
     req_dict = json.loads(request.form['json'])
     user = Users.query.filter_by(id=current_user.get_id()).first()
     print(str(datetime.now()) +': '+ user.FIO + " запрос на внесение изменений или добавление новых записей -- ", db_name, req_dict)
-    if db_name == 'KTS':
-        return save_kts_data(req_dict, user.FIO)
-    if db_name == 'sostav':
-        return save_sostav_data(req_dict, user.FIO)
-    if db_name == 'Buhuchet':
-        return save_buhuchet_data(req_dict, user.FIO)
-    if db_name == 'ma_add_modules_edited':
-        return save_ma_add_modules(req_dict, user.FIO)
-    if db_name == 'MA_Units_edited':
-        return save_ma_unit_data(req_dict, user.FIO)
-    if db_name == 'Unit':
-        return add_new_unit(req_dict, user.FIO)
-    if db_name == 'MA_Unit':
-        return add_ma_unit_data(req_dict, user.FIO)
-    if db_name == 'ma_add_modules':
-        return add_ma_add_modules(req_dict, user.FIO)
-    if db_name == 'Object_ur_lica':
-        return add_object_for_MA(req_dict, user.FIO)
-    if db_name == 'Objects_ur_lica_edited':
-        return save_object_for_MA(req_dict, user.FIO)
-    if db_name == 'list_of_modules':
-        return save_pon_modules(req_dict, user.FIO)
-    if db_name == 'olt_list':
-        return save_pon_olt_data(req_dict, user.FIO)
-    if db_name == 'Uzel_dostupa':
-        return save_ud_data(req_dict)
+    db_req_lst = {
+        'KTS':save_kts_data,
+        'sostav': save_sostav_data,
+        'Buhuchet': save_buhuchet_data,
+        'ma_add_modules_edited': save_ma_add_modules,
+        'MA_Units_edited': save_ma_unit_data,
+        'Unit': add_new_unit,
+        'MA_Unit': add_ma_unit_data,
+        'ma_add_modules': add_ma_add_modules,
+        'Object_ur_lica': add_object_for_MA,
+        'Objects_ur_lica_edited': save_object_for_MA,
+        'list_of_modules': save_pon_modules,
+        'olt_list': save_pon_olt_data,
+        'Uzel_dostupa': save_ud_data
+    }
+    if db_name in db_req_lst:
+        return db_req_lst.get(db_name)(req_dict, user.FIO)
+    # if db_name == 'KTS':
+    #     return save_kts_data(req_dict, user.FIO)
+    # if db_name == 'sostav':
+    #     return save_sostav_data(req_dict, user.FIO)
+    # if db_name == 'Buhuchet':
+    #     return save_buhuchet_data(req_dict, user.FIO)
+    # if db_name == 'ma_add_modules_edited':
+    #     return save_ma_add_modules(req_dict, user.FIO)
+    # if db_name == 'MA_Units_edited':
+    #     return save_ma_unit_data(req_dict, user.FIO)
+    # if db_name == 'Unit':
+    #     return add_new_unit(req_dict, user.FIO)
+    # if db_name == 'MA_Unit':
+    #     return add_ma_unit_data(req_dict, user.FIO)
+    # if db_name == 'ma_add_modules':
+    #     return add_ma_add_modules(req_dict, user.FIO)
+    # if db_name == 'Object_ur_lica':
+    #     return add_object_for_MA(req_dict, user.FIO)
+    # if db_name == 'Objects_ur_lica_edited':
+    #     return save_object_for_MA(req_dict, user.FIO)
+    # if db_name == 'list_of_modules':
+    #     return save_pon_modules(req_dict, user.FIO)
+    # if db_name == 'olt_list':
+    #     return save_pon_olt_data(req_dict, user.FIO)
+    # if db_name == 'Uzel_dostupa':
+    #     return save_ud_data(req_dict)
+   
+    
+
     
     
 
