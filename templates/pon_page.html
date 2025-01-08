@@ -24,7 +24,7 @@
 
 
     <script>
-        function x(){alert("Привет!!")}
+
         // document.addEventListener('DOMContentLoaded', () => {
         //     document.documentElement.setAttribute('data-bs-theme', JSON.parse(localStorage.getItem("colar_thema")))
         //     const table = document.getElementById('tbody_main_table')
@@ -116,7 +116,7 @@
                data-bs-toggle="offcanvas" href="" style="display: inline-block;">
                 <i class="bi bi-list h2 castom-white"></i>
             </a></div>
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Гомельский ЗУЭС</a>
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Гомельский ЗУЭС - Станционная группа</a>
 
     </div>
     <li class="nav-item dropdown nav justify-content-end">
@@ -265,8 +265,6 @@
 
             </div>
             <div class="table-responsive small">
-
-
                 <table class="table table-sm table-borderless" id="main_pon_table">
                     {% for u in ud %}
                     <tbody class="ud_tbody">
@@ -279,33 +277,38 @@
                             </a>
                         </td>
                     </tr>
-                    {% for olt in u.cod_name_of_olt %}
+                    {% for olt in u.cod_name_of_olt |sort(attribute='cod_name') %}
+                    {% for s in olt.list_of_olt %}
+<!--                    {% if olt.list_of_olt[0] %}-->
                     <tr >
                         <td  colspan='3' id="td_for_pon_mod">
                             <table class="table table-sm table-hover table-borderless scale">
                                 <tbody class="shadow_for_the_table olt_tbody">
-                                <tr class="shassi_row" data-id="{{ olt.id }}", data-db="List_of_olt">
-                                    {% if olt.type_of_olt == 4 %}
+
+                                <tr class="shassi_row" data-id="{{ s.id }}", data-db="List_of_olt">
+                                    {% if s and s.type_of_olt == 4 %}
                                         <td class="h6" width='5%'> NE </td>
+                                    {% elif s  %}
+                                    <td class="h6" width='5%'> OLT № {{ olt.OLT }}</td>
                                     {% else %}
-                                        <td class="h6" width='5%'> OLT № </td>
+                                        <td class="h6" width='5%'>  </td>
                                     {% endif %}
-                                    <td class="h6" width='12%'><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-pon ="{{ olt.cod_name_of_olt }}" > {{ olt.cod_name_of_olt }}</a></td>
-                                    <td class="h6" width='12%'> {{ olt.Type_of_olt.type }}</td>
+                                    <td class="h6" width='12%'><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-pon ="{{ olt.cod_name }}" > {{ olt.cod_name }}</a></td>
+                                    <td class="h6" width='35%'> {{ olt.full_name }}</td>
                                     <td class="h6" width='12%'> IP: {{ olt.IP }}</td>
-                                    <td class="h6" width='15%'> </td>
-                                    <td class="h6" width='12%'></td>
-                                    <td class="h6" width='15%'> Ряд/Шкаф/Полка: {{ olt.row_box_shelf }}</td>
+<!--                                    <td class="h6" width='15%'> </td>-->
+<!--                                    <td class="h6" width='12%'></td>-->
+                                    <td class="h6" width='15%'> Место: {{ olt.mesto }}</td>
                                     <td class="h6" width='15%'> {{ olt.note }}</td>
                                     <td width='2%'>
-                                        <div class="d-grid gap-1 d-md-flex">
-                                            <a class="btn btn-primary btn-sm" id="edir_olt_data_btn" data-id="{{olt.id}}" data-db="olt_list" data-bs-toggle="modal" data-bs-target="#edit_row_data_modal">
-                                                <i class="bi bi-pen"></i>
-                                            </a>
-                                            <a class="btn btn-primary btn-sm" id="move_olt_btn" data-id="{{olt.id}}"  data-bs-toggle="modal" data-bs-target="#move_item_modal">
-                                                <i class="bi bi-box-arrow-up-right"></i>
-                                            </a>
-                                        </div>
+                                        {% if s == False %}
+                                            <div class="d-grid gap-1 d-md-flex">
+                                                <a class="btn btn-primary btn-sm" id="edir_olt_data_btn" data-id="{{olt.id}}" data-db="olt_list" data-bs-toggle="modal" data-bs-target="#edit_row_data_modal">
+                                                    <i class="bi bi-pen"></i>
+                                                </a>
+                                            </div>
+                                        {% endif %}
+
                                     </td>
                                 </tr>
                                 <tr class="platy_row">
@@ -328,23 +331,36 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="plata_tbody">
-                                            <tr class="for_file_download" data-id="{{ olt.id }}", data-db="List_of_olt">
+
+                                            <tr class="for_file_download" data-id="{{ s.id }}", data-db="List_of_olt">
                                                 <td width='2%'>
                                                         <input class="form-check-input" id="flexCheck_modul{{ olt.id }}" type="checkbox" value="">
                                                 </td>
                                                 <td>-</td>
-                                                <td scope="col" > {{ olt.Type_of_olt.type }}</td>
-                                                <td scope="col" > {{ olt.name }}</td>
-                                                <td scope="col" > {{ olt.serial_number }}</td>
-                                                <td scope="col" > <a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-id = "{{ olt.inv_number }}" > {{ olt.inv_number }}</a></td>
-                                                <td scope="col" > {{ olt.note }}</td>
+                                                <td scope="col" > {{ s.Type_of_olt.type }}</td>
+                                                <td scope="col" > {{ s.name }}</td>
+                                                <td scope="col" > {{ s.serial_number }}</td>
+                                                <td scope="col" > <a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-id = "{{ olt.inv_number }}" > {{ s.inv_number }}</a></td>
+                                                <td scope="col" > {{ s.note }}</td>
+                                                <td >
+                                                    <div class="d-grid gap-1 d-md-flex">
+                                                        <a class="btn btn-primary btn-sm" id="edir_unit_data_btn" data-id="{{s.id}}" data-db="list_of_modules" data-bs-toggle="modal" data-bs-target="#edit_row_data_modal">
+                                                            <i class="bi bi-pen"></i>
+                                                        </a>
+                                                        <a class="btn btn-primary btn-sm" id="move_unit_btn" data-id="{{s.id}}"  data-bs-toggle="modal" data-db="list_of_olt" data-bs-target="#move_obj_Modal">
+                                                            <i class="bi bi-box-arrow-up-right"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
                                             </tr>
-                                            {% for m in olt.list_of_modules|sort(attribute='socket') %}
+                                            {% for m in s.list_of_modules|sort(attribute='socket') %}
                                                 <tr class="for_file_download" data-id="{{ m.id }}" data-db="List_of_modules">
                                                     <td width='2%'>
                                                         <input class="form-check-input" id="flexCheck_modul{{ m.id }}" type="checkbox" value="">
                                                     </td>
-                                                    {% if m.Olt_sockets.socket == -1 %}
+                                                    {% if m.Olt_sockets.socket == -1 and 'OL' in m.olt_cod %}
+                                                    <td > fun</td>
+                                                    {% elif m.Olt_sockets.socket == 0 and 'UL' in m.olt_cod %}
                                                     <td > fun</td>
                                                     {% else %}
                                                     <td > {{ m.Olt_sockets.socket }}</td>
@@ -366,14 +382,18 @@
                                                     </td>
                                                 </tr>
                                             {% endfor %}
+
                                             </tbody>
                                         </table>
                                     </td>
                                 </tr>
+
                                 </tbody>
                             </table>
                         </td>
                     </tr>
+<!--                    {% endif %}-->
+                    {% endfor %}
                     {% endfor %}
                     </tbody>
                     {% endfor %}
@@ -456,7 +476,7 @@
                     </div>
                     <div class="row">
                             <div class="mb-3">
-                                <select class="form-select" aria-label="Default select example" id = 'select_unit'>
+                                <select class="form-select" aria-label="Default select example" id = 'select_unit2'>
                                     
                                 </select>
                             </div>

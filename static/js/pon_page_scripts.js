@@ -4,6 +4,8 @@ async function to_fill_sostav_modal(p_name, ud) {
     document.getElementById("t_sostav_body").remove();
     var table = document.getElementById("Sostav_Modal_table");
     const tbody = document.createElement('tbody');
+    tbody.setAttribute('id', 't_sostav_body');
+    table.appendChild(tbody);
     const modules_data = await fetch_data_2(p_name,'/get_data_from_db/olt_data',"POST");
     if(modules_data.ok){
         let list_of_modules = await modules_data.json();
@@ -33,9 +35,6 @@ async function to_fill_sostav_modal(p_name, ud) {
         document.getElementById("full_name_id").value = kts_data['full_name'];
         document.getElementById("mesto_id").value = kts_data['mesto'];
         document.getElementById("zavod_id").value = kts_data['zavod'];
-
-        tbody.setAttribute("id", "t_body");
-        table.appendChild(tbody);
     }
 }
 async function to_fill_ud_edit_modal(id, row) {
@@ -53,7 +52,6 @@ async function to_fill_ud_edit_modal(id, row) {
             row)}
     }
 }
-
 async function to_fill_edit_modal(id, db, row) {
     document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
     document.getElementById('button_for_delete_row').setAttribute("class", "btn btn-primary");
@@ -218,15 +216,14 @@ async function move_obj_modal(id, db){
     const opt_slct_unit = document.createElement('option')
     opt_slct_unit.selected
     opt_slct_unit.text = 'Выберите обьект'
-    opt_slct_unit.value = 0
+    opt_slct_unit.value = '0'
     slct_unit.add(opt_slct_unit)
     const data = await fetch_data_2(id,'/get_data_from_db/'+db+'_move',"POST")
     let list_of_data = await data.json();
-    console.log(list_of_data)
     if (db === "list_of_modules"){
         Object.keys(list_of_data).forEach(item => {
             const opt = document.createElement('option')
-            opt.value = 1
+            opt.value = '1'
             opt.text = item
             slct_unit.add(opt)
         })

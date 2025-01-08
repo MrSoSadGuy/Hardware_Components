@@ -465,17 +465,18 @@ def buh_table_data():
 def main_table_data():
     name = request.form['json']
     list_data = json.loads(name)
-
+    print(list_data)
     start_row = 4
     path = 'files for download\шаблон Таблица оборудования PON.xlsx'
     try:
         wb_obj = openpyxl.load_workbook(path)
         sheet = wb_obj.active
-        for row in list_data:            
+        for row in list_data:
             if(row[1] == 'List_of_olt'):
+                print(row[0])
                 olt = List_of_olt.query.get_or_404(str(row[0]))
-                N_ud = olt.Uzel_dostupa.name
-                adr_ud = olt.Uzel_dostupa.Adress
+                N_ud = olt.Data_for_KTS.Uzel_dostupa.name
+                adr_ud = olt.Data_for_KTS.Uzel_dostupa.Adress
                 cod = olt.cod_name_of_olt
                 name = olt.name
                 inv_number = olt.inv_number
@@ -484,9 +485,10 @@ def main_table_data():
                 note = olt.note
                 r_mesto = olt.row_box_shelf
             if(row[1] == 'List_of_modules'):
+                print(row[0])
                 mod = List_of_modules.query.get_or_404(str(row[0]))
-                N_ud = mod.List_of_olt.Uzel_dostupa.name
-                adr_ud = mod.List_of_olt.Uzel_dostupa.Adress
+                N_ud = mod.List_of_olt.Data_for_KTS.Uzel_dostupa.name
+                adr_ud = mod.List_of_olt.Data_for_KTS.Uzel_dostupa.Adress
                 cod = mod.List_of_olt.cod_name_of_olt
                 name = mod.name_of_modules
                 inv_number = mod.inv_number
@@ -501,6 +503,7 @@ def main_table_data():
             sheet["F" + str(start_row)] = ser_num
             sheet["A" + str(start_row)] = r_mesto
             sheet["G" + str(start_row)] = p_mesto
+            sheet["H" + str(start_row)] = note
             start_row = start_row + 1
         wb_obj.save('files for download\Таблица оборудования PON.xlsx')
         return json.dumps("SUCCESS")
