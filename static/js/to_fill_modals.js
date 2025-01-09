@@ -55,7 +55,6 @@ async function invent_modal(param,user){
 
 async function invent_popover(param, attr, table_id){
     const fetch_response = await fetch_data(param,'/get_data_from_db/BuhUch',"POST");
-    console.log("🚀 ~ invent_popover ~ fetch_response:", fetch_response)
     var list_data = []
     if (fetch_response === null){list_data = ["Нет данных","Нет данных","Нет данных"]}
     else {
@@ -161,15 +160,9 @@ function create_tables2(table_id, column_name, unit_id){
     tr.appendChild(td);
     tbody_current.appendChild(tr);
 }
+
 async function ma_unit_storage(table_id, stor_id, tbody_ma_id){
-    let act_br = document.getElementsByClassName('breadcrumb-item active')
-    console.log("🚀 ~ ma_unit_storage ~ act_br:", act_br[0].classList)
-    for (let i = 0; i < act_br.length; i++) {
-        act_br[i].innerHTML='<a href="#">'+act_br[i].textContent+'</a>'
-        act_br[i].classList.remove('active')  
-    }
-    // act_br[0].classList.add("active");
-    act_br[0].innerHTML = act_br[0].textContent
+
     const table_current = document.getElementById(table_id);
     while (table_current.rows.length > 1) {table_current.deleteRow(-1);}
     while (table_current.getElementsByTagName("tbody").length>0) {table_current.removeChild(table_current.getElementsByTagName("tbody")[0]);}
@@ -252,6 +245,7 @@ async function select_usage_modal(id, db_table) {
     opt_selected.text = 'Выберите обьект'
     select.add(opt_selected)
     const data = await fetch_data(id,'/get_data_from_db/'+db_table+'_to_usage',"POST")
+    console.log(data)
     if (db_table === "MA_Units"){        
         data.forEach(item => {
             const opt = document.createElement('option')

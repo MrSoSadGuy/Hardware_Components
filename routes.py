@@ -201,6 +201,7 @@ def get_data_from_db(db):
     if db == 'ma_add_modules_to_usage':
         units = get_data_for_select('ma_add_modules', json.loads(req))
         # units = get_data_for_select()
+        return jsonify(units)
     if db == 'list_of_modules_move':
         # units = get_data_for_select()
         units = get_data_for_move(json.loads(req))
@@ -257,8 +258,8 @@ def get_data_for_select(db, id):
         for unit in modules.type_of_ma_modules.type_of_ma_units2.units:
             if modules.type_of_ma_modules.type_of_ma_units2.sockets > len(unit.modules):
                 unit_modules = {}
-                if unit.object.cod_name == "СКЛАД":
-                    unit_data = {'id': unit.id, 'cod_name': unit.object.cod_name+"-"+str(unit.id)}
+                if unit.object.cod_name == "СКЛАД" or unit.object.cod_name == "ЗИП" or unit.object.cod_name == "РЕМОНТ":
+                    unit_data = {'id': unit.id, 'cod_name': "Склад-"+str(unit.id)}
                 else:
                     unit_data = {'id': unit.id, 'cod_name': unit.object.cod_name}    
                 for m in unit.modules:
@@ -269,7 +270,7 @@ def get_data_for_select(db, id):
                     unit_data['data'] = unit_modules
                 if (modules.type_of_ma_modules.type not in unit_modules) or (modules.type_of_ma_modules.max_number > unit_modules[modules.type_of_ma_modules.type]):
                     response.append(unit_data.copy())
-    
+    print(response)
     return response          
 
 

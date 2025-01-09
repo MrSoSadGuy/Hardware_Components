@@ -528,8 +528,14 @@
     <script type="text/javascript">
                     
                 $('#ma_storage_Modal').on('show.bs.modal', function (e) {
-                  
                   $(this).find('form').trigger('reset');
+                    let act_br = document.getElementsByClassName('breadcrumb-item')
+                    for (let i = 0; i < act_br.length; i++) {
+                        act_br[i].innerHTML='<a href="#">'+act_br[i].textContent+'</a>'
+                        act_br[i].classList.remove('active')
+                    }
+                    act_br[0].classList.add('active');
+                    act_br[0].innerHTML = act_br[0].textContent
                   document.getElementById("btn_to_add_new_ma_storage").setAttribute("class", "btn btn-primary");
                   ma_unit_storage('ma_unit_Modal_table', '543','stored_ma_unit_tbody_');
                   ma_add_module_storage('543');
@@ -667,7 +673,7 @@
                   </thead>
                   <tbody class="table-condensed " id="tbody_main_table">
                     {% for un in new_obj_list %}
-                        {% if un.cod_name != 'СКЛАД' %}
+                        {% if un.cod_name != 'СКЛАД' and un.cod_name != 'ЗИП' and un.cod_name != 'РЕМОНТ' %}
                           <tr bgcolor = "{{ un.color }}" >
                             <td style="width: 15px" data-id="{{ un.id }}"><input class="form-check-input" type="checkbox" value="" id="flexCheck_{{ un.id }}"></td>
                             <td style="width: 120px"><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-id ="{{ un.id }}" data-cod ="{{ un.cod_name }}"  >{{ un.cod_name }}</a></td>
