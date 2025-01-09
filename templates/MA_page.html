@@ -348,9 +348,14 @@
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Склад</h5>
-            
-                
+            {# <h5 class="modal-title" id="exampleModalLabel">Склад</h5> #}
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item active"  onclick="breadcrumbs(event,'543');">Склад</li>
+                <li class="breadcrumb-item"  onclick="breadcrumbs(event,'544');"><a href="#">ЗИП</a></li>
+                <li class="breadcrumb-item"  onclick="breadcrumbs(event,'545');"><a href="#">Неисправные</a></li>
+              </ol>
+            </nav>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"  ></button>
           </div>
           <div class="modal-body">
@@ -371,7 +376,7 @@
               
             </div>
             
-         
+        
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <button type="button" class="btn btn-primary btn-sm"   onclick="add_new_row('new_MA_unit_tbody_storage_id',4)" data-toggle="tooltip" data-placement="top" title='Добавить строку для нового устройства'>
                             <i class="bi bi-plus-lg"></i></button>
@@ -453,10 +458,10 @@
             <div class="container">
                   <div class="row">
                       
-                     
-               <div class="col-sm">
-               <div class="mb-3">
-                 <select class="form-select" aria-label="Default select example" id = 'select_send_to_usage'>
+                    
+              <div class="col-sm">
+              <div class="mb-3">
+                <select class="form-select" aria-label="Default select example" id = 'select_send_to_usage'>
                   <option selected>Выберите обьект</option>
                   
                 </select>
@@ -477,6 +482,8 @@
       </div>
     </div>
     <script type="text/javascript">
+                    
+                    
                   $('#inventModal').on('show.bs.modal', function (e) {
                   $(this).find('form').trigger('reset');
                   var user = {{ user_name | tojson }};
@@ -519,11 +526,13 @@
 
     </script>
     <script type="text/javascript">
+                    
                 $('#ma_storage_Modal').on('show.bs.modal', function (e) {
+                  
                   $(this).find('form').trigger('reset');
                   document.getElementById("btn_to_add_new_ma_storage").setAttribute("class", "btn btn-primary");
                   ma_unit_storage('ma_unit_Modal_table', '543','stored_ma_unit_tbody_');
-                  ma_add_module_storage();
+                  ma_add_module_storage('543');
                   
                 })
     </script>
