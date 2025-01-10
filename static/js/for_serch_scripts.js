@@ -20,9 +20,7 @@ function buh_data_table_serch(){
                 continue;
             } 
         }
-        if(flag){tbodies[i].removeAttribute("style");}
-        else {tbodies[i].style.display = "none";
-        }
+        flag ? tbodies[i].removeAttribute("style"):tbodies[i].style.display = "none";
         number_of_records() ;
     }    
 }
@@ -54,10 +52,8 @@ function myFunction() {
                 return;
                 }
             }})
-            if(flag.length >= list_of_words.length){tr[i].removeAttribute("style");
-                
-            }
-            else {tr[i].style.display = "none";}}
+            flag.length >= list_of_words.length ? tr[i].removeAttribute("style"):tr[i].style.display = "none";
+           }
         // поиск ИЛИ
         if (rb2){
             var flag = false;
@@ -69,56 +65,36 @@ function myFunction() {
                     return;
                     }
                 }})
-            if(flag){tr[i].removeAttribute("style");
-                
-            }           
-            else {tr[i].style.display = "none";}
-        }        
+            flag ? tr[i].removeAttribute("style"):tr[i].style.display = "none";
+        }
         number_of_records_main_table()
     }    
 }
 
-function storage_serch(){
-    var input, filter, table_m, tr, table_u, tb;
+function storage_serch() {
+    let input, filter, table_m, tr, table_u, tb;
     input = document.getElementById("storage_serch");
     filter = input.value.toUpperCase();
-    const list_of_words= filter.split(" ")
+    let list_of_words = filter.split(" ")
     table_m = document.getElementById("current_MA_modules_tbody_storage_id");
     tr = table_m.getElementsByTagName("tr");
     table_u = document.getElementById("ma_unit_Modal_table");
     tb = table_u.getElementsByTagName("tbody");
-
-    for (var i = 0; i < tb.length; i++) {
-        var tds = tb[i].getElementsByTagName("td"); 
-        
-            var flag = [];
-            list_of_words.forEach(word =>{
-                for(var j = 0; j < tds.length; j++){
-                var td = tds[j];
-                if (td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
-                flag.push(true);
-                return;
-                }
-            }})
-            if(flag.length >= list_of_words.length){tb[i].removeAttribute("style");
-                
-            }
-            else {tb[i].style.display = "none";}
+    storage_serch_2(tb, list_of_words)
+    storage_serch_2(tr, list_of_words)
 }
-    for (var i = 0; i < tr.length; i++) {
-        var tds = tr[i].getElementsByTagName("td"); 
-        
-            var flag = [];
-            list_of_words.forEach(word =>{
-                for(var j = 0; j < tds.length; j++){
-                var td = tds[j];
+function storage_serch_2(d,list_of_words){
+    for (let i = 0; i < d.length; i++) {
+        let tds = d[i].getElementsByTagName("td");
+        let flag = [];
+        list_of_words.forEach(word =>{
+            for(let j = 0; j < tds.length; j++){
+                let td = tds[j];
                 if (td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
-                flag.push(true);
-                return;
+                    flag.push(true);
+                    return;
                 }
             }})
-            if(flag.length >= list_of_words.length){tr[i].removeAttribute("style");
-                
-            }
-            else {tr[i].style.display = "none";}
-}}
+        flag.length >= list_of_words.length ? d[i].removeAttribute("style"):d[i].style.display = "none";
+    }
+}

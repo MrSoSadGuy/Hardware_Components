@@ -16,8 +16,7 @@ function show_checked_main_table(status){
     for(var i = 0; i < tr.length; i++){
         tds = tr[i].getElementsByTagName('td');
         if(tds[0].querySelector('.form-check-input').checked===false){
-            if (status)tr[i].style.display = "none";
-            else tr[i].removeAttribute("style");           
+            status ? tr[i].style.display = "none": tr[i].removeAttribute("style");
         }
     }
     number_of_records_main_table();
