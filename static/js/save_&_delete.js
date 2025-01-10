@@ -62,7 +62,7 @@ async function delete_row(db_table, id, bt_id, tbody, row)  {
         console.log(data);
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");
-            setTimeout(function (){document.getElementById(tbody).deleteRow(row.rowIndex-1)}, 500);      
+            setTimeout(function (){row.remove()}, 500);      
         }
         else {
             document.getElementById(bt_id).setAttribute("class", "btn btn-danger btn-sm");
@@ -165,18 +165,14 @@ async function reset_tbodys(tbody, db_table, bt_id, add_param, obj_id){
     }
     else{alert(r)}
 }
-async function send_to_storage(db, id, bt_id, tbody, row_index, cells, dataID)  {
-    console.log("🚀 ~ send_to_storage ~ row_index:", row_index)
+async function send_to_storage(db, id, bt_id, row)  {
     var edit_data = {id: id, parent_obj: 543}
-    console.log("🚀 ~ send_to_storage ~ edit_data:", edit_data)
     if (confirm("Отправить на склад?")){
         const data = await fetch_data(edit_data,'/save_data/'+db, 'POST');
         console.log("🚀 ~ send_to_storage ~ data:", data)
         if(data==="SUCCESS"){
             document.getElementById(bt_id).setAttribute("class", "btn btn-success btn-sm");
-            setTimeout(function (){document.getElementById(tbody).deleteRow(row_index.rowIndex-1)}, 500);
-            // setTimeout(function (){sostav_ma_unit(id)}, 500);
-            ma_add_module_storage();
+            setTimeout(function (){row.remove()}, 500);
         }
         else {
             document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-danger btn-sm");
@@ -326,17 +322,17 @@ async function save_kts_data() {
     }
 }
 
-async function storage_reset_tbody(btn_id){
+async function storage_reset_tbody(btn_id, stor_id){
     const table_1 = document.getElementById('new_MA_unit_tbody_storage_id')
     var rowLength_1 = table_1.rows.length;
     const table_2 = document.getElementById('new_MA_modules_tbody_storage_id')
     var rowLength_2 = table_2.rows.length;
     console.log(rowLength_1 , rowLength_2)
     if (rowLength_1 > 0 ){
-        r = await add_new_units('new_MA_unit_tbody_storage_id', 'MA_Unit', btn_id, "543")
+        r = await add_new_units('new_MA_unit_tbody_storage_id', 'MA_Unit', btn_id, stor_id)
         console.log(r)
         if (r === 'SUCCESS'){
-            setTimeout(function (){ma_unit_storage('ma_unit_Modal_table', '543','stored_ma_unit_tbody_');
+            setTimeout(function (){ma_unit_storage('ma_unit_Modal_table', stor_id,'stored_ma_unit_tbody_');
                 document.getElementById(btn_id).setAttribute("class", "btn btn-primary");
             }, 1000);
             
@@ -345,10 +341,10 @@ async function storage_reset_tbody(btn_id){
         }   
     }
     if (rowLength_2 > 0 ){
-        r = await add_new_units('new_MA_modules_tbody_storage_id', 'ma_add_modules', btn_id, "543")
+        r = await add_new_units('new_MA_modules_tbody_storage_id', 'ma_add_modules', btn_id, stor_id)
         console.log(r)
         if (r === 'SUCCESS'){
-            setTimeout(function (){ma_add_module_storage(); 
+            setTimeout(function (){ma_add_module_storage(stor_id); 
                 document.getElementById(btn_id).setAttribute("class", "btn btn-primary");
             }, 1000);
         }

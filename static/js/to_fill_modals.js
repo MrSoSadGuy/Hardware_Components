@@ -17,9 +17,9 @@ async function sostav_ma_unit(dataID){
     if (Object.keys(data[1]).length > 0){
         for (let key in data[1]){
             let temp_list = [data[1][key]]
-            create_tables(temp_list,'curent_MA_unit_tbody_id', column_name_unit, 'MA_Units', true)
+            create_tables(temp_list,'curent_MA_unit_tbody_id', column_name_unit, 'MA_Units', true, 'tr')
             if(data[2][key].length > 0){
-                create_tables(data[2][key],'curent_MA_modules_tbody_id', column_name_modules, 'ma_add_modules', true)
+                create_tables(data[2][key],'curent_MA_modules_tbody_id', column_name_modules, 'ma_add_modules', true, 'tr')
             }
             document.getElementById("btn_to_add_new_ma_modules").onclick = function(){reset_tbodys('new_MA_modules_tbody_id', 'ma_add_modules','btn_to_add_new_ma_modules',data[1][key]['id'], dataID)}; 
         }            
@@ -69,7 +69,7 @@ async function invent_popover(param, attr, table_id){
 }
 
 
-function create_tables(moduls, table_id, column_name, db_table, busy){
+function create_tables(moduls, table_id, column_name, db_table, busy, tag){
     const tbody_current = document.getElementById(table_id);
     moduls.forEach(item => {
         const tr = document.createElement('tr');
@@ -113,13 +113,15 @@ function create_tables(moduls, table_id, column_name, db_table, busy){
         a3.setAttribute('id','btn_send_ma_mod_to_storage_'+item['id']);
         a3.setAttribute('class','btn btn-primary btn-sm');
         a1.onclick = function (){edit_row(db_table + '_edited', item['id'],'btn_edit_ma_mod_'+item['id'],table_id, this.closest("tr"), 4)};
-        a2.onclick = function (){delete_row(db_table, item['id'],'btn_del_ma_mod_'+item['id'],table_id, this.closest("tr"))};
+        a2.onclick = function (){
+            console.log(this.closest(tag))
+            delete_row(db_table, item['id'],'btn_del_ma_mod_'+item['id'],table_id, this.closest(tag))};
         if (busy){
             a3.setAttribute('title','Демонтировать устройство');
-            a3.onclick = function (){send_to_storage(db_table + '_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'],table_id, this.closest("tr"), 4)}
+            a3.onclick = function (){send_to_storage(db_table + '_edited', item['id'],'btn_send_ma_mod_to_storage_'+item['id'], this.closest("tr"))}
         }
         else{
-            a3.setAttribute('title','Замонтировать устройство');
+            a3.setAttribute('title','Отправить устройство');
             a3.setAttribute('data-bs-toggle',"modal")
             a3.setAttribute('data-bs-target',"#select_usege_Modal")
             a3.setAttribute('data-id', item['id'])
@@ -170,6 +172,9 @@ async function ma_unit_storage(table_id, stor_id, tbody_ma_id){
     console.log("🚀 ~ ma_unit_storage ~ stor_ma_unit:", stor_ma_unit)
     const column_name = ['type_equipment','inv_number','serial_number','note'];
     const column_name_mod = ['type','inv_number','serial_number','note'];
+    document.getElementById('btn_to_add_new_ma_storage').onclick = function(){
+        storage_reset_tbody(this.id, stor_id)
+    }
     if(Object.keys(stor_ma_unit[1]).length>0){
         for (let key in stor_ma_unit[1]){
             const new_tbody = document.createElement('tbody');
@@ -186,10 +191,10 @@ async function ma_unit_storage(table_id, stor_id, tbody_ma_id){
             empty_line.setAttribute('height',"15")
             table_current.appendChild(empty_line)          
             temp_list = [stor_ma_unit[1][key]]
-            create_tables(temp_list,tbody_ma_id + key, column_name, 'MA_Units',false)
+            create_tables(temp_list,tbody_ma_id + key, column_name, 'MA_Units',false, 'tbody')
             if(stor_ma_unit[2][key].length > 0){
                 create_tables2(tbody_ma_id  + key, column_name, stor_ma_unit[1][key]['id'] )
-                create_tables(stor_ma_unit[2][key],"tbody_unit_modules_"+ stor_ma_unit[1][key]['id'], column_name_mod, 'ma_add_modules',true)
+                create_tables(stor_ma_unit[2][key],"tbody_unit_modules_"+ stor_ma_unit[1][key]['id'], column_name_mod, 'ma_add_modules',true, 'tr')
             }
         }            
     }
@@ -208,12 +213,11 @@ async function ma_add_module_storage(id){
     if (data.ok){
         let stor_ma_modules = await data.json()
         if(stor_ma_modules[1].length>0){
-            create_tables(stor_ma_modules[1],'current_MA_modules_tbody_storage_id', column_name, 'ma_add_modules', false)
+            create_tables(stor_ma_modules[1],'current_MA_modules_tbody_storage_id', column_name, 'ma_add_modules', false,'tr')
         }
     }
     
 }
-
 
 async function edit_ma_unit_modal(obj_id, row_index){        
     const data = await fetch_data(obj_id,'/get_data_from_db/Objects_ur_lica',"POST");
@@ -262,19 +266,16 @@ async function select_usage_modal(id, db_table) {
             opt.text = item.cod_name
             select.add(opt)
         })
+    }
+    let act_br = document.getElementsByClassName('breadcrumb-item')
+    for (let i = 0; i < act_br.length; i++) {
+        if(!act_br[i].classList.contains('active')){
+            const opt = document.createElement('option')
+            opt.value = act_br[i].dataset.id
+            opt.text = act_br[i].dataset.name
+            select.add(opt)
+        }
     }  
-    const opt_s = document.createElement('option')
-    opt_s.value = '543'
-    opt_s.text = 'Склад'
-    select.add(opt_s)
-    const opt_z = document.createElement('option')
-    opt_z.value = '544'
-    opt_z.text = 'ЗИП'
-    select.add(opt_z)
-    const opt_r = document.createElement('option')
-    opt_r.value = '545'
-    opt_r.text = 'Неисправный'
-    select.add(opt_r)
     
     let target_id, target_list
     select.addEventListener("change", function() {

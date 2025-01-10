@@ -53,12 +53,14 @@ function number_of_records_main_table(){
     document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + number_of_records;
 }
 
-function breadcrumbs(ev,id){
+function breadcrumbs(ev,tb_n,id){
     let act_br = document.getElementsByClassName('breadcrumb-item active') 
     act_br[0].innerHTML='<a href="#">'+act_br[0].textContent+'</a>'
     act_br[0].classList.remove('active')
     ev.currentTarget.className += " active";
     ev.currentTarget.innerHTML = ev.currentTarget.textContent
+    localStorage.setItem('stor_brd_n', tb_n)
+    localStorage.setItem('stor_brd_id', id)
     ma_unit_storage('ma_unit_Modal_table', id,'stored_ma_unit_tbody_');
     ma_add_module_storage(id);
 }

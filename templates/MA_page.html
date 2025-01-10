@@ -348,15 +348,24 @@
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content">
           <div class="modal-header">
-            {# <h5 class="modal-title" id="exampleModalLabel">Склад</h5> #}
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item active"  onclick="breadcrumbs(event,'543');">Склад</li>
-                <li class="breadcrumb-item"  onclick="breadcrumbs(event,'544');"><a href="#">ЗИП</a></li>
-                <li class="breadcrumb-item"  onclick="breadcrumbs(event,'545');"><a href="#">Неисправные</a></li>
-              </ol>
-            </nav>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"  ></button>
+              <nav aria-label="breadcrumb" >
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item active" data-id = '543', data-name="Склад" onclick="breadcrumbs(event,'0','543');">Склад</li>
+                  <li class="breadcrumb-item" data-id = '544', data-name="ЗИП" onclick="breadcrumbs(event,'1','544');"><a href="#">ЗИП</a></li>
+                  <li class="breadcrumb-item" data-id = '545', data-name="Неисправные" onclick="breadcrumbs(event,'2','545');"><a href="#">Неисправные</a></li>
+                </ol>
+              </nav>
+              <div class="col"> 
+
+                 <div class="form" style="justify-items: center;">
+                  
+                  <input type="text" id="storage_serch" class="form-control form-input" style="width: 50%;" placeholder="Поиск..." onkeyup="storage_serch()">
+                  
+                </div> 
+                
+              </div>
+
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"  ></button>
           </div>
           <div class="modal-body">
             <form>
@@ -364,15 +373,7 @@
                     <h5 class="h5">Многопортовые устройства</h5>
                     <div class="row height d-flex justify-content-center align-items-center">
 
-              {# <div class="col-md-12"> #}
-
-                {# <div class="form">
-                  
-                  <input type="text" class="form-control form-input" placeholder="Поиск...">
-                  
-                </div> #}
-                
-              {# </div> #}
+              
               
             </div>
             
@@ -436,7 +437,7 @@
             </form>
           </div>
           <div class="modal-footer">
-              <button type="button" class="btn btn-primary"  onclick="storage_reset_tbody(this.id)" id="btn_to_add_new_ma_storage" data-toggle="tooltip" data-placement="top" title='Добавить новые устройства/модули на склад'>
+              <button type="button" class="btn btn-primary"  id="btn_to_add_new_ma_storage" data-toggle="tooltip" data-placement="top" title='Добавить новые устройства/модули на склад'>
                   <i class="bi bi-floppy"></i>
               </button>
 
@@ -534,11 +535,14 @@
                         act_br[i].innerHTML='<a href="#">'+act_br[i].textContent+'</a>'
                         act_br[i].classList.remove('active')
                     }
-                    act_br[0].classList.add('active');
-                    act_br[0].innerHTML = act_br[0].textContent
+                    let tb_n, tb_id
+                    localStorage.getItem('stor_brd_n')? tb_n = localStorage.getItem('stor_brd_n'):tb_n = '0'
+                    localStorage.getItem('stor_brd_id')? tb_id = localStorage.getItem('stor_brd_id'):tb_id ='543'
+                    act_br[tb_n].classList.add('active');
+                    act_br[tb_n].innerHTML = act_br[tb_n].textContent
                   document.getElementById("btn_to_add_new_ma_storage").setAttribute("class", "btn btn-primary");
-                  ma_unit_storage('ma_unit_Modal_table', '543','stored_ma_unit_tbody_');
-                  ma_add_module_storage('543');
+                  ma_unit_storage('ma_unit_Modal_table', tb_id,'stored_ma_unit_tbody_');
+                  ma_add_module_storage(tb_id);
                   
                 })
     </script>
