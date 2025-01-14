@@ -12,7 +12,7 @@ async function sostav_ma_unit(dataID){
     const tbody_mod = document.getElementById('new_MA_modules_tbody_id');
     while (tbody_mod.rows.length) {tbody_mod.deleteRow(0);}
     document.getElementById("btn_to_add_new_ma_modules").setAttribute("class", "btn btn-primary");   
-    const column_name_unit = ['type_equipment','inv_number','serial_number','note'];
+    const column_name_unit = ['type_equipment','inv_number','serial_number','MAC','note'];
     const column_name_modules = ['type','inv_number','serial_number','note'];
     if (Object.keys(data[1]).length > 0){
         for (let key in data[1]){
@@ -73,10 +73,12 @@ function create_tables(moduls, table_id, column_name, db_table, busy, tag){
     const tbody_current = document.getElementById(table_id);
     moduls.forEach(item => {
         const tr = document.createElement('tr');
+        
         for (let i = 0; i < column_name.length; i++) {
             const td = document.createElement('td');
-            td.setAttribute('width', '22.5%')
-            td.contentEditable = true;
+            let width = 100/(column_name).length
+            td.setAttribute('width', width+'%')
+            i>0?td.contentEditable = true:td.contentEditable = false;
             
             if (column_name[i] === 'inv_number'){
                 const a1 = document.createElement('a');
@@ -97,6 +99,17 @@ function create_tables(moduls, table_id, column_name, db_table, busy, tag){
         const i2 = document.createElement('i');
         const i3 = document.createElement('i');
         const div = document.createElement('div');
+        a1.appendChild(i1);
+        a2.appendChild(i2);
+        a3.appendChild(i3);
+        div.appendChild(a1);
+        div.appendChild(a3);
+        div.appendChild(a2);
+        td8.appendChild(div);
+        tr.appendChild(td8);
+        td8.setAttribute('style',"width:70px")
+        tbody_current.appendChild(tr);
+        let n_cells = tr.cells.length-1
         div.setAttribute('class','d-grid gap-1 d-md-flex');
         a1.setAttribute('id','btn_edit_ma_mod_'+item['id']);
         a1.setAttribute('class','btn btn-primary btn-sm');
@@ -112,7 +125,7 @@ function create_tables(moduls, table_id, column_name, db_table, busy, tag){
         a2.setAttribute('class','btn btn-primary btn-sm');
         a3.setAttribute('id','btn_send_ma_mod_to_storage_'+item['id']);
         a3.setAttribute('class','btn btn-primary btn-sm');
-        a1.onclick = function (){edit_row(db_table + '_edited', item['id'],'btn_edit_ma_mod_'+item['id'],table_id, this.closest("tr"), 4)};
+        a1.onclick = function (){edit_row(db_table + '_edited', item['id'],'btn_edit_ma_mod_'+item['id'],table_id, this.closest("tr"), n_cells)};
         a2.onclick = function (){
             console.log(this.closest(tag))
             delete_row(db_table, item['id'],'btn_del_ma_mod_'+item['id'],table_id, this.closest(tag))};
@@ -130,16 +143,7 @@ function create_tables(moduls, table_id, column_name, db_table, busy, tag){
         i1.setAttribute('class', "bi bi-pencil-square h7");
         i2.setAttribute('class', "bi bi-trash3 h7");
         i3.setAttribute('class', "bi bi-box-arrow-up-right h10");
-        a1.appendChild(i1);
-        a2.appendChild(i2);
-        a3.appendChild(i3);
-        div.appendChild(a1);
-        div.appendChild(a3);
-        div.appendChild(a2);
-        td8.appendChild(div);
-        tr.appendChild(td8);
-        td8.setAttribute('style',"width:70px")
-        tbody_current.appendChild(tr);
+        
     }) 
     tooltip_func(table_id)      
 }
@@ -147,7 +151,7 @@ function create_tables2(table_id, column_name, unit_id){
     const tbody_current = document.getElementById(table_id);       
     const tr = document.createElement('tr');
     const td = document.createElement('td');
-    td.setAttribute('colspan', '5')
+    td.setAttribute('colspan', '6')
     const tr_h = document.createElement('tr');
     const thead_n = document.createElement('thead');
     thead_n.appendChild(tr_h) 
@@ -170,7 +174,7 @@ async function ma_unit_storage(table_id, stor_id, tbody_ma_id){
     while (table_current.getElementsByTagName("tbody").length>0) {table_current.removeChild(table_current.getElementsByTagName("tbody")[0]);}
     const stor_ma_unit = await fetch_data(stor_id,'/get_data_from_db/Objects_ur_lica',"POST");
     console.log("🚀 ~ ma_unit_storage ~ stor_ma_unit:", stor_ma_unit)
-    const column_name = ['type_equipment','inv_number','serial_number','note'];
+    const column_name = ['type_equipment','inv_number','serial_number','MAC','note'];
     const column_name_mod = ['type','inv_number','serial_number','note'];
     document.getElementById('btn_to_add_new_ma_storage').onclick = function(){
         storage_reset_tbody(this.id, stor_id)

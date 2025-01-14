@@ -294,6 +294,7 @@
                       {# <th scope="col">Наименование</th> #}
                       <th scope="col">Инвентарный номер</th>
                       <th scope="col">Заводской номер</th>
+                      <th scope="col">MAC адрес</th>
                       <th scope="col">Примечание</th>
                         <th style="width:70px"></th>
                     </tr>
@@ -392,6 +393,7 @@
                       <th scope="col">Тип</th>
                       <th scope="col">Инвентарный номер</th>
                       <th scope="col">Заводской номер</th>
+                      <th scope="col">MAC адрес</th>
                       <th scope="col">Примечание</th>
                         <th style="width:70px"></th>
                     </tr>
@@ -664,6 +666,8 @@
                       <th  scope="col" style="width: 15px"></th>
                       <th  scope="col">Код</th>
                       <th  scope="col">Тип</th>
+                      <th  scope="col">Заводской номер</th>
+                      <th  scope="col">MAC адресс</th>
                       <th  scope="col">Организация</th>
                       <th   scope="col">Адрес</th>
                       <th   scope="col">IP</th>
@@ -682,6 +686,8 @@
                             <td style="width: 15px" data-id="{{ un.id }}"><input class="form-check-input" type="checkbox" value="" id="flexCheck_{{ un.id }}"></td>
                             <td style="width: 120px"><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-id ="{{ un.id }}" data-cod ="{{ un.cod_name }}"  >{{ un.cod_name }}</a></td>
                             <td style="width: 65px">{{ un.type_equipment }}</td>
+                            <td style="width: 65px">{{ un.serial_number }}</td>
+                            <td style="width: 65px">{{ un.MAC }}</td>
                             <td style="width: 150px">{{ un.organization }}</td>
                             <td>{{ un.address }}</td>
                             <td>{{ un.IP}}</td>

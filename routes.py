@@ -134,6 +134,8 @@ def get_data_for_jinja():
         if len(object[i].unit)>0:
             new_obj['type_equipment'] = object[i].unit[0].type_equipment
             new_obj['inv_number'] = object[i].unit[0].inv_number
+            new_obj['serial_number'] = object[i].unit[0].serial_number
+            new_obj['MAC'] = object[i].unit[0].MAC
         else:
             new_obj['type_equipment'] =''
             new_obj['inv_number'] = ''

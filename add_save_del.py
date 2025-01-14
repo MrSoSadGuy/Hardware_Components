@@ -62,8 +62,9 @@ def add_ma_unit_data(req_dict, name):
                         type_equipment=req_dict["0"].upper().replace(' ','').strip(),
                         type = type.id,
                         inv_number=req_dict["1"],
-                        serial_number=req_dict["2"],
-                        note=req_dict["3"],
+                        serial_number=req_dict["2"].upper(),
+                        MAC=req_dict["3"].upper(),
+                        note=req_dict["4"],
                         object_id=req_dict["add_p"],
                         creator=name)
         return add_data_to_db(ma_unit)
@@ -252,7 +253,8 @@ def save_ma_unit_data(req_dict, name):
             ma_unit.type_equipment = req_dict["0"]
             ma_unit.inv_number = req_dict["1"]
             ma_unit.serial_number = req_dict["2"]
-            ma_unit.note = req_dict["3"]
+            ma_unit.MAC = req_dict["3"]
+            ma_unit.note = req_dict["4"]
             ma_unit.editor = name
             ma_unit.last_date_edit = datetime.now()
         return save_data_to_db()
