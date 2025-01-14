@@ -64,3 +64,28 @@ function breadcrumbs(ev,tb_n,id){
     ma_add_module_storage(id);
 }
     
+function hide_colums_modal(){
+    let data = localStorage.getItem('hide-column').split(',')
+    let form = document.getElementById('hide_column_form')
+    let check = form.getElementsByTagName('input')
+    for (let i = 0; i < check.length; i++) {
+        data[parseInt(check[i].dataset.id)]==='true'? check[i].checked = true: check[i].checked = false
+    }
+    document.getElementById('button_hide_columns').addEventListener('click',()=>{
+        new_data =[]
+        for (let k = 0; k < check.length; k++) {
+            new_data[parseInt(check[k].dataset.id)] = check[k].checked     
+        }
+        localStorage.setItem('hide-column',new_data)
+        hide_colums()
+    })
+}
+function hide_colums() {
+    let data = localStorage.getItem('hide-column').split(',')
+    for (let i = 1; i < data.length; i++) {
+        let tds = document.querySelectorAll('.hide-column'+i)
+        for (let q = 0; q < tds.length; q++) {
+        data[i]==='true' ? tds[q].style.display = '': tds[q].style.display = 'none'
+            }
+    }
+}

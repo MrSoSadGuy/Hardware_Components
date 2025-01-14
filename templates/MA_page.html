@@ -31,6 +31,10 @@
         const table = document.getElementById('tbody_main_table')
         const tbodies = table.getElementsByTagName('tr');
         document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + tbodies.length ;
+        if(!localStorage.getItem('hide-column')){
+          localStorage.setItem('hide-column',[,true,true,true,true,true,true,true,true,true,true,true,true])
+        }
+        hide_colums()
         });
     </script>
 </head>
@@ -380,7 +384,7 @@
             
         
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button type="button" class="btn btn-primary btn-sm"   onclick="add_new_row('new_MA_unit_tbody_storage_id',4)" data-toggle="tooltip" data-placement="top" title='Добавить строку для нового устройства'>
+                        <button type="button" class="btn btn-primary btn-sm"   onclick="add_new_row('new_MA_unit_tbody_storage_id',5)" data-toggle="tooltip" data-placement="top" title='Добавить строку для нового устройства'>
                             <i class="bi bi-plus-lg"></i></button>
                         <button type="button" class="btn btn-primary btn-sm"  onclick="del_row('new_MA_unit_tbody_storage_id')" data-toggle="tooltip" data-placement="top" title='Удалить строку'>
                             <i class="bi bi-dash-lg"></i></button>
@@ -484,8 +488,107 @@
       </div>
       </div>
     </div>
+    <div class="modal fade" id="hide_colums" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable " role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" >Скрыть колонки</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+          </div>
+          <div class="modal-body">
+            <form id="hide_column_form">
+              <div class="row">
+                <div class="col">
+                  <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" data-id="1">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Код
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" data-id="2">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Тип устройства
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" data-id="3">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Заводской номер
+                  </label>
+                </div>
+                 <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" data-id="4">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    МАС адресс
+                  </label>
+                </div>
+                 <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" data-id="7">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    IP адрес
+                  </label>
+                </div>
+                 <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" data-id="8">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Инвентарный
+                  </label>
+                </div>
+                </div>
+                <div class="col">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" data-id="5">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Организация
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" data-id="6">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Адрес
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" data-id="9">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Наклодная
+                  </label>
+                </div>
+                 <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" data-id="10">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Дата установки
+                  </label>
+                </div>
+                 <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" data-id="11">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    ОРШ
+                  </label>
+                </div>
+                 <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" data-id="12">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Примечание
+                  </label>
+                </div>
+                </div>
+              </div>
+                
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="button_hide_columns" name="button_for_save_edit_row" data-toggle="tooltip" data-placement="top" title='Применить'>Применить</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_btn_id">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="text/javascript">
-                    
+                  $('#hide_colums').on('show.bs.modal', function (e) {
+                    hide_colums_modal()
+                  })   
                     
                   $('#inventModal').on('show.bs.modal', function (e) {
                   $(this).find('form').trigger('reset');
@@ -654,7 +757,11 @@
                                 <div class="row">
                                     <div class="col text-end" >
                                         <i id = 'number_of_records'> </i>
+                                        <a >
+                                          <img href=""  data-bs-toggle="modal" data-bs-target="#hide_colums" src = "/static/images/settings.svg"/>
+                                        </a>
                                     </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -663,19 +770,19 @@
                   <table class="table table-striped table-sm table-bordered table-sort table-hover" id="myTable">
                   <thead>
                     <tr>
-                      <th  scope="col" style="width: 15px"></th>
-                      <th  scope="col">Код</th>
-                      <th  scope="col">Тип</th>
-                      <th  scope="col">Заводской номер</th>
-                      <th  scope="col">MAC адресс</th>
-                      <th  scope="col">Организация</th>
-                      <th   scope="col">Адрес</th>
-                      <th   scope="col">IP</th>
-                      <th scope="col">Инвентарный</th>
-                      <th class="th.sm"  scope="col">Накладная</th>
-                      <th class="th.sm"  scope="col">Дата установки</th>
-                      <th class="th.sm" scope="col">ОРШ</th>
-                      <th class="th.sm"  scope="col">Примечание</th>
+                      <th scope="col" style="width: 15px"></th>
+                      <th class="hide-column1" scope="col">Код</th>
+                      <th class="hide-column2" scope="col">Тип</th>
+                      <th class="hide-column3" scope="col">Заводской номер</th>
+                      <th class="hide-column4" scope="col">MAC адресс</th>
+                      <th class="hide-column5" scope="col">Организация</th>
+                      <th  class="hide-column6" scope="col">Адрес</th>
+                      <th class="hide-column7"  scope="col">IP</th>
+                      <th class="hide-column8" scope="col">Инвентарный</th>
+                      <th  class="th.sm hide-column9"  scope="col">Накладная</th>
+                      <th  class="th.sm hide-column10"  scope="col">Дата установки</th>
+                      <th  class="th.sm hide-column11" scope="col">ОРШ</th>
+                      <th  class="th.sm hide-column12"  scope="col">Примечание</th>
                       <th class="th.sm" scope="col"></th>
                     </tr>
                   </thead>
@@ -684,18 +791,18 @@
                         {% if un.cod_name != 'СКЛАД' and un.cod_name != 'ЗИП' and un.cod_name != 'РЕМОНТ' %}
                           <tr bgcolor = "{{ un.color }}" >
                             <td style="width: 15px" data-id="{{ un.id }}"><input class="form-check-input" type="checkbox" value="" id="flexCheck_{{ un.id }}"></td>
-                            <td style="width: 120px"><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-id ="{{ un.id }}" data-cod ="{{ un.cod_name }}"  >{{ un.cod_name }}</a></td>
-                            <td style="width: 65px">{{ un.type_equipment }}</td>
-                            <td style="width: 65px">{{ un.serial_number }}</td>
-                            <td style="width: 65px">{{ un.MAC }}</td>
-                            <td style="width: 150px">{{ un.organization }}</td>
-                            <td>{{ un.address }}</td>
-                            <td>{{ un.IP}}</td>
-                            <td style="width: 100px" ><a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-inv = "{{ un.inv_number }}" >{{ un.inv_number }}</a></td>
-                            <td>{{ un.naklodnaja }}</td>
-                            <td>{{ un.install_date }}</td>
-                            <td>{{ un.ORSH }}</td>
-                            <td style="width:70px"><div class="clip">{{ un.note }}</div></td>
+                            <td style="width: 120px" class="hide-column1"><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-id ="{{ un.id }}" data-cod ="{{ un.cod_name }}"  >{{ un.cod_name }}</a></td>
+                            <td style="width: 65px" class="hide-column2">{{ un.type_equipment }}</td>
+                            <td style="width: 65px" class="hide-column3">{{ un.serial_number }}</td>
+                            <td style="width: 65px" class="hide-column4">{{ un.MAC }}</td>
+                            <td style="width: 150px" class="hide-column5">{{ un.organization }}</td>
+                            <td class="hide-column6">{{ un.address }}</td>
+                            <td class="hide-column7">{{ un.IP}}</td>
+                            <td class="hide-column8" style="width: 100px" ><a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-inv = "{{ un.inv_number }}" >{{ un.inv_number }}</a></td>
+                            <td class="hide-column9">{{ un.naklodnaja }}</td>
+                            <td class="hide-column10">{{ un.install_date }}</td>
+                            <td class="hide-column11">{{ un.ORSH }}</td>
+                            <td class="hide-column12" style="width:70px"><div class="clip">{{ un.note }}</div></td>
                             <td style="width: 15px"><a href="" data-bs-toggle="modal" data-bs-target="#EditModal"  data-id = "{{ un.id }}" >
                                 <i class="bi bi-pencil-square h5"></i>
                             </a></td>

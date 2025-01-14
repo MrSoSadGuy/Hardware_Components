@@ -46,20 +46,23 @@ function myFunction() {
             var flag = [];
             list_of_words.forEach(word =>{
                 for(var j = 0; j < tds.length; j++){
-                var td = tds[j];
-                if (td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
-                flag.push(true);
-                return;
-                }
+                    var td = tds[j];
+                    console.log(td.style.display)
+                    if (td.style.display === 'none') {continue;}
+                    if (td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
+                    flag.push(true);
+                    return;
+                    }
             }})
             flag.length >= list_of_words.length ? tr[i].removeAttribute("style"):tr[i].style.display = "none";
-           }
+            }
         // поиск ИЛИ
         if (rb2){
             var flag = false;
             list_of_words.forEach(word =>{
                 for(var j = 0; j < tds.length; j++){
                     var td = tds[j];
+                    if (td.style.display === 'none') {continue;}
                     if (td.textContent.toUpperCase().indexOf(word.trim()) > -1) {
                     flag = true;
                     return;
