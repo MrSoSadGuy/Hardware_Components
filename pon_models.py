@@ -14,7 +14,7 @@ class Uzel_dostupa(db.Model):
     number_ud: str = db.Column(db.String(10), nullable=False)
     Adress: str = db.Column(db.String(100), nullable=False)
     name: str = db.Column(db.String(20), nullable=False)
-    cod_name_of_olt = db.relationship('Data_for_KTS', backref='Uzel_dostupa', lazy='dynamic')
+    cod_name_of_olt = db.relationship('List_of_olt', backref='Uzel_dostupa', lazy='dynamic')
 
     def __repr__(self):
         return '<Uzel_dostupa %r>' % self.id
@@ -24,19 +24,20 @@ class Uzel_dostupa(db.Model):
 class Data_for_KTS (db.Model, UserMixin):
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     UD: str = db.Column(db.String(200), nullable=True)
-    uzel_id: int = db.Column(db.Integer, db.ForeignKey('Uzel_dostupa.id'))
+    uzel_id: int = db.Column(db.Integer, nullable=True)
     inv_number: str = db.Column(db.String(100), nullable=True)
     IP: str = db.Column(db.String(20), nullable=True)
     Serial: str = db.Column(db.String(100), nullable=True)
     OLT: str = db.Column(db.String(100), nullable=True)
     full_name: str = db.Column(db.String(200), nullable=True)
-    cod_name: str = db.Column(db.String(50), nullable=True)
+    # cod_name: str = db.Column(db.String(50), nullable=True)
+    cod_name: str = db.Column(db.String(20), db.ForeignKey('List_of_olt.cod_name_of_olt'))
     zavod: str = db.Column(db.String(50), nullable=True)
     date_of_production: str = db.Column(db.String(20), nullable=True)
     date_of_entry: str = db.Column(db.String(20), nullable=True)
     mesto: str = db.Column(db.String(20), nullable=True)
     date = db.Column(db.DateTime, default=datetime.utcnow)
-    list_of_olt = db.relationship('List_of_olt', backref='Data_for_KTS', lazy='dynamic')
+    # list_of_olt = db.relationship('List_of_olt', backref='Data_for_KTS', lazy='dynamic')
 
     def __repr__(self):
         return '<Data_for_KTS %r>' % self.id
@@ -46,7 +47,10 @@ class Data_for_KTS (db.Model, UserMixin):
 class List_of_olt(db.Model):
     __tablename__ = "List_of_olt"
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    cod_name_of_olt: str = db.Column(db.String(20), db.ForeignKey('data_for_kts.cod_name'))
+    # cod_name_of_olt: str = db.Column(db.String(20), db.ForeignKey('data_for_kts.cod_name'))
+    uzel_id: int = db.Column(db.Integer, db.ForeignKey('Uzel_dostupa.id'))
+    cod_name_of_olt: str = db.Column(db.String(50), nullable=True)
+    kts = db.relationship('Data_for_KTS',uselist=False, backref='List_of_olt')
     type_of_olt: int = db.Column(db.Integer, db.ForeignKey('Type_of_olt.id'))
     name: str = db.Column(db.String(100), nullable=True)
     inv_number: str = db.Column(db.String(20), nullable=False)

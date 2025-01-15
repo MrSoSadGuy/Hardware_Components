@@ -78,9 +78,11 @@ function serch_or(list_of_words, tds){
 
 async function save_main_table_in_file(){
     let list_data =[];
+    
     [].forEach.call(document.getElementsByClassName('for_file_download'), function (row) {
         list_data.push([row.dataset.id, row.dataset.db])
     })
+    console.log("🚀 ~ save_main_table_in_file ~ list_data:", list_data)
     const data = await fetch_data_2(list_data, "/main_table_data", "POST")
     if (data.ok){
         const link = document.createElement('a');

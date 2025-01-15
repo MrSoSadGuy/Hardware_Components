@@ -175,6 +175,9 @@ def get_data_from_db(db):
     if db == 'kts_data':
         kts = Data_for_KTS.query.filter_by(cod_name=json.loads(req).upper()).first()
         return jsonify(kts)
+    if db == 'kts_data_new':
+        
+        return get_kts_data(json.loads(req).upper())
     if db == 'ma_add_modules':
         modules = ma_add_modules.query.filter_by(cod_name=json.loads(req).upper()).all()
         return jsonify(modules)
@@ -221,6 +224,25 @@ def get_data_from_db(db):
     else:
         return None
 
+
+def get_kts_data(cod):
+    olt = List_of_olt.query.filter_by(cod_name_of_olt=cod).first()
+    if olt.kts:
+        data={'Serial': olt.serial_number,
+                'inv_number': olt.inv_number,
+                'UD': olt.kts.UD,
+                'IP':olt.kts.IP,
+                'OLT':olt.kts.OLT,
+                'date_of_production':olt.kts.date_of_production,
+                'date_of_entry':olt.kts.date_of_entry,
+                'full_name':olt.kts.full_name,
+                'mesto':olt.kts.mesto,
+                'zavod':olt.kts.zavod 
+            }
+    else:
+        data={'Serial': olt.serial_number,
+                'inv_number': olt.inv_number}
+    return data
 
 def get_data_for_move(req):
     mod = List_of_modules.query.get_or_404(req)
@@ -478,27 +500,29 @@ def main_table_data():
             if(row[1] == 'List_of_olt'):
                 print(row[0])
                 olt = List_of_olt.query.get_or_404(str(row[0]))
-                N_ud = olt.Data_for_KTS.Uzel_dostupa.name
-                adr_ud = olt.Data_for_KTS.Uzel_dostupa.Adress
+                N_ud = olt.Uzel_dostupa.number_ud
+                adr_ud = olt.Uzel_dostupa.Adress 
                 cod = olt.cod_name_of_olt
-                name = olt.name
+                if  'СТЕЛАЖ' not in olt.name:
+                    name = olt.name 
+                else: continue
                 inv_number = olt.inv_number
                 ser_num = olt.serial_number
                 p_mesto = ''
                 note = olt.note
-                r_mesto = olt.row_box_shelf
+                r_mesto = olt.kts.mesto if olt.kts else ""
             if(row[1] == 'List_of_modules'):
                 print(row[0])
                 mod = List_of_modules.query.get_or_404(str(row[0]))
-                N_ud = mod.List_of_olt.Data_for_KTS.Uzel_dostupa.name
-                adr_ud = mod.List_of_olt.Data_for_KTS.Uzel_dostupa.Adress
+                N_ud = mod.List_of_olt.Uzel_dostupa.number_ud
+                adr_ud = mod.List_of_olt.Uzel_dostupa.Adress
                 cod = mod.List_of_olt.cod_name_of_olt
                 name = mod.name_of_modules
                 inv_number = mod.inv_number
                 ser_num = mod.serial_number
-                p_mesto = mod.Olt_sockets.socket
+                p_mesto = mod.Olt_sockets.socket if mod.Olt_sockets else ""
                 note = mod.note
-                r_mesto = mod.List_of_olt.row_box_shelf
+                r_mesto = mod.List_of_olt.kts.mesto if mod.List_of_olt.kts else ""
             sheet["B" + str(start_row)] = N_ud + ' ' + adr_ud
             sheet["C" + str(start_row)] = cod
             sheet["D" + str(start_row)] = name
@@ -537,18 +561,19 @@ def create_file_sostav(name_PON):
 
 
 def create_file_KTS(name_PON):
-    kts = Data_for_KTS.query.filter_by(cod_name=name_PON).first()
+    kts = get_kts_data(name_PON)
+    # kts = Data_for_KTS.query.filter_by(cod_name=name_PON).first()
     user = Users.query.get(current_user.get_id())
     book = openpyxl.load_workbook('files for download\КТС_шаблон.xlsx')
     sheet = book.active
-    sheet['A3'] = kts.full_name
-    sheet['A4'] = kts.cod_name
-    sheet['A8'] = kts.UD + ", " + kts.mesto + ", ip: " + kts.IP
-    sheet['E15'] = kts.zavod
-    sheet['L18'] = kts.date_of_production
-    sheet['G21'] = kts.Serial
-    sheet['L24'] = kts.inv_number
-    sheet['L27'] = kts.date_of_entry
+    sheet['A3'] = kts['full_name']
+    sheet['A4'] = name_PON
+    sheet['A8'] = kts['UD'] + ", " + kts['mesto'] + ", ip: " + kts['IP']
+    sheet['E15'] = kts['zavod']
+    sheet['L18'] = kts['date_of_production']
+    sheet['G21'] = kts['Serial']
+    sheet['L24'] = kts['inv_number']
+    sheet['L27'] = kts['date_of_entry']
     sheet['L30'] = str(datetime.now().strftime("%d/%m/%Y"))
     sheet['J39'] = user.FIO
     book.save("files for download\КТС.xlsx")

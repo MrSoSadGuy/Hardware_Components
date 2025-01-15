@@ -22,19 +22,19 @@ async function to_fill_sostav_modal(p_name, ud) {
             tbody.appendChild(tr);
         }
     }
-    const data_for_kts = await fetch_data_2(p_name,'/get_data_from_db/kts_data',"POST");
+    const data_for_kts = await fetch_data_2(p_name,'/get_data_from_db/kts_data_new',"POST");
     if(data_for_kts.ok){
         let kts_data = await data_for_kts.json();
-        document.getElementById("Ud_id").value = kts_data['UD'];
-        document.getElementById("ip_id").value = kts_data['IP'];
-        document.getElementById("olt_id").value = kts_data['OLT'];
-        document.getElementById("inv_id").value = kts_data['inv_number'];
-        document.getElementById("serial_id").value = kts_data['Serial'];
-        document.getElementById("date_pr_id").value = kts_data['date_of_production'];
-        document.getElementById("date_exp_id").value = kts_data['date_of_entry'];
-        document.getElementById("full_name_id").value = kts_data['full_name'];
-        document.getElementById("mesto_id").value = kts_data['mesto'];
-        document.getElementById("zavod_id").value = kts_data['zavod'];
+        document.getElementById("Ud_id").value = kts_data['UD'] ? kts_data['UD']: '';
+        document.getElementById("ip_id").value = kts_data['IP'] ? kts_data['IP']: '';
+        document.getElementById("olt_id").value = kts_data['OLT'] ? kts_data['OLT']: '';
+        document.getElementById("inv_id").value = kts_data['inv_number'] ? kts_data['inv_number']: '';
+        document.getElementById("serial_id").value = kts_data['Serial'] ?kts_data['Serial']: '';
+        document.getElementById("date_pr_id").value = kts_data['date_of_production'] ?kts_data['date_of_production']: '';
+        document.getElementById("date_exp_id").value = kts_data['date_of_entry'] ?kts_data['date_of_entry']: '';
+        document.getElementById("full_name_id").value = kts_data['full_name'] ?kts_data['full_name']: '';
+        document.getElementById("mesto_id").value = kts_data['mesto'] ?kts_data['mesto']: '';
+        document.getElementById("zavod_id").value = kts_data['zavod'] ? kts_data['zavod']: '';
     }
 }
 async function to_fill_ud_edit_modal(id, row) {
@@ -55,21 +55,21 @@ async function to_fill_ud_edit_modal(id, row) {
 async function to_fill_edit_modal(id, db, row) {
     document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
     document.getElementById('button_for_delete_row').setAttribute("class", "btn btn-primary");
-    if (document.getElementById("div_cod")){delete_inputs_from_edit_modal()}
+    // if (document.getElementById("div_cod")){delete_inputs_from_edit_modal()}
     const data = await fetch_data_2(id,'/get_data_from_db/'+db,"POST");
     if(data.ok){
         let db_data = await data.json();
         console.log(db_data);
-        if(db!=="olt_list"){
-            document.getElementById("edit_Name_id").value = db_data.name_of_modules;
-        }
-        else {
-            add_inputs_to_edit_modal()
-            document.getElementById("edit_Name_id").value = db_data.name;
-            document.getElementById("edit_Cod_id").value = db_data.cod_name_of_olt;
-            document.getElementById("edit_Riad_id").value = db_data.row_box_shelf;
-            document.getElementById("edit_IP_id").value = db_data.IP;
-        }
+        // if(db!=="olt_list"){
+        //     document.getElementById("edit_Name_id").value = db_data.name_of_modules;
+        // }
+        // else {
+        //     add_inputs_to_edit_modal()
+        //     document.getElementById("edit_Name_id").value = db_data.name;
+        //     document.getElementById("edit_Cod_id").value = db_data.cod_name_of_olt;
+        //     document.getElementById("edit_Riad_id").value = db_data.row_box_shelf;
+        //     document.getElementById("edit_IP_id").value = db_data.IP;
+        // }
         document.getElementById("edit_Inv_id").value = db_data.inv_number;
         document.getElementById("edit_Serial_id").value = db_data.serial_number;
         document.getElementById("unit_note_id").value = db_data.note;
@@ -80,43 +80,43 @@ async function to_fill_edit_modal(id, db, row) {
 }
 
 
-function add_inputs_to_edit_modal(){
-    let divF = document.getElementById("first_row")
-    let divS = document.getElementById("second_row")
-    let div1 = document.createElement("div");
-    div1.setAttribute('class', 'col-sm');
-    div1.setAttribute('id', 'div_cod');
-    div1.innerHTML = "  <div class=\"mb-3\">\n" +
-        "                   <label class=\"col-form-label\">Код:</label>\n" +
-        "                   <input type=\"text\"  class=\"form-control\" id=\"edit_Cod_id\">\n" +
-        "               </div>" 
-    // divF.appendChild(div1);
-    let div2 = document.createElement("div");
-    div2.setAttribute('class', 'col-sm');
-    div2.setAttribute('id', 'div_row');
-    div2.innerHTML = " <div class=\"mb-3\">\n" +
-        "                   <label class=\"col-form-label\">Ряд\Шкаф\Полка:</label>\n" +
-        "                   <input type=\"text\"  class=\"form-control\" id=\"edit_Riad_id\">\n" +
-        "               </div>"
-    let div3 = document.createElement("div");
-    div3.setAttribute('class', 'col-sm');
-    div3.setAttribute('class', 'col-sm');
-    div3.setAttribute('id', 'div_ip');
-    div3.innerHTML =  " <div class=\"mb-3\">\n" +
-        "                   <label class=\"col-form-label\">IP:</label>\n" +
-        "                   <input type=\"text\"  class=\"form-control\" id=\"edit_IP_id\">\n" +
-        "               </div>"
-    divF.appendChild(div1);
-    divF.appendChild(div3);
-    divS.appendChild(div2);
-}
+// function add_inputs_to_edit_modal(){
+//     let divF = document.getElementById("first_row")
+//     let divS = document.getElementById("second_row")
+//     let div1 = document.createElement("div");
+//     div1.setAttribute('class', 'col-sm');
+//     div1.setAttribute('id', 'div_cod');
+//     div1.innerHTML = "  <div class=\"mb-3\">\n" +
+//         "                   <label class=\"col-form-label\">Код:</label>\n" +
+//         "                   <input type=\"text\"  class=\"form-control\" id=\"edit_Cod_id\">\n" +
+//         "               </div>" 
+//     // divF.appendChild(div1);
+//     let div2 = document.createElement("div");
+//     div2.setAttribute('class', 'col-sm');
+//     div2.setAttribute('id', 'div_row');
+//     div2.innerHTML = " <div class=\"mb-3\">\n" +
+//         "                   <label class=\"col-form-label\">Ряд\Шкаф\Полка:</label>\n" +
+//         "                   <input type=\"text\"  class=\"form-control\" id=\"edit_Riad_id\">\n" +
+//         "               </div>"
+//     let div3 = document.createElement("div");
+//     div3.setAttribute('class', 'col-sm');
+//     div3.setAttribute('class', 'col-sm');
+//     div3.setAttribute('id', 'div_ip');
+//     div3.innerHTML =  " <div class=\"mb-3\">\n" +
+//         "                   <label class=\"col-form-label\">IP:</label>\n" +
+//         "                   <input type=\"text\"  class=\"form-control\" id=\"edit_IP_id\">\n" +
+//         "               </div>"
+//     divF.appendChild(div1);
+//     divF.appendChild(div3);
+//     divS.appendChild(div2);
+// }
 
 
-function delete_inputs_from_edit_modal(){
-    document.getElementById("div_cod").remove();
-    document.getElementById("div_row").remove();
-    document.getElementById("div_ip").remove();
-}
+// function delete_inputs_from_edit_modal(){
+//     document.getElementById("div_cod").remove();
+//     document.getElementById("div_row").remove();
+//     document.getElementById("div_ip").remove();
+// }
 async function save_edit_ud_data(db, id ,row_index) {
     var edited_row = {
         id: id,
@@ -147,11 +147,11 @@ async function save_edit_data_pon(db, id ,row_index) {
         serial: document.getElementById("edit_Serial_id").value,
         note: document.getElementById("unit_note_id").value,
     }
-    if(db==="olt_list"){
-        edited_row['riad'] = document.getElementById("edit_Riad_id").value
-        edited_row['cod_name_of_olt'] = document.getElementById("edit_Cod_id").value
-        edited_row['IP'] = document.getElementById("edit_IP_id").value
-    }
+    // if(db==="olt_list"){
+    //     edited_row['riad'] = document.getElementById("edit_Riad_id").value
+    //     edited_row['cod_name_of_olt'] = document.getElementById("edit_Cod_id").value
+    //     edited_row['IP'] = document.getElementById("edit_IP_id").value
+    // }
     if (confirm("Сохранить изменнения?")){
         const data = await fetch_data_2(edited_row,'/save_data/'+db, 'POST');
         console.log(data.ok);
@@ -220,6 +220,9 @@ async function move_obj_modal(id, db){
     slct_unit.add(opt_slct_unit)
     const data = await fetch_data_2(id,'/get_data_from_db/'+db+'_move',"POST")
     let list_of_data = await data.json();
+
+
+
     if (db === "list_of_modules"){
         Object.keys(list_of_data).forEach(item => {
             const opt = document.createElement('option')
@@ -327,4 +330,24 @@ async function select_units(id, slct_unit) {
             slct_unit.add(opt)
         })
     
+}
+
+async function move_olt_modal(id, db) {
+    document.getElementById("apply_move_olt_btn").setAttribute("class", "btn btn-primary");
+    const slct_ud = document.getElementById('select_ud')
+    while(slct_ud.length>0){slct_ud.remove(0)}
+    const opt_slct_ud = document.createElement('option')
+    opt_slct_ud.selected
+    opt_slct_ud.text = 'Выберите обьект'
+    opt_slct_ud.value = '0'
+    slct_ud.add(opt_slct_ud)
+    const data = await fetch_data_2(id,'/get_data_from_db/'+db,"POST")
+    let list_of_data = await data.json();
+    console.log("🚀 ~ move_olt_modal ~ list_of_data:", list_of_data)
+    Object.keys(list_of_data).forEach(item => {
+        const opt = document.createElement('option')
+        opt.value = item['id']
+        opt.text = item['name'] + " " + item["Adress"]
+        slct_ud.add(opt)
+    })
 }
