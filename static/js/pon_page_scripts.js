@@ -254,13 +254,14 @@ async function move_obj_modal(id, db){
     document.getElementById('apply_move_modul_btn').onclick = function (){
         let socket = slct_sock.options[slct_sock.selectedIndex].value
         console.log("🚀 ~ move_obj_modal ~ socket:", socket)
-        if (target_val !== '0' && socket !== '0'){apply_move_modul(id, target, socket, db,  this)}
+        if (target_val !== '0' && socket !== '0'){
+            var data = {id: id, target : target, socket:socket}
+            console.log("🚀 ~ apply_move_modul ~ edit_data:", edit_data)
+            apply_move_modul(data, db,  this)}
         else{alert('Выберите объект и плата-место')}
         
 }}
-async function apply_move_modul(id, target, socket, db,  btn){
-    var edit_data = {id: id, target : target, socket:socket}           
-        console.log("🚀 ~ apply_move_modul ~ edit_data:", edit_data)
+async function apply_move_modul(edit_data, db, btn){
     if (confirm("Переместить устройство?")){
         const data = await fetch_data_2(edit_data, '/save_data/'+ db,'POST');
         if(data.ok){
@@ -276,46 +277,46 @@ async function apply_move_modul(id, target, socket, db,  btn){
     }
 }
 
-async function add_new_modal() {
-    const slct_ud = document.getElementById('select_ud')
-    const slct_unit = document.getElementById('select_unit')
-    while(slct_ud.length>0){slct_ud.remove(0)}
-    const opt_slct_ud = document.createElement('option')
-    opt_slct_ud.selected
-    opt_slct_ud.text = 'Выберите обьект'
-    opt_slct_ud.value = 0
-    slct_ud.add(opt_slct_ud)
-    const data = await fetch_data_2("all",'/get_data_from_db/Uzel_dostupa_all',"POST")
-    let list_of_data = await data.json();
-    
-    list_of_data.forEach(item => {
-        console.log("🚀 ~ Object.keys ~ item:", item)
-        const opt = document.createElement('option')
-        opt.value = item['id']
-        opt.text = item['name'] + ' ' + item['Adress']
-        slct_ud.add(opt)
-    })
-    const opt_new = document.createElement('option')
-    opt_new.value = "new"
-    opt_new.text = "Добавить новый"
-    slct_ud.add(opt_new)
-    slct_ud.addEventListener("change", function() {
-        while(slct_unit.length>0){slct_unit.remove(0)}
-        const opt_slct_unit = document.createElement('option')
-        opt_slct_unit.selected
-        opt_slct_unit.text = 'Выберите место'
-        opt_slct_unit.value = '0'
-        slct_unit.add(opt_slct_unit)
-        if(this.options[this.selectedIndex].value === '0'){
-            slct_unit.disabled = true
-        }
-        if (this.options[this.selectedIndex].value === 'new') {
-            create_new_ud()
-        } else {
-            select_units(this.options[this.selectedIndex].value, slct_unit)
-        }  
-    })
-}
+// async function add_new_modal() {
+//     const slct_ud = document.getElementById('select_ud')
+//     const slct_unit = document.getElementById('select_unit')
+//     while(slct_ud.length>0){slct_ud.remove(0)}
+//     const opt_slct_ud = document.createElement('option')
+//     opt_slct_ud.selected
+//     opt_slct_ud.text = 'Выберите обьект'
+//     opt_slct_ud.value = 0
+//     slct_ud.add(opt_slct_ud)
+//     const data = await fetch_data_2("all",'/get_data_from_db/Uzel_dostupa_all',"POST")
+//     let list_of_data = await data.json();
+//
+//     list_of_data.forEach(item => {
+//         console.log("🚀 ~ Object.keys ~ item:", item)
+//         const opt = document.createElement('option')
+//         opt.value = item['id']
+//         opt.text = item['name'] + ' ' + item['Adress']
+//         slct_ud.add(opt)
+//     })
+//     const opt_new = document.createElement('option')
+//     opt_new.value = "new"
+//     opt_new.text = "Добавить новый"
+//     slct_ud.add(opt_new)
+//     slct_ud.addEventListener("change", function() {
+//         while(slct_unit.length>0){slct_unit.remove(0)}
+//         const opt_slct_unit = document.createElement('option')
+//         opt_slct_unit.selected
+//         opt_slct_unit.text = 'Выберите место'
+//         opt_slct_unit.value = '0'
+//         slct_unit.add(opt_slct_unit)
+//         if(this.options[this.selectedIndex].value === '0'){
+//             slct_unit.disabled = true
+//         }
+//         if (this.options[this.selectedIndex].value === 'new') {
+//             create_new_ud()
+//         } else {
+//             select_units(this.options[this.selectedIndex].value, slct_unit)
+//         }
+//     })
+// }
 function create_new_ud(){}
 async function select_units(id, slct_unit) {
     slct_unit.disabled = false
@@ -333,7 +334,12 @@ async function select_units(id, slct_unit) {
 }
 
 async function move_olt_modal(id, db) {
-    document.getElementById("apply_move_olt_btn").setAttribute("class", "btn btn-primary");
+    let appl_btn = document.getElementById("apply_move_olt_btn")
+    let cod = document.getElementById("cod_to_mv")
+    let IP = document.getElementById("new_IP")
+    let mesto  = document.getElementById("new_mesto")
+    appl_btn.setAttribute("class", "btn btn-primary");
+    appl_btn.disabled = true;
     const slct_ud = document.getElementById('select_ud')
     while(slct_ud.length>0){slct_ud.remove(0)}
     const opt_slct_ud = document.createElement('option')
@@ -341,13 +347,42 @@ async function move_olt_modal(id, db) {
     opt_slct_ud.text = 'Выберите обьект'
     opt_slct_ud.value = '0'
     slct_ud.add(opt_slct_ud)
-    const data = await fetch_data_2(id,'/get_data_from_db/'+db,"POST")
-    let list_of_data = await data.json();
-    console.log("🚀 ~ move_olt_modal ~ list_of_data:", list_of_data)
-    Object.keys(list_of_data).forEach(item => {
+    const ud_data = await fetch_data_2("all",'/get_data_from_db/Uzel_dostupa_all',"POST")
+    const olt_data = await fetch_data_2(id,'/get_data_from_db/olt_data_2',"POST")
+    let list_of_data = await ud_data.json();
+    let olt = await olt_data.json();
+    list_of_data.forEach(item => {
         const opt = document.createElement('option')
         opt.value = item['id']
-        opt.text = item['name'] + " " + item["Adress"]
+        opt.text = item['name'] + ' ' + item['Adress']
+        opt.setAttribute('data-num', item['number_ud']);
+        opt.setAttribute('data-cod', item['cod_ud']);
         slct_ud.add(opt)
     })
+    slct_ud.addEventListener("change", function() {
+        if ((this.options[this.selectedIndex].value !== '14') && (this.options[this.selectedIndex].value !== '13')){
+            cod.value = olt[1]['start']+ this.options[this.selectedIndex].dataset.num + '-'
+                + olt[1]['midl'] + this.options[this.selectedIndex].dataset.cod + olt[1]['end']+ '**'
+            IP.value = '192.168.*.*'
+            appl_btn.disabled = false;
+        }
+        else {cod.value = 'Устройство - ' +olt[1]['type']+' - '+ olt[0]['id']
+            IP.value = '-'
+            mesto.value = '-'
+            appl_btn.disabled = false;
+        }
+        if (this.options[this.selectedIndex].value === '0'){
+            cod.value=""
+            IP.value=""
+            mesto.value=""
+            appl_btn.disabled = true;
+        }
+    })
+    appl_btn.addEventListener("click", function() {
+        var data = {id: id, uzel_id : slct_ud.value,
+            cod_name_of_olt:cod.value, IP:IP.value, mesto:mesto.value}
+        console.log("🚀 ~ apply_move_modul ~ edit_data:", data)
+        apply_move_modul(data, 'olt_list', this)
+    })
 }
+async function move_olt_olt(data, ) {}

@@ -169,14 +169,13 @@ def get_data_from_db(db):
     if db == 'list_of_modules':
         modules = List_of_modules.query.get_or_404(int(json.loads(req)))
         return jsonify(modules)
-    if db == 'olt_list':
+    if db == 'olt_data_2':
         olt = List_of_olt.query.get_or_404(int(json.loads(req)))
-        return jsonify(olt)
+        return jsonify(olt, olt.Type_of_olt)
     if db == 'kts_data':
         kts = Data_for_KTS.query.filter_by(cod_name=json.loads(req).upper()).first()
         return jsonify(kts)
     if db == 'kts_data_new':
-        
         return get_kts_data(json.loads(req).upper())
     if db == 'ma_add_modules':
         modules = ma_add_modules.query.filter_by(cod_name=json.loads(req).upper()).all()
@@ -223,6 +222,11 @@ def get_data_from_db(db):
         return jsonify(obj,units_list,modules_list)
     else:
         return None
+
+
+# def get_olt_data(id):
+#     olt = List_of_olt.query.get_or_404(id)
+#     data={}
 
 
 def get_kts_data(cod):
@@ -376,41 +380,12 @@ def save_data(db_name):
         'Objects_ur_lica_edited': save_object_for_MA,
         'list_of_modules': save_pon_modules,
         'olt_list': save_pon_olt_data,
+        'olt_data_2': save_pon_olt_data,
         'Uzel_dostupa': save_ud_data
     }
     if db_name in db_req_lst:
         return db_req_lst.get(db_name)(req_dict, user.FIO)
-    # if db_name == 'KTS':
-    #     return save_kts_data(req_dict, user.FIO)
-    # if db_name == 'sostav':
-    #     return save_sostav_data(req_dict, user.FIO)
-    # if db_name == 'Buhuchet':
-    #     return save_buhuchet_data(req_dict, user.FIO)
-    # if db_name == 'ma_add_modules_edited':
-    #     return save_ma_add_modules(req_dict, user.FIO)
-    # if db_name == 'MA_Units_edited':
-    #     return save_ma_unit_data(req_dict, user.FIO)
-    # if db_name == 'Unit':
-    #     return add_new_unit(req_dict, user.FIO)
-    # if db_name == 'MA_Unit':
-    #     return add_ma_unit_data(req_dict, user.FIO)
-    # if db_name == 'ma_add_modules':
-    #     return add_ma_add_modules(req_dict, user.FIO)
-    # if db_name == 'Object_ur_lica':
-    #     return add_object_for_MA(req_dict, user.FIO)
-    # if db_name == 'Objects_ur_lica_edited':
-    #     return save_object_for_MA(req_dict, user.FIO)
-    # if db_name == 'list_of_modules':
-    #     return save_pon_modules(req_dict, user.FIO)
-    # if db_name == 'olt_list':
-    #     return save_pon_olt_data(req_dict, user.FIO)
-    # if db_name == 'Uzel_dostupa':
-    #     return save_ud_data(req_dict)
-   
-    
 
-    
-    
 
 @app.route('/download/<file>/<name_PON>', methods=['GET', 'POST'])
 @login_required

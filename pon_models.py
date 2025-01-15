@@ -73,6 +73,9 @@ class Type_of_olt(db.Model):
     __tablename__ = "Type_of_olt"
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     type: str = db.Column(db.String(50), nullable=False, unique=True)
+    end: str = db.Column(db.String(5), nullable=False, unique=True)
+    midl: str = db.Column(db.String(5), nullable=False, unique=True)
+    start: str = db.Column(db.String(10), nullable=False, unique=True)
     list_of_olt = db.relationship('List_of_olt', backref='Type_of_olt', lazy='dynamic')
     type_of_modules = db.relationship('Type_of_modules', backref='Type_of_olt', lazy='dynamic')
     olt_sockets = db.relationship('Olt_sockets', backref='Type_of_olt', lazy='dynamic')

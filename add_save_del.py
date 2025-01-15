@@ -198,17 +198,20 @@ def save_pon_modules(req_dict, name):
 
 
 def save_pon_olt_data(req_dict, name):
+    print(req_dict)
     olt = List_of_olt.query.get_or_404(int(req_dict["id"]))
     if request.method == 'POST':
-        olt.cod_name_of_olt = req_dict["cod_name_of_olt"]
-        olt.name = req_dict["name"]
-        olt.serial_number = req_dict["serial"]
-        olt.note = req_dict["note"]
-        olt.inv_number = req_dict["inv_number"]
-        olt.IP = req_dict["IP"]
-        olt.row_box_shelf = req_dict["riad"]
+        olt.cod_name_of_olt = req_dict["cod_name_of_olt"] if req_dict["cod_name_of_olt"] else olt.cod_name_of_olt
+        olt.name = req_dict["name"] if req_dict["name"] else olt.name
+        olt.serial_number = req_dict["serial"] if req_dict["serial"] else olt.serial_number
+        olt.note = req_dict["note"] if req_dict["note"] else olt.note
+        olt.inv_number = req_dict["inv_number"] if req_dict["inv_number"] else olt.inv_number
+        olt.kts.IP = req_dict["IP"] if req_dict["IP"] else olt.kts.IP
+        olt.kts.row_box_shelf = req_dict["riad"] if req_dict["riad"] else  olt.kts.mesto
         olt.editor = name
+        olt.kts.editor = name
         olt.last_date_edit = datetime.now()
+        olt.kts.last_date_edit = datetime.now()
         save_data_to_db()
         return save_data_to_db()
     else:

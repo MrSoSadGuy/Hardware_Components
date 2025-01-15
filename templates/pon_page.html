@@ -284,7 +284,7 @@
                             <table class="table table-sm table-hover table-borderless scale">
                                 <tbody class="shadow_for_the_table olt_tbody">
 
-                                <tr class="shassi_row" data-id="{{ olt.id }}", data-db="List_of_olt">
+                                <tr class="shassi_row" data-id="{{ olt.id }}" data-db="List_of_olt">
                                     {% if olt and olt.type_of_olt == 4 %}
                                         <td class="h6" width='5%'> NE </td>
                                     {% elif olt  %}
@@ -465,7 +465,7 @@
                 <div class="container">
                     <div class="row">
                             <div class="mb-3">
-                                <select class="form-select" aria-label="Default select example" id = 'select_ud'>
+                                <select class="form-select" aria-label="Default select example" id = 'select_ud_new'>
                                     
                                 </select>
                             </div>
@@ -818,39 +818,41 @@
             </div>
             <div class="modal-body">
                 <div class="container">
-                    <div class="row">
-                        <div class="col-sm">
-                            <div class="mb-3">
-                                <select class="form-select" aria-label="Default select example" id = 'select_ud'>
-                                    
-                                </select>
+                    <form>
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="mb-3">
+                                    <select class="form-select" aria-label="Default select example" id = 'select_ud'>
+
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm">
-                            <div class="mb-3">
-                                <label class="col-form-label">Код:</label>
-                            <input type="text"  class="form-control" id="cod_to_mv">
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="mb-3">
+                                    <label class="col-form-label">Код:</label>
+                                <input type="text"  class="form-control" id="cod_to_mv">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm">
-                            <div class="mb-3">
-                                <label class="col-form-label">IP адрес:</label>
-                            <input type="text"  class="form-control" id="new_IP">
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="mb-3">
+                                    <label class="col-form-label">IP адрес:</label>
+                                <input type="text"  class="form-control" id="new_IP">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm">
-                            <div class="mb-3">
-                                <label class="col-form-label">Место:</label>
-                            <input type="text"  class="form-control" id="new_mesto">
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="mb-3">
+                                    <label class="col-form-label">Место:</label>
+                                <input type="text"  class="form-control" id="new_mesto">
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
             <div class="modal-footer">
@@ -869,6 +871,7 @@
         move_obj_modal($(e.relatedTarget).data('id'), $(e.relatedTarget).data('db'));
     })
     $('#move_olt_Modal').on('show.bs.modal', function (e) {
+        $(this).find('form').trigger('reset');
         move_olt_modal($(e.relatedTarget).data('id'), $(e.relatedTarget).data('db'));
     })
     // Заполнение модульного окна данных инвентарного номера
