@@ -246,7 +246,7 @@
                                 </div>
                                 <div class="col div-change-clr">
                                     <input class='btn-change-clr' data-placement="bottom" data-toggle="tooltip"
-                                           id="defolt_color" title="Убрать выделение" type="button"/>
+                                            id="defolt_color" title="Убрать выделение" type="button"/>
                                 </div>
                                 <div class="col">
                                     <a href="" id="delete_checked">Удалить отмеченные</a>
@@ -285,6 +285,7 @@
                                 <tbody class="shadow_for_the_table olt_tbody">
 
                                 <tr class="shassi_row" data-id="{{ olt.id }}" data-db="List_of_olt">
+                                {% if (olt.id != 73) and (olt.id != 74) %}
                                     {% if olt and olt.type_of_olt == 4 %}
                                         <td class="h6" width='5%'> NE </td>
                                     {% elif olt  %}
@@ -300,12 +301,17 @@
                                     <td class="h6" width='8%'> Место: {{ olt.kts.mesto }}</td>
                                     <td class="h6" width='5%'> {{ olt.kts.note }}</td>
                                     <td width='2%'>
-                                        <div class="d-grid gap-1 d-md-flex">
-                                            <a class="btn btn-primary btn-sm" id="edir_olt_data_btn" data-id="{{olt.id}}" data-db="Uzel_dostupa_all" data-bs-toggle="modal" data-bs-target="#move_olt_Modal">
-                                                <i class="bi bi-box-arrow-up-right"></i>
-                                            </a>
-                                        </div>
+                                        
+                                            <div class="d-grid gap-1 d-md-flex">
+                                                <a class="btn btn-primary btn-sm" id="edir_olt_data_btn" data-id="{{olt.id}}" data-db="Uzel_dostupa_all" data-bs-toggle="modal" data-bs-target="#move_olt_Modal">
+                                                    <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </div>
+                                        
                                     </td>
+                                {% else %}
+                                    <td class="h6" width='100%'> {{ olt.cod_name_of_olt }}</td>
+                                {% endif %}
                                 </tr>
                                 <tr class="platy_row">
                                     <td  colspan='9'>
@@ -328,35 +334,14 @@
                                             </thead>
                                             <tbody class="plata_tbody">
 
-                                            {# <tr class="for_file_download" data-id="{{ olt.id }}", data-db="List_of_olt">
-                                                <td width='2%'>
-                                                        <input class="form-check-input" id="flexCheck_modul{{ olt.id }}" type="checkbox" value="">
-                                                </td>
-                                                <td>-</td>
-                                                <td scope="col" > {{ olt.Type_of_olt.type }}</td>
-                                                <td scope="col" > {{ olt.name }}</td>
-                                                <td scope="col" > {{ olt.serial_number }}</td>
-                                                <td scope="col" > <a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-id = "{{ olt.inv_number }}" > {{ olt.inv_number }}</a></td>
-                                                <td scope="col" > {{ olt.note }}</td>
-                                                <td >
-                                                    <div class="d-grid gap-1 d-md-flex">
-                                                        <a class="btn btn-primary btn-sm" id="edir_unit_data_btn" data-id="{{olt.id}}" data-db="list_of_modules" data-bs-toggle="modal" data-bs-target="#edit_row_data_modal">
-                                                            <i class="bi bi-pen"></i>
-                                                        </a>
-                                                        <a class="btn btn-primary btn-sm" id="move_unit_btn" data-id="{{olt.id}}"  data-bs-toggle="modal" data-db="list_of_olt" data-bs-target="#move_obj_Modal">
-                                                            <i class="bi bi-box-arrow-up-right"></i>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                            </tr> #}
                                             {% for m in olt.list_of_modules|sort(attribute='socket') %}
                                                 <tr class="for_file_download" data-id="{{ m.id }}" data-db="List_of_modules">
                                                     <td width='2%'>
                                                         <input class="form-check-input" id="flexCheck_modul{{ m.id }}" type="checkbox" value="">
                                                     </td>
-                                                    {% if m.Olt_sockets.socket == -1 and 'OL' in m.olt_cod %}
+                                                    {% if m.Olt_sockets.socket == -1 and 'OL' in olt.cod_name_of_olt %}
                                                     <td > fun</td>
-                                                    {% elif m.Olt_sockets.socket == 0 and 'UL' in m.olt_cod %}
+                                                    {% elif m.Olt_sockets.socket == 0 and 'UL' in olt.cod_name_of_olt %}
                                                     <td > fun</td>
                                                     {% else %}
                                                     <td > {{ m.Olt_sockets.socket }}</td>

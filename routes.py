@@ -252,18 +252,19 @@ def get_data_for_move(req):
     mod = List_of_modules.query.get_or_404(req)
     data ={}
     for i in mod.Type_of_modules.Type_of_olt.list_of_olt:
-        # print(i.cod_name_of_olt)
         map_s = {}
         for w in i.Type_of_olt.olt_sockets:
             if (mod.Type_of_modules.Type_of_olt.id == i.type_of_olt and
                     mod.Type_of_modules.first_socket <= w.socket <= mod.Type_of_modules.last_socket):
                 map_s[w.id] = w.socket
             for n in w.list_of_modules:
-                if n.olt_cod == i.cod_name_of_olt and n.socket in map_s:
+                if n.olt_id == i.id and n.socket in map_s:
                     map_s.pop(n.socket)
         if len(map_s)>0:
-            data[i.cod_name_of_olt] = map_s
+            data[i.cod_name_of_olt] =[i.id, map_s] 
     print(data)
+    data["СКЛАД-СТЕЛАЖ"] = [73,{75:'стелаж'}]
+    data["ЗИП-СТЕЛАЖ"] = [74,{75:'стелаж'}]
     return data
 
 

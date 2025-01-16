@@ -183,15 +183,15 @@ def save_pon_modules(req_dict, name):
     mod = List_of_modules.query.get_or_404(int(req_dict["id"]))
     if request.method == 'POST':
         if 'target' in req_dict :
-            mod.olt_cod = req_dict['target']
+            mod.olt_id = int(req_dict['target'])
             mod.socket = int(req_dict['socket'])
         else:
             mod.name_of_modules = req_dict["name"]
             mod.serial_number = req_dict["serial"]
             mod.note = req_dict["note"]
             mod.inv_number = req_dict["inv_number"]
-            mod.editor = name
-            mod.last_date_edit = datetime.now()
+        mod.editor = name
+        mod.last_date_edit = datetime.now()
         return save_data_to_db()
     else:
         return json.dumps("NOT 'POST' REQUEST")
@@ -200,14 +200,17 @@ def save_pon_modules(req_dict, name):
 def save_pon_olt_data(req_dict, name):
     print(req_dict)
     olt = List_of_olt.query.get_or_404(int(req_dict["id"]))
+    print(olt.cod_name_of_olt)
+    print(olt.kts)
     if request.method == 'POST':
+        olt.uzel_id = req_dict["uzel_id"] if "uzel_id" in req_dict else olt.uzel_id
         olt.cod_name_of_olt = req_dict["cod_name_of_olt"] if req_dict["cod_name_of_olt"] else olt.cod_name_of_olt
-        olt.name = req_dict["name"] if req_dict["name"] else olt.name
-        olt.serial_number = req_dict["serial"] if req_dict["serial"] else olt.serial_number
-        olt.note = req_dict["note"] if req_dict["note"] else olt.note
-        olt.inv_number = req_dict["inv_number"] if req_dict["inv_number"] else olt.inv_number
-        olt.kts.IP = req_dict["IP"] if req_dict["IP"] else olt.kts.IP
-        olt.kts.row_box_shelf = req_dict["riad"] if req_dict["riad"] else  olt.kts.mesto
+        olt.name = req_dict["name"] if "name" in req_dict else olt.name
+        olt.serial_number = req_dict["serial"] if "serial" in req_dict else olt.serial_number
+        olt.note = req_dict["note"] if "note" in req_dict else olt.note
+        olt.inv_number = req_dict["inv_number"] if "inv_number" in req_dict else olt.inv_number
+        olt.kts.IP = req_dict["IP"] if "IP" in req_dict else olt.kts.IP
+        olt.kts.row_box_shelf = req_dict["riad"] if "riad" in req_dict else  olt.kts.mesto
         olt.editor = name
         olt.kts.editor = name
         olt.last_date_edit = datetime.now()

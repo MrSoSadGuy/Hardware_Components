@@ -49,7 +49,7 @@ class List_of_olt(db.Model):
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     # cod_name_of_olt: str = db.Column(db.String(20), db.ForeignKey('data_for_kts.cod_name'))
     uzel_id: int = db.Column(db.Integer, db.ForeignKey('Uzel_dostupa.id'))
-    cod_name_of_olt: str = db.Column(db.String(50), nullable=True)
+    cod_name_of_olt: str = db.Column(db.String(50), nullable=True, unique=True)
     kts = db.relationship('Data_for_KTS',uselist=False, backref='List_of_olt')
     type_of_olt: int = db.Column(db.Integer, db.ForeignKey('Type_of_olt.id'))
     name: str = db.Column(db.String(100), nullable=True)
@@ -101,7 +101,8 @@ class List_of_modules(db.Model):
     __tablename__ = "List_of_modules"
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     type_of_modules: str = db.Column(db.String(20), db.ForeignKey('Type_of_modules.type'))
-    olt_cod: str = db.Column(db.String(20), db.ForeignKey('List_of_olt.cod_name_of_olt'))
+    # olt_cod: str = db.Column(db.String(20), db.ForeignKey('List_of_olt.cod_name_of_olt'))
+    olt_id: int = db.Column(db.Integer, db.ForeignKey('List_of_olt.id'))
     socket: int = db.Column(db.Integer, db.ForeignKey('Olt_sockets.id'))
     name_of_modules: str = db.Column(db.String(100), nullable=True)
     inv_number: str = db.Column(db.String(20), nullable=True)
