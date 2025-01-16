@@ -176,7 +176,7 @@ def get_data_from_db(db):
         kts = Data_for_KTS.query.filter_by(cod_name=json.loads(req).upper()).first()
         return jsonify(kts)
     if db == 'kts_data_new':
-        return get_kts_data(json.loads(req).upper())
+        return get_kts_data(json.loads(req))
     if db == 'ma_add_modules':
         modules = ma_add_modules.query.filter_by(cod_name=json.loads(req).upper()).all()
         return jsonify(modules)
@@ -229,10 +229,14 @@ def get_data_from_db(db):
 #     data={}
 
 
-def get_kts_data(cod):
-    olt = List_of_olt.query.filter_by(cod_name_of_olt=cod).first()
+def get_kts_data(id):
+    olt = List_of_olt.query.get_or_404(int(id))
+    data={'cod_name_of_olt': olt.cod_name_of_olt,
+          'Serial': olt.serial_number,
+          'inv_number': olt.inv_number}
     if olt.kts:
-        data={'Serial': olt.serial_number,
+        data={  'cod_name_of_olt': olt.cod_name_of_olt,
+                'Serial': olt.serial_number,
                 'inv_number': olt.inv_number,
                 'UD': olt.kts.UD,
                 'IP':olt.kts.IP,
@@ -243,9 +247,6 @@ def get_kts_data(cod):
                 'mesto':olt.kts.mesto,
                 'zavod':olt.kts.zavod 
             }
-    else:
-        data={'Serial': olt.serial_number,
-                'inv_number': olt.inv_number}
     return data
 
 def get_data_for_move(req):
@@ -268,8 +269,8 @@ def get_data_for_move(req):
     return data
 
 
-def get_data_for_sostav(req):
-    olt = List_of_olt.query.filter_by(cod_name_of_olt=json.loads(req).upper()).first()
+def get_data_for_sostav(id):
+    olt = List_of_olt.query.get_or_404(int(id))
     data_list ={}
     for mod in olt.list_of_modules:
         data_list[mod.Olt_sockets.socket] = [mod.inv_number, mod.name_of_modules, mod.serial_number, mod.note]

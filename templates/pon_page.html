@@ -273,14 +273,19 @@
                         <td class="h5">адрес: {{ u.Adress }}</td>
                         <td width='2%'>
                             <a >
-                                <img id="ud_settings" data-status="minus" data-id="{{ u.id }}" data-bs-toggle="modal" data-bs-target="#edit_ud_data_modal" src = "/static/images/settings.svg"/>
+                                <img id="ud_add_un"  src = "/static/images/add.svg"/>
+                            </a>
+                        </td>
+                        <td width='2%'>
+                            <a >
+                                <img id="ud_settings"  data-id="{{ u.id }}" data-bs-toggle="modal" data-bs-target="#edit_ud_data_modal" src = "/static/images/settings.svg"/>
                             </a>
                         </td>
                     </tr>
                     {% for olt in u.cod_name_of_olt |sort(attribute='cod_name_of_olt') %}
 
                     <tr >
-                        <td  colspan='3' id="td_for_pon_mod">
+                        <td  colspan='4' id="td_for_pon_mod">
                             <table class="table table-sm table-hover table-borderless scale">
                                 <tbody class="shadow_for_the_table olt_tbody">
 
@@ -289,17 +294,22 @@
                                     {% if olt and olt.type_of_olt == 4 %}
                                         <td class="h6" width='5%'> NE </td>
                                     {% elif olt  %}
-                                    <td class="h6" width='5%'> OLT № {{ olt.kts.OLT }}</td>
+                                    <td class="h6" width='5%'> OLT#{{ olt.kts.OLT }}</td>
                                     {% else %}
                                         <td class="h6" width='5%'>  </td>
                                     {% endif %}
-                                    <td class="h6" width='12%'><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-pon ="{{ olt.cod_name_of_olt }}" > {{ olt.cod_name_of_olt }}</a></td>
+                                    <td class="h6" width='12%'><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-pon ="{{ olt.id }}" > {{ olt.cod_name_of_olt }}</a></td>
                                     <td class="h6" width='25%'> {{ olt.kts.full_name }}</td>
                                     <td class="h6" width='18%'>s/n: {{ olt.serial_number }}</td>
                                     <td class="h6" width='15%'>инв.№:  <a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-id = "{{ olt.inv_number }}" >{{ olt.inv_number }}</a></td>
                                     <td class="h6" width='10%'> IP: {{ olt.kts.IP }}</td>
-                                    <td class="h6" width='8%'> Место: {{ olt.kts.mesto }}</td>
+                                    <td class="h6" width='6%'> Место: {{ olt.kts.mesto }}</td>
                                     <td class="h6" width='5%'> {{ olt.kts.note }}</td>
+                                    <td width='2%'>
+                                        <a >
+                                            <img id="ud_add_mad"  src = "/static/images/add.svg"/>
+                                        </a>
+                                    </td>
                                     <td width='2%'>
                                         
                                             <div class="d-grid gap-1 d-md-flex">
@@ -314,7 +324,7 @@
                                 {% endif %}
                                 </tr>
                                 <tr class="platy_row">
-                                    <td  colspan='9'>
+                                    <td  colspan='10'>
                                         <table class="table table-sm table-bordered table-hover ">
                                             <thead>
                                                 <tr>
@@ -869,9 +879,8 @@
     // Заполнить таблицу в модульном окне Соства оборудования
     $('#SostavModal').on('show.bs.modal', function (e) {
         $(this).find('form').trigger('reset');
-        var dataPon = $(e.relatedTarget).data('pon');
-        var dataUd = $(e.relatedTarget).data('ud');
-        to_fill_sostav_modal(dataPon, dataUd)})
+        var dataPon = $(e.relatedTarget).data('pon')
+        to_fill_sostav_modal(dataPon)})
 
     // заполнение модульного окна для редактирования записи UNITS  
     $('#edit_row_data_modal').on('show.bs.modal', function (e) {

@@ -1,6 +1,6 @@
-async function to_fill_sostav_modal(p_name, ud) {
+async function to_fill_sostav_modal(p_name) {
     document.getElementById('save_kts').setAttribute("class", "btn btn-primary");
-    document.getElementById("PON_id").value = p_name;
+    // document.getElementById("PON_id").value = p_name;
     document.getElementById("t_sostav_body").remove();
     var table = document.getElementById("Sostav_Modal_table");
     const tbody = document.createElement('tbody');
@@ -25,6 +25,8 @@ async function to_fill_sostav_modal(p_name, ud) {
     const data_for_kts = await fetch_data_2(p_name,'/get_data_from_db/kts_data_new',"POST");
     if(data_for_kts.ok){
         let kts_data = await data_for_kts.json();
+        console.log(kts_data);
+        document.getElementById("PON_id").value = kts_data['cod_name_of_olt'] ? kts_data['cod_name_of_olt']: '';
         document.getElementById("Ud_id").value = kts_data['UD'] ? kts_data['UD']: '';
         document.getElementById("ip_id").value = kts_data['IP'] ? kts_data['IP']: '';
         document.getElementById("olt_id").value = kts_data['OLT'] ? kts_data['OLT']: '';
@@ -366,7 +368,7 @@ async function move_olt_modal(id, db) {
             IP.value = '192.168.*.*'
             appl_btn.disabled = false;
         }
-        else {cod.value = 'Устройство - ' +olt[1]['type']+' - '+ olt[0]['id']
+        else {cod.value = olt[1]['type']+'-'+ olt[0]['id']
             IP.value = '-'
             mesto.value = '-'
             appl_btn.disabled = false;
