@@ -387,4 +387,11 @@ async function move_olt_modal(id, db) {
         apply_move_modul(data, 'olt_list', this)
     })
 }
-async function move_olt_olt(data, ) {}
+async function add_new_unit_data(id) {
+    document.getElementById("t_body_add_to_un").remove();
+    var table = document.getElementById("table_add_to_un");
+    const tbody = document.createElement('tbody');
+    tbody.setAttribute('id', 't_body_add_to_un');
+    table.appendChild(tbody);
+    let data = await fetch_data_2(id, )
+}

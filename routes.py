@@ -172,6 +172,8 @@ def get_data_from_db(db):
     if db == 'olt_data_2':
         olt = List_of_olt.query.get_or_404(int(json.loads(req)))
         return jsonify(olt, olt.Type_of_olt)
+    if db == 'olt_data_3':
+        return jsonify(get_used_unit_data(int(json.loads(req))))
     if db == 'kts_data':
         kts = Data_for_KTS.query.filter_by(cod_name=json.loads(req).upper()).first()
         return jsonify(kts)
@@ -224,9 +226,11 @@ def get_data_from_db(db):
         return None
 
 
-# def get_olt_data(id):
-#     olt = List_of_olt.query.get_or_404(id)
-#     data={}
+def get_used_unit_data(id):
+    unit = List_of_olt.query.get_or_404(id)
+    data={}
+    mod = unit.list_of_modules
+    type_un = mod.Type_of_olt.
 
 
 def get_kts_data(id):
