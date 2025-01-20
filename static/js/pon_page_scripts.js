@@ -393,5 +393,37 @@ async function add_new_unit_data(id) {
     const tbody = document.createElement('tbody');
     tbody.setAttribute('id', 't_body_add_to_un');
     table.appendChild(tbody);
-    let data = await fetch_data_2(id, )
+    let response = await fetch_data_2(id, '/get_data_from_db/olt_data_3', 'POST')
+    if (response.ok){
+        let data = await response.json()
+        console.log("🚀 ~ add_new_unit_data ~ data:", data)
+        Object.keys(data).forEach(elem => {
+            var row = tbody.insertRow();
+            if(data[elem][0]){
+                
+                row.insertCell(0).textContent = elem
+                console.log(data[elem])
+                for (let i = 1; i < data[elem].length; i++ ){
+                    row.insertCell(i).textContent = data[elem][i]
+                    // row.insertCell(i).contentEditable = false;
+                }
+                row.insertCell(0)
+            }
+            else { 
+                let sel = document.createElement('select')
+                data[elem].forEach(item => {
+                    const opt = document.createElement('option')
+                    opt.text = item
+                    sel.add(opt)
+                })
+                row.insertCell(1).appendChild(sel)
+            }
+            row.insertCell(2)
+            row.insertCell(3)
+            row.insertCell(4)
+            
+        })
+        
+        
+    }
 }

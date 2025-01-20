@@ -227,17 +227,32 @@ def get_data_from_db(db):
 
 
 def get_used_unit_data(id):
+    print(id)
     unit = List_of_olt.query.get_or_404(id)
     data={}
-    mod = unit.list_of_modules
-    type_un = mod.Type_of_olt.
+    type_of_modules = Type_of_modules.query.all()
 
+    for i in unit.Type_of_olt.olt_sockets:
+        for j in unit.list_of_modules:
+            if j.socket == i.id:
+                data[i.socket] = [True, j.type_of_modules , j.inv_number, j.name_of_modules, j.serial_number]
+        if i.socket not in data:
+            data[i.socket] = data_for_empty_sockets(i.socket,unit.Type_of_olt.id,type_of_modules)
+    print(dict(sorted(data.items())))
+    return data
+
+def data_for_empty_sockets(key,olt, type_of_modules):
+    data=[False]
+    for t in type_of_modules:
+        if t.first_socket <= key <= t.last_socket and olt == t.type_of_olt:
+            data.append(t.type)
+    return data
 
 def get_kts_data(id):
     olt = List_of_olt.query.get_or_404(int(id))
     data={'cod_name_of_olt': olt.cod_name_of_olt,
-          'Serial': olt.serial_number,
-          'inv_number': olt.inv_number}
+        'Serial': olt.serial_number,
+        'inv_number': olt.inv_number}
     if olt.kts:
         data={  'cod_name_of_olt': olt.cod_name_of_olt,
                 'Serial': olt.serial_number,
