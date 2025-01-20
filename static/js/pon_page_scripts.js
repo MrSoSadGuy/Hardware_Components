@@ -332,7 +332,6 @@ async function select_units(id, slct_unit) {
             opt.text = list_of_data1[item]
             slct_unit.add(opt)
         })
-    
 }
 
 async function move_olt_modal(id, db) {
@@ -399,31 +398,47 @@ async function add_new_unit_data(id) {
         console.log("🚀 ~ add_new_unit_data ~ data:", data)
         Object.keys(data).forEach(elem => {
             var row = tbody.insertRow();
+            row.insertCell(0).textContent = elem
             if(data[elem][0]){
-                
-                row.insertCell(0).textContent = elem
                 console.log(data[elem])
                 for (let i = 1; i < data[elem].length; i++ ){
                     row.insertCell(i).textContent = data[elem][i]
-                    // row.insertCell(i).contentEditable = false;
                 }
-                row.insertCell(0)
+                row.insertCell(0).innerHTML ='<input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled" checked disabled>'
             }
-            else { 
+            else {
                 let sel = document.createElement('select')
-                data[elem].forEach(item => {
+                for (let i = 1; i < data[elem].length ; i++) {
                     const opt = document.createElement('option')
-                    opt.text = item
+                    opt.text = data[elem][i]
                     sel.add(opt)
-                })
+                }
                 row.insertCell(1).appendChild(sel)
+                row.insertCell(2).contentEditable = true
+                row.insertCell(3).contentEditable = true
+                row.insertCell(4).contentEditable = true
+                row.insertCell(0).innerHTML = '<input class="form-check-input" id="flexCheck_modul{{ m.id }}" type="checkbox" value="">'
             }
-            row.insertCell(2)
-            row.insertCell(3)
-            row.insertCell(4)
-            
         })
-        
-        
     }
+    document.getElementById("save_new_modules").addEventListener("click", function() {
+        let rows = tbody.rows
+        for (let r of rows) {
+            let cells = r.cells
+            let check = cells[0].querySelector('.form-check-input')
+            if (check.checked === true && check.disabled === false){
+                var select = cells[2].querySelector('option');
+                console.log(select)
+                var text = select.options[select.selectedIndex].text;
+                let n_data = {
+                    'unit_id':id,
+                    'mesto': cells[1].textContent,
+                    'type' : text,
+                    'inv_number': cells[3].textContent,
+                    'serial': cells[4].textContent,
+                }
+                console.log(n_data)
+            }
+        }
+    })
 }

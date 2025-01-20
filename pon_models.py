@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from dataclasses import dataclass
 from datetime import datetime
 from models import db
-# db = SQLAlchemy()
+
 
 
 @dataclass
