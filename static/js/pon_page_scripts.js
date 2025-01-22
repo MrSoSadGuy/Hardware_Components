@@ -387,6 +387,9 @@ async function move_olt_modal(id, db) {
     })
 }
 async function add_new_unit_data(id) {
+    let save_btn = document.getElementById('save_new_modules');
+    save_btn.setAttribute("class", "btn btn-primary");
+    let cl_btn = document.getElementById('cl_add_pon_mod').onclick = function(){reload_page()}
     document.getElementById("t_body_add_to_un").remove();
     var table = document.getElementById("table_add_to_un");
     const tbody = document.createElement('tbody');
@@ -404,7 +407,7 @@ async function add_new_unit_data(id) {
                 for (let i = 1; i < data[elem].length; i++ ){
                     row.insertCell(i).textContent = data[elem][i]
                 }
-                row.insertCell(0).innerHTML ='<input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled" checked disabled>'
+                row.insertCell(0).innerHTML ='<input class="form-check-input" type="checkbox" value="" checked disabled>'
             }
             else {
                 let sel = document.createElement('select')
@@ -417,28 +420,62 @@ async function add_new_unit_data(id) {
                 row.insertCell(2).contentEditable = true
                 row.insertCell(3).contentEditable = true
                 row.insertCell(4).contentEditable = true
-                row.insertCell(0).innerHTML = '<input class="form-check-input" id="flexCheck_modul{{ m.id }}" type="checkbox" value="">'
+                row.insertCell(0).innerHTML = '<input class="form-check-input" type="checkbox" value="">'
             }
         })
     }
-    document.getElementById("save_new_modules").addEventListener("click", function() {
-        let rows = tbody.rows
+    let ful_data = []
+    save_btn.addEventListener("click", function() {
+        let rows = document.getElementById('t_body_add_to_un').rows
         for (let r of rows) {
             let cells = r.cells
             let check = cells[0].querySelector('.form-check-input')
             if (check.checked === true && check.disabled === false){
-                var select = cells[2].querySelector('option');
+                var select = cells[2].getElementsByTagName('select')[0]
                 console.log(select)
                 var text = select.options[select.selectedIndex].text;
                 let n_data = {
                     'unit_id':id,
                     'mesto': cells[1].textContent,
                     'type' : text,
+                    'name' : cells[4].textContent,
                     'inv_number': cells[3].textContent,
-                    'serial': cells[4].textContent,
+                    'serial': cells[5].textContent,
                 }
-                console.log(n_data)
+                ful_data.push(n_data)
+                
             }
         }
-    })
+        ful_data.length > 0? add_new_pon_modules(ful_data, this.id): alert('Не выбраны новые модули для добовления')      
+    })   
+}
+
+async function shelf_new_modules(id) {
+    let save_btn = document.getElementById('save_new_mod');
+    save_btn.setAttribute("class", "btn btn-primary");
+    let cl_btn = document.getElementById('cl_new_pon_mod').onclick = function(){reload_page()}
+    document.getElementById("t_body_add_to_shelf").remove();
+    var table = document.getElementById("table_add_to_shelf");
+    const tbody = document.createElement('tbody');
+    tbody.setAttribute('id', 't_body_add_to_shelf');
+    table.appendChild(tbody);
+    let response = await fetch_data_2(id, '/get_data_from_db/olt_data_4', 'POST')
+    let data
+    if (response.ok){
+        data = await response.json()
+        console.log("🚀 ~ shelf_new_modules ~ data:", data)
+    }
+    add_new_row('t_body_add_to_shelf', 5)
+    add_select_menu(tbody.rows[tbody.rows.length-1],data)
+}
+function add_select_menu(row, data){
+    console.log("🚀 ~ add_select_menu ~ data:", data)
+    let sel = document.createElement('select')
+    for (let i = 0; i < data.length ; i++) {
+        const opt = document.createElement('option')
+        console.log(data[i][0])
+        opt.text = item[0]
+        sel.add(opt)
+    }
+    row.cells[0].appendChild(sel)
 }

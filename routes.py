@@ -174,6 +174,10 @@ def get_data_from_db(db):
         return jsonify(olt, olt.Type_of_olt)
     if db == 'olt_data_3':
         return jsonify(get_used_unit_data(int(json.loads(req))))
+    if db == 'olt_data_4':
+        
+        type = Type_of_olt.query.all
+        return get_data_for_new_mod()
     if db == 'kts_data':
         kts = Data_for_KTS.query.filter_by(cod_name=json.loads(req).upper()).first()
         return jsonify(kts)
@@ -225,6 +229,16 @@ def get_data_from_db(db):
     else:
         return None
 
+
+def get_data_for_new_mod():
+    data ={}
+    type = Type_of_olt.query.all()
+    for t in type:
+        q = {}
+        for m in t.type_of_modules:
+            q[m.id] = m.type
+        data[t.id] = [t.type, q]
+    return data
 
 def get_used_unit_data(id):
     print(id)
@@ -402,7 +416,8 @@ def save_data(db_name):
         'list_of_modules': save_pon_modules,
         'olt_list': save_pon_olt_data,
         'olt_data_2': save_pon_olt_data,
-        'Uzel_dostupa': save_ud_data
+        'Uzel_dostupa': save_ud_data,
+        'add_new_pon_modules': add_new_pon_modules
     }
     if db_name in db_req_lst:
         return db_req_lst.get(db_name)(req_dict, user.FIO)

@@ -179,6 +179,30 @@ def save_sostav_data(req_dict, name):
     else:
         return json.dumps("NOT 'POST' REQUEST")
 
+
+def add_new_pon_modules(req_dict, name):
+    response=[]
+    if request.method == 'POST':
+        for data in req_dict:
+            sck_id = None
+            olt = List_of_olt.query.get_or_404(int(data["unit_id"]))
+            for s in olt.Type_of_olt.olt_sockets:
+                if s.socket == int(data["mesto"]):
+                    sck_id = s.id
+                    continue
+            if sck_id != None:
+                pon_mod = List_of_modules(type_of_modules = data["type"],
+                                            olt_id=data["unit_id"],
+                                            socket = sck_id,
+                                            inv_number=data["inv_number"],
+                                            serial_number=data["serial"],
+                                            name_of_modules=data["name"],
+                                            name_who_add = name)
+                response.append(data["mesto"] +': ' + f", {add_data_to_db(pon_mod)}")
+        return response
+    else:
+        return json.dumps("NOT 'POST' REQUEST")
+
 def save_pon_modules(req_dict, name):
     mod = List_of_modules.query.get_or_404(int(req_dict["id"]))
     if request.method == 'POST':
