@@ -225,15 +225,15 @@ async function move_obj_modal(id, db){
     let list_of_data = await data.json();
     console.log("🚀 ~ move_obj_modal ~ list_of_data:", list_of_data)
     let target, target_val, sockets
-    
+
     Object.keys(list_of_data).forEach(item => {
         const opt = document.createElement('option')
         opt.value = list_of_data[item][0]
         opt.text = item
         slct_unit.add(opt)
     })
-    
-    
+
+
     slct_unit.addEventListener("change", function() {
         while(slct_sock.length>0){slct_sock.remove(0)}
         const opt_slct_sock = document.createElement('option')
@@ -261,7 +261,7 @@ async function move_obj_modal(id, db){
             console.log("🚀 ~ data:", data)
             apply_move_modul(data, db,  this)}
         else{alert('Выберите объект и плата-место')}
-        
+
 }}
 async function apply_move_modul(edit_data, db, btn){
     if (confirm("Переместить устройство?")){
@@ -325,7 +325,7 @@ async function select_units(id, slct_unit) {
     const data1 = await fetch_data_2(id,'/get_data_from_db/Uzel_dostupa_lst',"POST")
     let list_of_data1 = await data1.json();
     console.log(list_of_data1)
-    
+
         Object.keys(list_of_data1).forEach(item => {
             const opt = document.createElement('option')
             opt.value = item
@@ -443,11 +443,11 @@ async function add_new_unit_data(id) {
                     'serial': cells[5].textContent,
                 }
                 ful_data.push(n_data)
-                
+
             }
         }
-        ful_data.length > 0? add_new_pon_modules(ful_data, this.id): alert('Не выбраны новые модули для добовления')      
-    })   
+        ful_data.length > 0? add_new_pon_modules(ful_data, this.id): alert('Не выбраны новые модули для добовления')
+    })
 }
 
 async function shelf_new_modules(id) {
@@ -463,19 +463,66 @@ async function shelf_new_modules(id) {
     let data
     if (response.ok){
         data = await response.json()
-        console.log("🚀 ~ shelf_new_modules ~ data:", data)
+        add_new_row('t_body_add_to_shelf', 5)
+        add_select_menu(tbody.rows[tbody.rows.length-1],data)
+        document.getElementById("add_new_row").addEventListener('click', function(){
+            add_new_row('t_body_add_to_shelf', 5)
+            add_select_menu(tbody.rows[tbody.rows.length-1],data)
+        });
+        document.getElementById("rmv_lst_row").addEventListener('click', function(){
+            del_row('t_body_add_to_shelf')
+        });
     }
-    add_new_row('t_body_add_to_shelf', 5)
-    add_select_menu(tbody.rows[tbody.rows.length-1],data)
+    save_btn.addEventListener("click", function() {
+        let rows = document.getElementById('t_body_add_to_shelf').rows;
+        let full_data = [], row_data ={}
+        // rows.forEach((row) => {
+        for (let row of rows) {
+            let cells = row.cells
+            let sel = cells[0].querySelector('select')
+            let sel2 = cells[1].querySelector('select')
+            if (sel.options[sel.selectedIndex].value !== '0'){
+                row_data['olt_id'] = sel.options[sel.selectedIndex].value
+                row_data['type_of_modules'] = sel2.options[sel2.selectedIndex].value
+                row_data['name'] = cells[2].textContent
+                row_data['serial_number'] = cells[3].textContent
+                row_data['name_of_modules'] = cells[4].textContent
+                row_data['socket'] = '75'
+                full_data.push(row_data)}
+
+        }
+        console.log(full_data)
+    })
+
 }
 function add_select_menu(row, data){
-    console.log("🚀 ~ add_select_menu ~ data:", data)
     let sel = document.createElement('select')
-    for (let i = 0; i < data.length ; i++) {
+    const opt1 = document.createElement('option')
+    opt1.selected
+    opt1.text = 'Выберите'
+    opt1.value = '0'
+    sel.add(opt1)
+    Object.keys(data).forEach(elem => {
         const opt = document.createElement('option')
-        console.log(data[i][0])
-        opt.text = item[0]
+        opt.text = data[elem][0]
+        opt.value = elem
         sel.add(opt)
-    }
+    })
     row.cells[0].appendChild(sel)
+    sel.addEventListener('change', function(){
+        row.cells[1].innerHTML=''
+        let sel2 = document.createElement('select')
+        if(sel.options[sel.selectedIndex].value !== '0'){
+            console.log(row.cells[1].innerHTML)
+            let platy = data[sel.options[sel.selectedIndex].value][1]
+            Object.keys(platy).forEach(p => {
+                const opt = document.createElement('option')
+                opt.text = platy[p]
+                opt.value = p
+                sel2.add(opt)
+        })
+            row.cells[1].appendChild(sel2)
+        }
+
+    })
 }

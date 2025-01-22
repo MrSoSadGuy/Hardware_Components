@@ -10,7 +10,7 @@ function serch_olt_tbodies(olt_tbodies){
         let shassy = olt_tbodies[i].querySelector('.shassi_row')
         let platy = olt_tbodies[i].querySelector('.plata_tbody')
         let btn = olt_tbodies[i].querySelectorAll('img')
-        let answ = serch_plata_tbodies(btn[0], platy)
+        let answ = serch_plata_tbodies(btn[1], platy)
         let cells = shassy.getElementsByTagName('td')
         let answ2 = serch_cell_data(cells)
         flag.push(answ)
