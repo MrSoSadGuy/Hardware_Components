@@ -30,7 +30,7 @@ class Data_for_KTS (db.Model, UserMixin):
     Serial: str = db.Column(db.String(100), nullable=True)
     OLT: str = db.Column(db.String(100), nullable=True)
     full_name: str = db.Column(db.String(200), nullable=True)
-    # cod_name: str = db.Column(db.String(50), nullable=True)
+    cod_name: str = db.Column(db.String(50), nullable=True)
     # cod_name: str = db.Column(db.String(20), db.ForeignKey('List_of_olt.cod_name_of_olt'))
     unit_id: str = db.Column(db.Integer, db.ForeignKey('List_of_olt.id'))
     zavod: str = db.Column(db.String(50), nullable=True)

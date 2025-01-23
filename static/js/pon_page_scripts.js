@@ -362,7 +362,7 @@ async function move_olt_modal(id, db) {
     })
     slct_ud.addEventListener("change", function() {
         if ((this.options[this.selectedIndex].value !== '14') && (this.options[this.selectedIndex].value !== '13')){
-            cod.value = olt[1]['start']+ this.options[this.selectedIndex].dataset.num + '-'
+            cod.value = olt[1]['start']+ '**' + '-'
                 + olt[1]['midl'] + this.options[this.selectedIndex].dataset.cod + olt[1]['end']+ '**'
             IP.value = '192.168.*.*'
             appl_btn.disabled = false;
@@ -473,25 +473,29 @@ async function shelf_new_modules(id) {
             del_row('t_body_add_to_shelf')
         });
     }
+    
     save_btn.addEventListener("click", function() {
         let rows = document.getElementById('t_body_add_to_shelf').rows;
-        let full_data = [], row_data ={}
+        let full_data = []
         // rows.forEach((row) => {
         for (let row of rows) {
+            let row_data ={}
             let cells = row.cells
             let sel = cells[0].querySelector('select')
             let sel2 = cells[1].querySelector('select')
             if (sel.options[sel.selectedIndex].value !== '0'){
-                row_data['olt_id'] = sel.options[sel.selectedIndex].value
-                row_data['type_of_modules'] = sel2.options[sel2.selectedIndex].value
+                row_data['unit_id'] = id
+                row_data['type'] = sel2.options[sel2.selectedIndex].text
                 row_data['name'] = cells[2].textContent
-                row_data['serial_number'] = cells[3].textContent
-                row_data['name_of_modules'] = cells[4].textContent
-                row_data['socket'] = '75'
-                full_data.push(row_data)}
-
+                row_data['serial'] = cells[3].textContent
+                row_data['inv_number'] = cells[4].textContent
+                // row_data['socket'] = '75'
+                full_data.push(row_data)
+            }
+            console.log(row_data)
         }
         console.log(full_data)
+        full_data.length > 0? add_new_pon_modules(full_data, this.id): alert('Не введены новые модули для добовления')
     })
 
 }
