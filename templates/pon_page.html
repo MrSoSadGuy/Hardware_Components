@@ -292,18 +292,18 @@
                                 <tr class="shassi_row" data-id="{{ olt.id }}" data-db="List_of_olt">
                                 {% if (olt.id != 73) and (olt.id != 74) %}
                                     {% if olt and olt.type_of_olt == 4 %}
-                                        <td class="h6" width='5%'> NE </td>
+                                        <td class="h6" style="min-width: 3%; max-width: 5%"> NE </td>
                                     {% elif olt  %}
-                                    <td class="h6" width='5%'> OLT#{{ olt.kts.OLT }}</td>
+                                    <td class="h6" style="min-width: 3%; max-width: 5%"> OLT#{{ olt.kts.OLT }}</td>
                                     {% else %}
-                                        <td class="h6" width='5%'>  </td>
+                                        <td class="h6" style="min-width: 3%; max-width: 5%">  </td>
                                     {% endif %}
-                                    <td class="h6" width='12%'><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-pon ="{{ olt.id }}" > {{ olt.cod_name_of_olt }}</a></td>
-                                    <td class="h6" width='25%'> {{ olt.kts.full_name }}</td>
+                                    <td class="h6" style="min-width: 7%; max-width: 12%"><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-pon ="{{ olt.id }}" > {{ olt.cod_name_of_olt }}</a></td>
+                                    <td class="h6" style="min-width: 15%; max-width: 25%"> {{ olt.kts.full_name }}</td>
                                     <td class="h6" width='18%'>s/n: {{ olt.serial_number }}</td>
                                     <td class="h6" width='15%'>инв.№:  <a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-id = "{{ olt.inv_number }}" >{{ olt.inv_number }}</a></td>
                                     <td class="h6" width='10%'> IP: {{ olt.kts.IP }}</td>
-                                    <td class="h6" width='6%'> Место: {{ olt.kts.mesto }}</td>
+                                    <td class="h6" style="min-width: 3%; max-width: 9%"> Место: {{ olt.kts.mesto }}</td>
                                     <td class="h6" width='5%'> {{ olt.kts.note }}</td>
                                     <td width='2%'>
                                         <a >
