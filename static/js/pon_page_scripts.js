@@ -54,6 +54,11 @@ async function to_fill_ud_edit_modal(id, row) {
             row)}
     }
 }
+
+// function delete_ud(id){
+
+// }
+
 async function to_fill_edit_modal(id, db, row) {
     document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
     document.getElementById('button_for_delete_row').setAttribute("class", "btn btn-primary");
@@ -529,4 +534,18 @@ function add_select_menu(row, data){
         }
 
     })
+}
+
+function liveToast(status, data){
+    let theme
+    status ? theme = 'success': theme = 'danger'
+    new Toast({
+        title: false,
+        text: data,
+        theme: theme,
+        autohide: true,
+        interval: 5000
+    });
+    
+
 }

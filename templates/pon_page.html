@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../static/bootstrap.css">
     <link rel="stylesheet" href="../static/custom_style.css">
+    <link rel="stylesheet" href="../static/toast.css">
     <script src="{{ url_for('static', filename='js/library/bootstrap.bundle.js') }}"></script>
     <script type=text/javascript src="{{ url_for('static', filename='js/library/jquery-3.7.1.js') }}"></script>
     <script src="{{ url_for('static', filename='js/pon_page_scripts.js') }}"></script>
@@ -18,11 +19,9 @@
     <script src="{{ url_for('static', filename='js/save_&_delete.js') }}"></script>
     <script src="{{ url_for('static', filename='js/to_fill_modals.js') }}"></script>
     <script src="{{ url_for('static', filename='js/library/table-sort.js') }}"></script>
+    <script src="../static/js/library/toast.min.js"></script>
     <script src="{{ url_for('static', filename='js/pon_table_serch_script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/for_ma_units_page_scripts.js') }}"></script>
-
-
-
     <script>
 
         // document.addEventListener('DOMContentLoaded', () => {
@@ -148,7 +147,7 @@
     })
 </script>
 <div aria-labelledby="offcanvasWithBothOptionsLabel" class="offcanvas offcanvas-start" data-bs-scroll="true" id="offcanvasWithBothOptions"
-     tabindex="-1">
+    tabindex="-1">
     <div class="offcanvas-header">
     </div>
     <div class="offcanvas-body">
@@ -192,6 +191,10 @@
                 <h1 class="h2">Оборудования PON</h1>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <button class="btn btn-primary btn-lg" data-bs-target="#add_new_modal" data-bs-toggle="modal"
+                            type="button">
+                        <i class="bi bi-plus-square-fill"></i> 
+                    </button>
+                    <button class="btn btn-primary btn-lg" onclick="liveToast(false, 'SUCCESS')"
                             type="button">
                         <i class="bi bi-plus-square-fill"></i> 
                     </button>
@@ -398,6 +401,8 @@
     </div>
     <!--   редактировать ячейки таблицы двойным кликом-->
     <script>
+
+
         let serch_line = document.getElementById('serch_pon_table').classList
         let active_class = "serch_scrolled"
         window.addEventListener('scroll', e => {
@@ -449,6 +454,7 @@
         });
     </script>
 </div>
+
 <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" data-bs-backdrop="static" id="add_new_modal"
     role="dialog" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
@@ -875,10 +881,8 @@
                                 <th scope="col">Тип</th>
                                 <th scope="col">Инвентарный номер</th>
                                 <th scope="col">Наименование оборудования</th>
-                                <th scope="col">Заводской номер</th>
-                                
+                                <th scope="col">Заводской номер</th>                               
                             </tr>
-
                             </thead>
                             <tbody id="t_body_add_to_un"></tbody>
                         </table>

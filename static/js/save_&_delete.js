@@ -436,11 +436,13 @@ async function add_new_pon_modules(data, btn_id){
     if (confirm("Сохранить изменнения?")){
         const response = await fetch_data_2(data,'/save_data/add_new_pon_modules','POST');
         if(response.ok){
-            document.getElementById(btn_id).setAttribute("class", "btn btn-success");
+            // document.getElementById(btn_id).setAttribute("class", "btn btn-success");
+            liveToast(true, "Данные добавлены успешно")
         }
         else{
-            document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
-            alert(response.json)
+            liveToast(false, response.json)
+            // document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
+            // alert(response.json)
         }
     }
 }
