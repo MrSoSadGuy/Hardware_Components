@@ -50,42 +50,54 @@ async function to_fill_ud_edit_modal(id, row) {
         document.getElementById("edit_ud_adr_id").value = db_data.Adress;
         document.getElementById("edit_ud_cod_id").value = db_data.cod_ud;
         document.getElementById('button_for_save_edit_ud').onclick = function (){save_edit_ud_data('Uzel_dostupa', id ,row)}
-        document.getElementById('button_for_delete_ud').onclick = function (){delete_ud('Uzel_dostupa', id , 'button_for_delete_row','tbody_main_table',
-            row)}
+        document.getElementById('button_for_delete_ud').onclick = async function (){
+            let resp = await deletePONdata(id, 'Uzel_dostupa')
+            console.log("🚀 ~ resp:", resp.status)
+            if(resp.ok){
+                liveToast(true, "Объект удален")
+                row.remove()
+                setTimeout(function (){document.getElementById('btn_cls_edit_mod').click()}, 800)
+            }
+            else if (resp.status === 420){
+                alert(await resp.json())
+                liveToast(false, "Ошибка удаления")
+            }
+            else {
+                liveToast(false, "Ошибка удаления")
+                console.log('delPonData error - '+ await resp.json())
+            }
     }
 }
-
-// function delete_ud(id){
-
-// }
+}
 
 async function to_fill_edit_modal(id, db, row) {
     document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
-    document.getElementById('button_for_delete_row').setAttribute("class", "btn btn-primary");
-    // if (document.getElementById("div_cod")){delete_inputs_from_edit_modal()}
     const data = await fetch_data_2(id,'/get_data_from_db/'+db,"POST");
     if(data.ok){
         let db_data = await data.json();
         console.log(db_data);
-        // if(db!=="olt_list"){
-        //     document.getElementById("edit_Name_id").value = db_data.name_of_modules;
-        // }
-        // else {
-        //     add_inputs_to_edit_modal()
-        //     document.getElementById("edit_Name_id").value = db_data.name;
-        //     document.getElementById("edit_Cod_id").value = db_data.cod_name_of_olt;
-        //     document.getElementById("edit_Riad_id").value = db_data.row_box_shelf;
-        //     document.getElementById("edit_IP_id").value = db_data.IP;
-        // }
         document.getElementById("edit_Name_id").value = db_data.name_of_modules;
         document.getElementById("edit_Inv_id").value = db_data.inv_number;
         document.getElementById("edit_Serial_id").value = db_data.serial_number;
         document.getElementById("unit_note_id").value = db_data.note;
         document.getElementById('button_for_save_edit_row').onclick = function (){save_edit_data_pon(db, id ,row)}
-        document.getElementById('button_for_delete_row').onclick = function (){delete_row_from_edit_mod(db, id , 'button_for_delete_row','tbody_main_table',
-            row)}
+        document.getElementById('button_for_delete_row').onclick = async function (){
+            let resp = await deletePONdata(id, 'List_of_modules')
+            if(resp.ok){
+                liveToast(true, "Модуль удален")
+                row.remove()
+                setTimeout(function (){document.getElementById('btn_cls_edit_mod').click()}, 800)
+            }
+            else liveToast(false, "Ошибка удаления")
+        }
     }
 }
+async function deletePONdata(id, db){
+    if (confirm("Удалить запись?")){
+        var id_val = {id: id}
+        const response = await fetch_data_2(id_val,'/delete_row/' + db, 'POST');
+        return response       
+}}
 
 
 // function add_inputs_to_edit_modal(){
@@ -546,6 +558,4 @@ function liveToast(status, data){
         autohide: true,
         interval: 5000
     });
-    
-
 }

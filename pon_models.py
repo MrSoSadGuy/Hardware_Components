@@ -14,7 +14,7 @@ class Uzel_dostupa(db.Model):
     number_ud: str = db.Column(db.String(10), nullable=False)
     Adress: str = db.Column(db.String(100), nullable=False)
     name: str = db.Column(db.String(20), nullable=False)
-    cod_name_of_olt = db.relationship('List_of_olt', backref='Uzel_dostupa', lazy='dynamic')
+    cod_name_of_olt = db.relationship('List_of_olt', backref='Uzel_dostupa')
 
     def __repr__(self):
         return '<Uzel_dostupa %r>' % self.id

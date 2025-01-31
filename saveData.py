@@ -27,15 +27,7 @@ def save_data_to_db():
         return json.dumps(f"Unexpected {err=}, {type(err)=}")
 
 
-def delete_data_from_db(data):
-    try:
-        db.session.delete(data)
-        db.session.commit()
-        print("SUCCESS")
-        return jsonify("SUCCESS")
-    except Exception as err:
-        print(f"Unexpected {err=}, {type(err)=}")
-        return json.dumps(f"Unexpected {err=}, {type(err)=}")
+
 
 
 def add_new_unit(req_dict, name):
@@ -314,4 +306,3 @@ def save_object_for_MA(req_dict, name):
         return save_data_to_db()
     else:
         return json.dumps("NOT 'POST' REQUEST")
-    
