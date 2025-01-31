@@ -194,6 +194,10 @@ def get_data_from_db(db):
         # units = get_data_for_select()
         units = get_data_for_move(json.loads(req))
         return jsonify(units)
+    if db == 'Type_of_olt':
+        # units = get_data_for_select()
+        data =Type_of_olt.query.all()
+        return jsonify(data)
     # if db in db_req_lst:
     #     return jsonify(db_req_lst[db])
     if db == 'Objects_ur_lica':

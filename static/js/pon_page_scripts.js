@@ -296,46 +296,40 @@ async function apply_move_modul(edit_data, db, btn){
     }
 }
 
-// async function add_new_modal() {
-//     const slct_ud = document.getElementById('select_ud')
-//     const slct_unit = document.getElementById('select_unit')
-//     while(slct_ud.length>0){slct_ud.remove(0)}
-//     const opt_slct_ud = document.createElement('option')
-//     opt_slct_ud.selected
-//     opt_slct_ud.text = 'Выберите обьект'
-//     opt_slct_ud.value = 0
-//     slct_ud.add(opt_slct_ud)
-//     const data = await fetch_data_2("all",'/get_data_from_db/Uzel_dostupa_all',"POST")
-//     let list_of_data = await data.json();
-//
-//     list_of_data.forEach(item => {
-//         console.log("🚀 ~ Object.keys ~ item:", item)
-//         const opt = document.createElement('option')
-//         opt.value = item['id']
-//         opt.text = item['name'] + ' ' + item['Adress']
-//         slct_ud.add(opt)
-//     })
-//     const opt_new = document.createElement('option')
-//     opt_new.value = "new"
-//     opt_new.text = "Добавить новый"
-//     slct_ud.add(opt_new)
-//     slct_ud.addEventListener("change", function() {
-//         while(slct_unit.length>0){slct_unit.remove(0)}
-//         const opt_slct_unit = document.createElement('option')
-//         opt_slct_unit.selected
-//         opt_slct_unit.text = 'Выберите место'
-//         opt_slct_unit.value = '0'
-//         slct_unit.add(opt_slct_unit)
-//         if(this.options[this.selectedIndex].value === '0'){
-//             slct_unit.disabled = true
-//         }
-//         if (this.options[this.selectedIndex].value === 'new') {
-//             create_new_ud()
-//         } else {
-//             select_units(this.options[this.selectedIndex].value, slct_unit)
-//         }
-//     })
-// }
+async function add_new_unit() {
+    let table = document.getElementById('table_add_nev_un')  
+    let tbody = document.getElementById('t_body_add_new_un')
+    clearTbody(tbody)
+    const slct = document.getElementById('select_type_unit')
+    while(slct.length>0){slct.remove(0)}
+    const opt_slct = document.createElement('option')
+    opt_slct.selected
+    opt_slct.text = 'Выберите тип устройства'
+    opt_slct.value = 0
+    slct.add(opt_slct)
+    const data = await fetch_data_2("all",'/get_data_from_db/Type_of_olt',"POST")
+    let list_of_data = await data.json();
+    list_of_data.forEach(item => {
+        console.log("🚀 ~ Object.keys ~ item:", item)
+        const opt = document.createElement('option')
+        opt.value = item['id']
+        opt.text = item['type'] 
+        slct.add(opt)
+    })
+    slct.addEventListener("change", function() {
+        if(this.options[this.selectedIndex].value === '0'){
+            clearTbody(tbody)
+        }
+        else {
+            clearTbody(tbody)
+            
+        }
+    })
+}
+
+function clearTbody(tbody){
+    while (tbody.hasChildNodes()) tbody.removeChild(tbody.firstChild)
+}
 function create_new_ud(){}
 async function select_units(id, slct_unit) {
     slct_unit.disabled = false

@@ -42,6 +42,17 @@ def get_data_for_new_mod():
     return data
 
 
+def get_data_for_new_unit(req):
+    data ={}
+    sock = Olt_sockets.query.all()
+    for s in sock:
+        if s.type_of_olt == req:
+            lst = []
+            for p in s.list_of_modules:
+                lst.append()
+    # return data
+
+
 def get_used_unit_data(id):
     print(id)
     unit = List_of_olt.query.get_or_404(id)
