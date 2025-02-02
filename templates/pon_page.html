@@ -272,7 +272,7 @@
                         <td class="h5">адрес: {{ u.Adress }}</td>
                         <td width='2%'>
                             <a >
-                                <img id="ud_add_un" data-id="{{ u.id }}" data-bs-toggle="modal" data-bs-target="#add_new_unit_modal" src = "/static/images/add.svg"/>
+                                <img id="ud_add_un" data-id="{{u.id}}" data-cod="{{u.cod_ud}}"  data-bs-toggle="modal" data-bs-target="#add_new_unit_modal" src = "/static/images/add.svg"/>
                             </a>
                         </td>
                         <td width='2%'>
@@ -899,9 +899,29 @@
                     <div class="row">
                         <div class="col-sm">
                             <div class="mb-3">
+                                <label class="col-form-label">тип устройства:</label>
                                 <select class="form-select" aria-label="Default select example" id = 'select_type_unit'>
                                     <option value = '0'>Выберите тип устройства</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="mb-3">
+                                <label class="col-form-label">Код устройства:</label>
+                                <input type="text"  class="form-control" id="cod_new_un" >
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="mb-3">
+                                <label class="col-form-label">IP адрес:</label>
+                                <input type="text"  class="form-control" id="ip_new_un" >
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="mb-3">
+                                <label class="col-form-label">Место установки:</label>
+                                <input type="text"  class="form-control" id="mecto_new_un" >
                             </div>
                         </div>
                     </div>
@@ -926,14 +946,14 @@
                 <button type="button" class="btn btn-primary" id = "save_new_unit"  data-toggle="tooltip" data-placement="top" title='Сохранить изменения'>
                     <i class="bi bi-floppy"></i>
                 </button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cl_add_pon_mod">Закрыть</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cl_add_pon_un">Закрыть</button>
             </div>
         </div>
     </div>
 </div>
 <script>
     $('#add_new_unit_modal').on('show.bs.modal', function (e) {
-        add_new_unit($(e.relatedTarget).data('id'));
+        add_new_unit($(e.relatedTarget).data('id'),$(e.relatedTarget).data('cod'));
     })
     $('#add_shelf_data_modal').on('show.bs.modal', function (e) {
         shelf_new_modules($(e.relatedTarget).data('id'));

@@ -236,9 +236,14 @@ async function apply_move_modul(edit_data, db, btn){
     }
 }
 
-async function add_new_unit() {
+async function add_new_unit(id,tm) {
+    let appl_btn = document.getElementById("save_new_unit")
+    appl_btn.disabled = true;
     let table = document.getElementById('table_add_nev_un')  
     let tbody = document.getElementById('t_body_add_new_un')
+    let cod = document.getElementById("cod_new_un")
+    let IP = document.getElementById("ip_new_un")
+    let mesto  = document.getElementById("mecto_new_un")
     clearTbody(tbody)
     const slct = document.getElementById('select_type_unit')
     while(slct.length>1){slct.remove(1)}
@@ -251,9 +256,21 @@ async function add_new_unit() {
         opt.text = item['type'] 
         slct.add(opt)
     })
+
     slct.addEventListener("change", async function () {
         clearTbody(tbody)
-        if( this.options[this.selectedIndex].value!== '0'){
+        let val =this.options[this.selectedIndex].value
+        if( val !== '0'){
+            appl_btn.disabled = false;
+            list_of_data.forEach(item => {
+                if(item['id'].toString() === val){
+                     cod.value = item['start']+ '**' + '-'
+                        + item['midl'] + tm + item['end']+ '**'
+                }
+            })
+            mesto.value =''
+            IP.value = '192.168.*.*'
+            // appl_btn.disabled = false;
             const response = await fetch_data_2(this.options[this.selectedIndex].value, '/get_data_from_db/data4newPONunit', "POST")
             if(response.ok){
                 const data = await response.json()
@@ -274,7 +291,13 @@ async function add_new_unit() {
                     row.insertCell(0).innerHTML = '<input class="form-check-input" type="checkbox" value="">'
             })
         }
-    }})
+    }
+    else {
+        cod.value=''
+        IP.value =''
+        mesto.value =''
+        appl_btn.disabled = true;   }
+})
 }
 
 function clearTbody(tbody){
