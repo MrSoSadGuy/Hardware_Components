@@ -1,9 +1,8 @@
-function downloadFile(file) {
-    let name = document.getElementById('PON_id').value;
-    let url = '/download/'+ file +'/'+name;
+function downloadFile(file, id) {
+    let url = '/download/'+ file +'/'+id;
     console.log(url)
     var link = document.createElement("a");
-    link.setAttribute('download', file + name);
+    link.setAttribute('download', file);
     link.href=url;
     document.body.appendChild(link);
     link.click();
@@ -41,6 +40,7 @@ function del_row(tbody_id) {
 async function save_color_in_db(db_table, id, color){
     const data = {id: id, color: color}
     const fetch_color = await fetch_data(data, "change_color/"+db_table,'POST')
+    console.log("🚀 ~ save_color_in_db ~ data:", data)
 }
 
 //копирование в таблицу из Excel 
@@ -68,4 +68,16 @@ function paste_to_cells_like_excel(tbody_id, data, start_r, start_c,  cells_in_r
             rowLength++;
         }
     }
+}
+
+function liveToast(status, data){
+    let theme
+    status ? theme = 'success': theme = 'danger'
+    new Toast({
+        title: false,
+        text: data,
+        theme: theme,
+        autohide: true,
+        interval: 5000
+    });
 }

@@ -24,15 +24,15 @@
     <script src="{{ url_for('static', filename='js/for_ma_units_page_scripts.js') }}"></script>
     <script>
 
-        // document.addEventListener('DOMContentLoaded', () => {
-        //     document.documentElement.setAttribute('data-bs-theme', JSON.parse(localStorage.getItem("colar_thema")))
+        document.addEventListener('DOMContentLoaded', () => {
+            document.documentElement.setAttribute('data-bs-theme', JSON.parse(localStorage.getItem("colar_thema")))
         //     const table = document.getElementById('tbody_main_table')
         //     const tbodies = table.getElementsByTagName('tr');
         //     document.getElementById('number_of_records').innerHTML = 'Записей отображено: ' + tbodies.length;
         //
         //
         //
-        // });
+        });
     </script>
     <!--    Заполнение в модульное окно Инвентарного номера-->
 
@@ -194,10 +194,6 @@
                             type="button">
                         <i class="bi bi-plus-square-fill"></i> 
                     </button>
-                    <button class="btn btn-primary btn-lg" onclick="liveToast(false, 'SUCCESS')"
-                            type="button">
-                        <i class="bi bi-plus-square-fill"></i> 
-                    </button>
                     <button class="btn btn-primary btn-lg" onclick="save_main_table_in_file()" type="button">
                         <i class="bi bi-download"></i> Сохранить в Excel
                     </button>
@@ -251,9 +247,9 @@
                                     <input class='btn-change-clr' data-placement="bottom" data-toggle="tooltip"
                                             id="defolt_color" title="Убрать выделение" type="button"/>
                                 </div>
-                                <div class="col">
+                                {# <div class="col">
                                     <a href="" id="delete_checked">Удалить отмеченные</a>
-                                </div>
+                                </div> #}
                             </div>
                         </div>
                         <div class="col">
@@ -353,9 +349,9 @@
                                             <tbody class="plata_tbody">
 
                                             {% for m in olt.list_of_modules|sort(attribute='socket') %}
-                                                <tr class="for_file_download" data-id="{{ m.id }}" data-db="List_of_modules">
-                                                    <td width='2%'>
-                                                        <input class="form-check-input" id="flexCheck_modul{{ m.id }}" type="checkbox" value="">
+                                                <tr class="for_file_download" data-id="{{ m.id }}" data-db="List_of_modules" bgcolor="{{m.color}}">
+                                                    <td width='2%' data-id="{{ m.id }}">
+                                                        <input class="form-check-input" id="flexCheck_modul{{ m.id }}" type="checkbox"  value="">
                                                     </td>
                                                     {% if m.Olt_sockets.socket == -1 and 'OL' in olt.cod_name_of_olt %}
                                                     <td > fun</td>
@@ -419,25 +415,25 @@
         })
         document.getElementById('flexCheck_main').addEventListener("change", function () {
             if (this.checked) {
-                check_all_visible_main_table(true)
+                check_all_visible_PON_table(true)
             } else {
-                check_all_visible_main_table(false);
+                check_all_visible_PON_table(false);
             }
         });
         document.getElementById('flexSwitchCheckChecked').addEventListener("change", function () {
             if (this.checked) {
-                show_checked_main_table(true)
+                show_checked_PON_table(true)
             } else {
-                show_checked_main_table(false);
+                show_checked_PON_table(false);
             }
         });
         document.getElementById('favcolor').addEventListener("change", function () {
             console.log(this.value)
-            set_custom_bg_color_main_table('Units', true, this.value)
+            set_custom_bg_color_PON_table(true, this.value)
         });
         document.getElementById('defolt_color').addEventListener("click", function () {
             console.log(this.value)
-            set_custom_bg_color_main_table('Units', false)
+            set_custom_bg_color_PON_table(false)
         });
         document.getElementById('delete_checked').addEventListener("click", function (e) {
             e.preventDefault();
@@ -726,8 +722,8 @@
                 <button type="button" class="btn btn-primary" id = "save_kts" onclick="save_kts_data(this.id)" data-toggle="tooltip" data-placement="top" title='Сохранить изменения'>
                     <i class="bi bi-floppy"></i>
                 </button>
-                <button type="button" class="btn btn-primary" id = "kts" onclick="downloadFile(this.id)" data-toggle="tooltip" data-placement="top" title='Скачать КТС'>КТС</button>
-                <button type="button" class="btn btn-primary" id = "sostav" onclick="downloadFile(this.id)" data-toggle="tooltip" data-placement="top" title='Скачать Состав оборудования'>Состав оборудования</button>
+                <button type="button" class="btn btn-primary" id = "kts"  data-toggle="tooltip" data-placement="top" title='Скачать КТС'>КТС</button>
+                <button type="button" class="btn btn-primary" id = "sostav"  data-toggle="tooltip" data-placement="top" title='Скачать Состав оборудования'>Состав оборудования</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
             </div>
         </div>
@@ -746,14 +742,14 @@
                         <div class="col-sm">
                             <div class="mb-3">
                                 <select class="form-select" aria-label="Default select example" id = 'select_unit'>
-                                    
+                                    <option selected value="0">Выберите обьект</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-sm">
                             <div class="mb-3">
                                 <select class="form-select" aria-label="Default select example" id = 'select_socket' disabled>
-                                    <option selected>Выберите место</option>
+                                    <option selected value="0">Выберите место</option>
                                 </select>
                             </div>
                         </div>
@@ -884,7 +880,7 @@
                     </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id = "save_new_mod"  data-toggle="tooltip" data-placement="top" title='Сохранить'>
+                <button type="button" class="btn btn-primary" id = "save_new_modules_shelf"  data-toggle="tooltip" data-placement="top" title='Сохранить'>
                     <i class="bi bi-floppy"></i>
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cl_new_pon_mod">Закрыть</button>
@@ -904,6 +900,7 @@
                         <div class="col-sm">
                             <div class="mb-3">
                                 <select class="form-select" aria-label="Default select example" id = 'select_type_unit'>
+                                    <option value = '0'>Выберите тип устройства</option>
                                 </select>
                             </div>
                         </div>
@@ -926,7 +923,7 @@
                 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id = "save_new_modules"  data-toggle="tooltip" data-placement="top" title='Сохранить изменения'>
+                <button type="button" class="btn btn-primary" id = "save_new_unit"  data-toggle="tooltip" data-placement="top" title='Сохранить изменения'>
                     <i class="bi bi-floppy"></i>
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cl_add_pon_mod">Закрыть</button>

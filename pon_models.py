@@ -1,9 +1,7 @@
 from flask_login import UserMixin
-from flask_sqlalchemy import SQLAlchemy
 from dataclasses import dataclass
 from datetime import datetime
 from models import db
-
 
 
 @dataclass
@@ -109,13 +107,14 @@ class List_of_modules(db.Model):
     inv_number: str = db.Column(db.String(20), nullable=True)
     serial_number: str = db.Column(db.String(50), nullable=True)
     note: str = db.Column(db.String(500), nullable=True)
+    color: str = db.Column(db.String(20), nullable=True)
     name_who_add = db.Column(db.String(20), nullable=True)
     add_date = db.Column(db.DateTime, default=datetime.utcnow)
     name_who_edit = db.Column(db.String(20), nullable=True)
     edit_date = db.Column(db.DateTime, nullable=True)
-
+    
     def __repr__(self):
-        return '<MA_Units %r>' % self.id
+        return '<List_of_modules %r>' % self.id
 
 
 @dataclass

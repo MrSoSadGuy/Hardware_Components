@@ -1,5 +1,5 @@
 from flask import request, json, jsonify
-
+from flask_login import current_user
 from app import app
 from models import *
 from pon_models import *
@@ -192,7 +192,9 @@ def add_new_pon_modules(req_dict, name):
                                             inv_number=data["inv_number"],
                                             serial_number=data["serial"],
                                             name_of_modules=data["name"],
-                                            name_who_add = name)
+                                            name_who_add = name,
+                                            color = '',
+                                            note="")
                 response.append( f", {add_data_to_db(pon_mod)}")
         return response
     else:
@@ -306,3 +308,27 @@ def save_object_for_MA(req_dict, name):
         return save_data_to_db()
     else:
         return json.dumps("NOT 'POST' REQUEST")
+    
+    
+def saveColorUnits(id, color):
+    return saveColor(Unit.query.get_or_404(int(id)), color)
+    
+    
+def saveColorBuhData(id, color):
+    return saveColor(BuhUch.query.get_or_404(int(id)), color)
+
+
+def saveColorMAunits(id,color):
+    return saveColor(Objects_ur_lica.query.get_or_404(int(id)), color)
+
+
+def saveColorPONmodul(id,color):
+    return saveColor(List_of_modules.query.get_or_404(int(id)), color)
+
+
+def saveColor(db_obj, color):
+    user = Users.query.filter_by(id=current_user.get_id()).first()
+    if  db_obj.color != color:
+        db_obj.color = color;
+        db_obj.editor = user.FIO
+    return save_data_to_db()

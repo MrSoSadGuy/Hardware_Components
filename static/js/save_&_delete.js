@@ -313,11 +313,11 @@ async function save_kts_data() {
         const fetch_response = await fetch_data(kts_data,'/save_data/KTS','POST');
         console.log("🚀 ~ save_edit_buh_data ~ data:", fetch_response)
         if(fetch_response==="SUCCESS"){
-            document.getElementById("save_kts").setAttribute("class", "btn btn-success");
+            liveToast(true,"Данные сохраненны");
         }
         else {
-            document.getElementById("save_kts").setAttribute("class", "btn btn-danger");
-            alert(fetch_response);
+            liveToast(true,"Ошибка сохранения");
+            console.log("error save kts data: " + fetch_response);
         }
     }
 }
@@ -432,17 +432,3 @@ async function add_new_units(tbody, db_table, btn_id, add_param){
         }
 }
 
-async function add_new_pon_modules(data, btn_id){
-    if (confirm("Сохранить изменнения?")){
-        const response = await fetch_data_2(data,'/save_data/add_new_pon_modules','POST');
-        if(response.ok){
-            // document.getElementById(btn_id).setAttribute("class", "btn btn-success");
-            liveToast(true, "Данные добавлены успешно")
-        }
-        else{
-            liveToast(false, response.json)
-            // document.getElementById(btn_id).setAttribute("class", "btn btn-danger");
-            // alert(response.json)
-        }
-    }
-}

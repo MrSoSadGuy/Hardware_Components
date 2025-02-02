@@ -17,6 +17,7 @@
     bottom: 15px;
     right: 15px;
     width: var(--toast-width);
+    z-index: 1051;
   }
   
   .toast {

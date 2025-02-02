@@ -1,42 +1,43 @@
-async function to_fill_sostav_modal(p_name) {
-    document.getElementById('save_kts').setAttribute("class", "btn btn-primary");
-    // document.getElementById("PON_id").value = p_name;
-    document.getElementById("t_sostav_body").remove();
-    var table = document.getElementById("Sostav_Modal_table");
-    const tbody = document.createElement('tbody');
-    tbody.setAttribute('id', 't_sostav_body');
-    table.appendChild(tbody);
-    const modules_data = await fetch_data_2(p_name,'/get_data_from_db/olt_data',"POST");
-    if(modules_data.ok){
-        let list_of_modules = await modules_data.json();
-        for (let item in  list_of_modules){
-            let tr = document.createElement('tr');
-            let td = document.createElement('td');
-            td.textContent = item;
-            tr.appendChild(td);
-            for (let i in list_of_modules[item]) {
+async function to_fill_sostav_modal(id) {
+    try {
+        let tbody = document.getElementById("t_sostav_body");
+        clearTbody(tbody);
+        const modules_data = await fetch_data_2(id, '/get_data_from_db/olt_data', "POST");
+        if (modules_data.ok) {
+            let list_of_modules = await modules_data.json();
+            for (let item in list_of_modules) {
+                let tr = document.createElement('tr');
                 let td = document.createElement('td');
-                td.textContent = list_of_modules[item][i];
+                td.textContent = item;
                 tr.appendChild(td);
+                for (let i in list_of_modules[item]) {
+                    let td = document.createElement('td');
+                    td.textContent = list_of_modules[item][i];
+                    tr.appendChild(td);
+                }
+                tbody.appendChild(tr);
             }
-            tbody.appendChild(tr);
         }
-    }
-    const data_for_kts = await fetch_data_2(p_name,'/get_data_from_db/kts_data_new',"POST");
-    if(data_for_kts.ok){
-        let kts_data = await data_for_kts.json();
-        console.log(kts_data);
-        document.getElementById("PON_id").value = kts_data['cod_name_of_olt'] ? kts_data['cod_name_of_olt']: '';
-        document.getElementById("Ud_id").value = kts_data['UD'] ? kts_data['UD']: '';
-        document.getElementById("ip_id").value = kts_data['IP'] ? kts_data['IP']: '';
-        document.getElementById("olt_id").value = kts_data['OLT'] ? kts_data['OLT']: '';
-        document.getElementById("inv_id").value = kts_data['inv_number'] ? kts_data['inv_number']: '';
-        document.getElementById("serial_id").value = kts_data['Serial'] ?kts_data['Serial']: '';
-        document.getElementById("date_pr_id").value = kts_data['date_of_production'] ?kts_data['date_of_production']: '';
-        document.getElementById("date_exp_id").value = kts_data['date_of_entry'] ?kts_data['date_of_entry']: '';
-        document.getElementById("full_name_id").value = kts_data['full_name'] ?kts_data['full_name']: '';
-        document.getElementById("mesto_id").value = kts_data['mesto'] ?kts_data['mesto']: '';
-        document.getElementById("zavod_id").value = kts_data['zavod'] ? kts_data['zavod']: '';
+        const data_for_kts = await fetch_data_2(id, '/get_data_from_db/kts_data_new', "POST");
+        if (data_for_kts.ok) {
+            let kts_data = await data_for_kts.json();
+            console.log(kts_data);
+            document.getElementById("PON_id").value = kts_data['cod_name_of_olt'] ? kts_data['cod_name_of_olt'] : '';
+            document.getElementById("Ud_id").value = kts_data['UD'] ? kts_data['UD'] : '';
+            document.getElementById("ip_id").value = kts_data['IP'] ? kts_data['IP'] : '';
+            document.getElementById("olt_id").value = kts_data['OLT'] ? kts_data['OLT'] : '';
+            document.getElementById("inv_id").value = kts_data['inv_number'] ? kts_data['inv_number'] : '';
+            document.getElementById("serial_id").value = kts_data['Serial'] ? kts_data['Serial'] : '';
+            document.getElementById("date_pr_id").value = kts_data['date_of_production'] ? kts_data['date_of_production'] : '';
+            document.getElementById("date_exp_id").value = kts_data['date_of_entry'] ? kts_data['date_of_entry'] : '';
+            document.getElementById("full_name_id").value = kts_data['full_name'] ? kts_data['full_name'] : '';
+            document.getElementById("mesto_id").value = kts_data['mesto'] ? kts_data['mesto'] : '';
+            document.getElementById("zavod_id").value = kts_data['zavod'] ? kts_data['zavod'] : '';
+        }
+        document.getElementById('kts').onclick = () => { downloadFile('kts', id); }
+        document.getElementById('sostav').onclick = () => { downloadFile('sostav', id); }
+    } catch (error) {
+        console.error("Error in to_fill_sostav_modal:", error);
     }
 }
 async function to_fill_ud_edit_modal(id, row) {
@@ -49,8 +50,8 @@ async function to_fill_ud_edit_modal(id, row) {
         document.getElementById("edit_ud_Name_id").value = db_data.name;
         document.getElementById("edit_ud_adr_id").value = db_data.Adress;
         document.getElementById("edit_ud_cod_id").value = db_data.cod_ud;
-        document.getElementById('button_for_save_edit_ud').onclick = function (){save_edit_ud_data('Uzel_dostupa', id ,row)}
-        document.getElementById('button_for_delete_ud').onclick = async function (){
+        document.getElementById('button_for_save_edit_ud').onclick =  ()=>{save_edit_ud_data('Uzel_dostupa', id ,row)}
+        document.getElementById('button_for_delete_ud').onclick = async ()=>{
             let resp = await deletePONdata(id, 'Uzel_dostupa')
             console.log("🚀 ~ resp:", resp.status)
             if(resp.ok){
@@ -71,7 +72,6 @@ async function to_fill_ud_edit_modal(id, row) {
 }
 
 async function to_fill_edit_modal(id, db, row) {
-    document.getElementById('button_for_save_edit_row').setAttribute("class", "btn btn-primary");
     const data = await fetch_data_2(id,'/get_data_from_db/'+db,"POST");
     if(data.ok){
         let db_data = await data.json();
@@ -99,44 +99,6 @@ async function deletePONdata(id, db){
         return response       
 }}
 
-
-// function add_inputs_to_edit_modal(){
-//     let divF = document.getElementById("first_row")
-//     let divS = document.getElementById("second_row")
-//     let div1 = document.createElement("div");
-//     div1.setAttribute('class', 'col-sm');
-//     div1.setAttribute('id', 'div_cod');
-//     div1.innerHTML = "  <div class=\"mb-3\">\n" +
-//         "                   <label class=\"col-form-label\">Код:</label>\n" +
-//         "                   <input type=\"text\"  class=\"form-control\" id=\"edit_Cod_id\">\n" +
-//         "               </div>" 
-//     // divF.appendChild(div1);
-//     let div2 = document.createElement("div");
-//     div2.setAttribute('class', 'col-sm');
-//     div2.setAttribute('id', 'div_row');
-//     div2.innerHTML = " <div class=\"mb-3\">\n" +
-//         "                   <label class=\"col-form-label\">Ряд\Шкаф\Полка:</label>\n" +
-//         "                   <input type=\"text\"  class=\"form-control\" id=\"edit_Riad_id\">\n" +
-//         "               </div>"
-//     let div3 = document.createElement("div");
-//     div3.setAttribute('class', 'col-sm');
-//     div3.setAttribute('class', 'col-sm');
-//     div3.setAttribute('id', 'div_ip');
-//     div3.innerHTML =  " <div class=\"mb-3\">\n" +
-//         "                   <label class=\"col-form-label\">IP:</label>\n" +
-//         "                   <input type=\"text\"  class=\"form-control\" id=\"edit_IP_id\">\n" +
-//         "               </div>"
-//     divF.appendChild(div1);
-//     divF.appendChild(div3);
-//     divS.appendChild(div2);
-// }
-
-
-// function delete_inputs_from_edit_modal(){
-//     document.getElementById("div_cod").remove();
-//     document.getElementById("div_row").remove();
-//     document.getElementById("div_ip").remove();
-// }
 async function save_edit_ud_data(db, id ,row_index) {
     var edited_row = {
         id: id,
@@ -147,14 +109,14 @@ async function save_edit_ud_data(db, id ,row_index) {
     if(confirm("Сохранить изменнения?")){
         const data = await fetch_data_2(edited_row,'/save_data/'+db, 'POST');
         if(data.ok){
-            document.getElementById("button_for_save_edit_ud").setAttribute("class", "btn btn-success");
+            liveToast(true,"Данные сохранены")
             var oCells = row_index.getElementsByTagName('td');
             oCells[0].textContent = document.getElementById("edit_ud_Name_id").value;
             oCells[1].textContent = document.getElementById("edit_ud_adr_id").value;
         }
         else{
-            document.getElementById("button_for_save_edit_ud").setAttribute("class", "btn btn-danger");
-            alert(data);
+            liveToast(false,"Ошибка сохранения")
+            console.log("error save edit UD data: " + await data.json());
         }
     }
 }
@@ -167,16 +129,11 @@ async function save_edit_data_pon(db, id ,row_index) {
         serial: document.getElementById("edit_Serial_id").value,
         note: document.getElementById("unit_note_id").value,
     }
-    // if(db==="olt_list"){
-    //     edited_row['riad'] = document.getElementById("edit_Riad_id").value
-    //     edited_row['cod_name_of_olt'] = document.getElementById("edit_Cod_id").value
-    //     edited_row['IP'] = document.getElementById("edit_IP_id").value
-    // }
     if (confirm("Сохранить изменнения?")){
         const data = await fetch_data_2(edited_row,'/save_data/'+db, 'POST');
         console.log(data.ok);
         if(data.ok){
-            document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-success");
+            liveToast(true, "Данные сохранены")
             var oCells = row_index.getElementsByTagName('td');
             if(db!=="olt_list"){
                 oCells[3].textContent = document.getElementById("edit_Name_id").value;
@@ -194,8 +151,8 @@ async function save_edit_data_pon(db, id ,row_index) {
             }
         }
         else {
-            document.getElementById("button_for_save_edit_row").setAttribute("class", "btn btn-danger");
-            alert(data);
+            liveToast(false,"Ошибка сохранения")
+            console.log("error save edit modul data: " + await data.json());
         }
     }
 }
@@ -228,42 +185,26 @@ function colaps_btn_chng(btn, status){
 }
 
 async function move_obj_modal(id, db){
-    document.getElementById("apply_move_modul_btn").setAttribute("class", "btn btn-primary");
     const slct_unit = document.getElementById('select_unit')
     const slct_sock = document.getElementById('select_socket')
     slct_sock.disabled = true;
-    while(slct_unit.length>0){slct_unit.remove(0)}
-    const opt_slct_unit = document.createElement('option')
-    opt_slct_unit.selected
-    opt_slct_unit.text = 'Выберите обьект'
-    opt_slct_unit.value = '0'
-    slct_unit.add(opt_slct_unit)
+    while(slct_unit.length>1){slct_unit.remove(1)}
     const data = await fetch_data_2(id,'/get_data_from_db/'+db+'_move',"POST")
     let list_of_data = await data.json();
     console.log("🚀 ~ move_obj_modal ~ list_of_data:", list_of_data)
     let target, target_val, sockets
-
     Object.keys(list_of_data).forEach(item => {
         const opt = document.createElement('option')
         opt.value = list_of_data[item][0]
         opt.text = item
         slct_unit.add(opt)
     })
-
-
     slct_unit.addEventListener("change", function() {
-        while(slct_sock.length>0){slct_sock.remove(0)}
-        const opt_slct_sock = document.createElement('option')
-        opt_slct_sock.selected
-        opt_slct_sock.text = 'Выберите место'
-        opt_slct_sock.value = '0'
-        slct_sock.add(opt_slct_sock)
+        while(slct_sock.length>1){slct_sock.remove(1)}
         this.options[this.selectedIndex].value === '0' ? slct_sock.disabled = true : slct_sock.disabled = false;
         target = this.options[this.selectedIndex].textContent
         target_val = this.options[this.selectedIndex].value
-        // console.log(list_of_data[target])
         for(i in list_of_data[target][1]){
-            console.log(i)
             const opt = document.createElement('option')
             opt.value = i
             opt.text = list_of_data[target][1][i]
@@ -277,21 +218,20 @@ async function move_obj_modal(id, db){
             var data = {id: id, target : target_val, socket:socket}
             console.log("🚀 ~ data:", data)
             apply_move_modul(data, db,  this)}
-        else{alert('Выберите объект и плата-место')}
-
+        else{liveToast(false,'Выберите объект и плата-место')}
 }}
 async function apply_move_modul(edit_data, db, btn){
     if (confirm("Переместить устройство?")){
         const data = await fetch_data_2(edit_data, '/save_data/'+ db,'POST');
         if(data.ok){
-            btn.setAttribute("class", "btn btn-success");
+            liveToast(true,"Модуль перемещен")
             setTimeout(function (){document.getElementById('close_mv_mod_btn').click()
                 reload_page()
             }, 700);
         }
         else {
-            btn.setAttribute("class", "btn btn-danger");
-            alert(data);
+            liveToast(false,"Модуль перемещен")
+            console.log("error move  pon modul: " + await data.json());
         }
     }
 }
@@ -301,12 +241,7 @@ async function add_new_unit() {
     let tbody = document.getElementById('t_body_add_new_un')
     clearTbody(tbody)
     const slct = document.getElementById('select_type_unit')
-    while(slct.length>0){slct.remove(0)}
-    const opt_slct = document.createElement('option')
-    opt_slct.selected
-    opt_slct.text = 'Выберите тип устройства'
-    opt_slct.value = 0
-    slct.add(opt_slct)
+    while(slct.length>1){slct.remove(1)}
     const data = await fetch_data_2("all",'/get_data_from_db/Type_of_olt',"POST")
     let list_of_data = await data.json();
     list_of_data.forEach(item => {
@@ -316,49 +251,58 @@ async function add_new_unit() {
         opt.text = item['type'] 
         slct.add(opt)
     })
-    slct.addEventListener("change", function() {
-        if(this.options[this.selectedIndex].value === '0'){
-            clearTbody(tbody)
+    slct.addEventListener("change", async function () {
+        clearTbody(tbody)
+        if( this.options[this.selectedIndex].value!== '0'){
+            const response = await fetch_data_2(this.options[this.selectedIndex].value, '/get_data_from_db/data4newPONunit', "POST")
+            if(response.ok){
+                const data = await response.json()
+                console.log(data)
+                Object.keys(data).forEach(elem => {
+                    var row = tbody.insertRow();
+                    row.insertCell(0).textContent = elem
+                    let sel = document.createElement('select')
+                    for (let i = 0; i < data[elem].length ; i++) {
+                        const opt = document.createElement('option')
+                        opt.text = data[elem][i]
+                        sel.add(opt)
+                    }
+                    row.insertCell(1).appendChild(sel)
+                    row.insertCell(2).contentEditable = true
+                    row.insertCell(3).contentEditable = true
+                    row.insertCell(4).contentEditable = true
+                    row.insertCell(0).innerHTML = '<input class="form-check-input" type="checkbox" value="">'
+            })
         }
-        else {
-            clearTbody(tbody)
-            
-        }
-    })
+    }})
 }
 
 function clearTbody(tbody){
     while (tbody.hasChildNodes()) tbody.removeChild(tbody.firstChild)
 }
-function create_new_ud(){}
-async function select_units(id, slct_unit) {
-    slct_unit.disabled = false
-    const data1 = await fetch_data_2(id,'/get_data_from_db/Uzel_dostupa_lst',"POST")
-    let list_of_data1 = await data1.json();
-    console.log(list_of_data1)
+// function create_new_ud(){}
+// async function select_units(id, slct_unit) {
+//     slct_unit.disabled = false
+//     const data1 = await fetch_data_2(id,'/get_data_from_db/Uzel_dostupa_lst',"POST")
+//     let list_of_data1 = await data1.json();
+//     console.log(list_of_data1)
 
-        Object.keys(list_of_data1).forEach(item => {
-            const opt = document.createElement('option')
-            opt.value = item
-            opt.text = list_of_data1[item]
-            slct_unit.add(opt)
-        })
-}
+//         Object.keys(list_of_data1).forEach(item => {
+//             const opt = document.createElement('option')
+//             opt.value = item
+//             opt.text = list_of_data1[item]
+//             slct_unit.add(opt)
+//         })
+// }
 
 async function move_olt_modal(id, db) {
     let appl_btn = document.getElementById("apply_move_olt_btn")
     let cod = document.getElementById("cod_to_mv")
     let IP = document.getElementById("new_IP")
     let mesto  = document.getElementById("new_mesto")
-    appl_btn.setAttribute("class", "btn btn-primary");
     appl_btn.disabled = true;
     const slct_ud = document.getElementById('select_ud')
-    while(slct_ud.length>0){slct_ud.remove(0)}
-    const opt_slct_ud = document.createElement('option')
-    opt_slct_ud.selected
-    opt_slct_ud.text = 'Выберите обьект'
-    opt_slct_ud.value = '0'
-    slct_ud.add(opt_slct_ud)
+    while(slct_ud.length>1){slct_ud.remove(1)}
     const ud_data = await fetch_data_2("all",'/get_data_from_db/Uzel_dostupa_all',"POST")
     const olt_data = await fetch_data_2(id,'/get_data_from_db/olt_data_2',"POST")
     let list_of_data = await ud_data.json();
@@ -393,83 +337,93 @@ async function move_olt_modal(id, db) {
     appl_btn.addEventListener("click", function() {
         var data = {id: id, uzel_id : slct_ud.value,
             cod_name_of_olt:cod.value, IP:IP.value, mesto:mesto.value}
-        console.log("🚀 ~ apply_move_modul ~ edit_data:", data)
         apply_move_modul(data, 'olt_list', this)
     })
 }
 async function add_new_unit_data(id) {
-    let save_btn = document.getElementById('save_new_modules');
-    save_btn.setAttribute("class", "btn btn-primary");
-    let cl_btn = document.getElementById('cl_add_pon_mod').onclick = function(){reload_page()}
-    document.getElementById("t_body_add_to_un").remove();
-    var table = document.getElementById("table_add_to_un");
-    const tbody = document.createElement('tbody');
-    tbody.setAttribute('id', 't_body_add_to_un');
-    table.appendChild(tbody);
-    let response = await fetch_data_2(id, '/get_data_from_db/olt_data_3', 'POST')
-    if (response.ok){
-        let data = await response.json()
-        console.log("🚀 ~ add_new_unit_data ~ data:", data)
-        Object.keys(data).forEach(elem => {
-            var row = tbody.insertRow();
-            row.insertCell(0).textContent = elem
-            if(data[elem][0]){
-                console.log(data[elem])
-                for (let i = 1; i < data[elem].length; i++ ){
-                    row.insertCell(i).textContent = data[elem][i]
-                }
-                row.insertCell(0).innerHTML ='<input class="form-check-input" type="checkbox" value="" checked disabled>'
-            }
-            else {
-                let sel = document.createElement('select')
-                for (let i = 1; i < data[elem].length ; i++) {
-                    const opt = document.createElement('option')
-                    opt.text = data[elem][i]
-                    sel.add(opt)
-                }
-                row.insertCell(1).appendChild(sel)
-                row.insertCell(2).contentEditable = true
-                row.insertCell(3).contentEditable = true
-                row.insertCell(4).contentEditable = true
-                row.insertCell(0).innerHTML = '<input class="form-check-input" type="checkbox" value="">'
-            }
-        })
-    }
-    let ful_data = []
-    save_btn.addEventListener("click", function() {
-        let rows = document.getElementById('t_body_add_to_un').rows
-        for (let r of rows) {
-            let cells = r.cells
-            let check = cells[0].querySelector('.form-check-input')
-            if (check.checked === true && check.disabled === false){
-                var select = cells[2].getElementsByTagName('select')[0]
-                console.log(select)
-                var text = select.options[select.selectedIndex].text;
-                let n_data = {
-                    'unit_id':id,
-                    'mesto': cells[1].textContent,
-                    'type' : text,
-                    'name' : cells[4].textContent,
-                    'inv_number': cells[3].textContent,
-                    'serial': cells[5].textContent,
-                }
-                ful_data.push(n_data)
+  // Add event listener to reload page when 'cl_add_pon_mod' is clicked
+  document.getElementById('cl_add_pon_mod').addEventListener('click', reload_page);
 
-            }
+  const tbody = document.getElementById("t_body_add_to_un");
+  clearTbody(tbody);
+
+  const response = await fetch_data_2(id, '/get_data_from_db/olt_data_3', 'POST');
+  if (response.ok) {
+    const data = await response.json();
+    console.log("🚀 ~ add_new_unit_data ~ data:", data);
+
+    // Iterate over each key of the returned data object
+    Object.keys(data).forEach((elem) => {
+      // Create a new row and insert the key value as the first cell
+      const row = tbody.insertRow();
+      row.insertCell(0).textContent = elem;
+
+      if (data[elem][0]) {
+        // For rows where the first element is truthy.
+        console.log(data[elem]);
+        // Insert remaining cells with data values (starting from index 1)
+        for (let i = 1; i < data[elem].length; i++) {
+          row.insertCell(i).textContent = data[elem][i];
         }
-        ful_data.length > 0? add_new_pon_modules(ful_data, this.id): alert('Не выбраны новые модули для добовления')
-    })
+        // Prepend a disabled and checked checkbox cell at the beginning
+        row.insertCell(0).innerHTML =
+          '<input class="form-check-input" type="checkbox" value="" checked disabled>';
+      } else {
+        // For rows where the first element is falsy: create a select element.
+        let sel = document.createElement('select');
+        for (let i = 1; i < data[elem].length; i++) {
+          const opt = document.createElement('option');
+          opt.text = data[elem][i];
+          sel.add(opt);
+        }
+
+        // Append additional editable cells and a select cell
+        row.insertCell(1).appendChild(sel);         // Cell for select dropdown
+        row.insertCell(2).contentEditable = true;     // Editable cell
+        row.insertCell(3).contentEditable = true;     // Editable cell
+        row.insertCell(4).contentEditable = true;     // Editable cell
+        // Prepend an enabled checkbox cell at the beginning
+        row.insertCell(0).innerHTML =
+          '<input class="form-check-input" type="checkbox" value="">';
+      }
+    });
+  }
+
+  // Collect new module data when the 'save' button is clicked
+  let ful_data = [];
+  document.getElementById('save_new_modules').addEventListener("click", function () {
+    const rows = document.getElementById('t_body_add_to_un').rows;
+    for (const row of rows) {
+      const cells = row.cells;
+      const checkbox = cells[0].querySelector('.form-check-input');
+      // Process only rows with an enabled and checked checkbox
+      if (checkbox.checked && !checkbox.disabled) {
+        const selectElement = cells[2].querySelector('select');
+        console.log(selectElement);
+        const selectedType = selectElement.options[selectElement.selectedIndex].text;
+        const n_data = {
+          'unit_id': id,
+          'mesto': cells[1].textContent,
+          'type': selectedType,
+          'name': cells[4].textContent,
+          'inv_number': cells[3].textContent,
+          'serial': cells[5].textContent,
+        };
+        ful_data.push(n_data);
+      }
+    }
+    if (ful_data.length > 0) {
+      add_new_pon_modules(ful_data, this.id);
+    } else {
+      alert('Не выбраны новые модули для добавления');
+    }
+  });
 }
 
 async function shelf_new_modules(id) {
-    let save_btn = document.getElementById('save_new_mod');
-    save_btn.setAttribute("class", "btn btn-primary");
-    let cl_btn = document.getElementById('cl_new_pon_mod').onclick = function(){reload_page()}
-    document.getElementById("t_body_add_to_shelf").remove();
-    var table = document.getElementById("table_add_to_shelf");
-    const tbody = document.createElement('tbody');
-    tbody.setAttribute('id', 't_body_add_to_shelf');
-    table.appendChild(tbody);
+    document.getElementById('cl_new_pon_mod').addEventListener('click',reload_page)
+    const tbody = document.getElementById('t_body_add_to_shelf');
+    clearTbody(tbody)
     let response = await fetch_data_2(id, '/get_data_from_db/olt_data_4', 'POST')
     let data
     if (response.ok){
@@ -484,11 +438,9 @@ async function shelf_new_modules(id) {
             del_row('t_body_add_to_shelf')
         });
     }
-    
-    save_btn.addEventListener("click", function() {
+    document.getElementById('save_new_modules_shelf').addEventListener("click", function() {
         let rows = document.getElementById('t_body_add_to_shelf').rows;
         let full_data = []
-        // rows.forEach((row) => {
         for (let row of rows) {
             let row_data ={}
             let cells = row.cells
@@ -500,16 +452,29 @@ async function shelf_new_modules(id) {
                 row_data['name'] = cells[2].textContent
                 row_data['serial'] = cells[3].textContent
                 row_data['inv_number'] = cells[4].textContent
-                // row_data['socket'] = '75'
                 full_data.push(row_data)
+                row.remove()
             }
             console.log(row_data)
         }
         console.log(full_data)
         full_data.length > 0? add_new_pon_modules(full_data, this.id): alert('Не введены новые модули для добовления')
     })
-
 }
+
+async function add_new_pon_modules(data, btn_id){
+    if (confirm("Сохранить изменнения?")){
+        const response = await fetch_data_2(data,'/save_data/add_new_pon_modules','POST');
+        if(response.ok){
+            liveToast(true, "Данные добавлены успешно")
+        }
+        else{
+            liveToast(false, response.json)
+            console.log(await response.json())
+        }
+    }
+}
+
 function add_select_menu(row, data){
     let sel = document.createElement('select')
     const opt1 = document.createElement('option')
@@ -542,14 +507,107 @@ function add_select_menu(row, data){
     })
 }
 
-function liveToast(status, data){
-    let theme
-    status ? theme = 'success': theme = 'danger'
-    new Toast({
-        title: false,
-        text: data,
-        theme: theme,
-        autohide: true,
-        interval: 5000
+function show_checked_main_table(status){
+    let table = document.getElementById('tbody_main_table');
+    let tr = table.getElementsByTagName('tr');
+    for(var i = 0; i < tr.length; i++){
+        tds = tr[i].getElementsByTagName('td');
+        if(tds[0].querySelector('.form-check-input').checked===false){
+            status ? tr[i].style.display = "none": tr[i].removeAttribute("style");
+        }
+    }
+    number_of_records_main_table();
+}
+
+function serechRowsWithCheckInputs(){
+    let data = [];
+    [].forEach.call(document.getElementsByClassName('ud_tbody'), function (ud_tb) {
+        let units = ud_tb.getElementsByClassName('plata_tbody');
+        for(let i =0; i<units.length; i++){
+            let rows =  units[i].getElementsByTagName('tr')
+            for(let j = 0; j < rows.length; j++ ){
+                data.push(rows[j])
+            }
+        }
+    });
+    return data
+}
+
+
+function set_custom_bg_color_PON_table(status, color) {
+let rows = serechRowsWithCheckInputs()
+for(row of rows){
+    let td0 = row.getElementsByTagName('td')[0]
+    if(td0.querySelector('.form-check-input') && td0.querySelector('.form-check-input').checked){
+        if(status){
+            save_color_in_db('List_of_modules', td0.dataset.id, color)
+            row.setAttribute('bgcolor',color)
+        } 
+        else{
+            save_color_in_db('List_of_modules', td0.dataset.id,'')
+            row.removeAttribute("bgcolor");
+        }
+    }
+    td0.querySelector('.form-check-input').checked = false      
+}     
+}
+
+function check_all_visible_PON_table(status){
+    let rows = serechRowsWithCheckInputs()
+    for(row of rows){
+        let td0 = row.getElementsByTagName('td')[0]
+        if(row.getAttribute("style") !== 'display: none;' && td0.querySelector('.form-check-input')){
+            td0.querySelector('.form-check-input').checked = status
+        }
+        }
+}
+
+function show_checked_PON_table(status){
+    let rows = serechRowsWithCheckInputs()
+    for(row of rows){
+        let td0 = row.getElementsByTagName('td')[0]
+        if(td0.querySelector('.form-check-input') && td0.querySelector('.form-check-input').checked===false){
+            if(status){
+                row.style.display = "none"
+                row.classList.remove('for_file_download')
+            } 
+            else{
+                row.removeAttribute("style");
+                row.classList.add('for_file_download')
+            } 
+            }
+        }
+        hidePONunit()
+    }
+
+function hidePONunit(){
+    [].forEach.call(document.getElementsByClassName('ud_tbody'), function (ud_tb) {
+        let ud =[]
+        let units = ud_tb.getElementsByClassName('olt_tbody');
+        for(let i =0; i<units.length; i++){
+            let btn = units[i].querySelectorAll('img')[1]
+            let un = []
+            let unit = units[i].getElementsByClassName('plata_tbody')
+            let shassi_row = units[i].rows[0]
+            let rows =  unit[0].getElementsByTagName('tr')
+            for(let j = 0; j < rows.length; j++ ){
+                if(rows[j].style.display === "none") un.push(rows[j])
+            }
+        
+            if (rows.length === un.length) {
+                units[i].closest('tr').style.display = "none"
+                shassi_row.classList.remove('for_file_download')
+                ud.push(un)
+            }
+            else if(un.length === 0){
+                units[i].closest('tr').removeAttribute("style");
+                shassi_row.classList.add('for_file_download')
+                colaps_btn_chng(btn,false)
+            }
+            else{
+                colaps_btn_chng(btn,true)
+            }
+        }
+        ud.length === units.length? ud_tb.style.display = "none":ud_tb.removeAttribute("style");
     });
 }

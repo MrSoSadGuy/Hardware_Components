@@ -31,7 +31,7 @@ def get_data_for_jinja():
     return new_obj_list 
 
 
-def get_data_for_new_mod():
+def get_data_for_new_mod(req):
     data ={}
     type = Type_of_olt.query.all()
     for t in type:
@@ -42,15 +42,84 @@ def get_data_for_new_mod():
     return data
 
 
-def get_data_for_new_unit(req):
+def getBuhUchData(req):
+    buh = BuhUch.query.filter_by(inv_number=json.loads(req)).first()
+    return jsonify(buh)
+
+
+def getLstMudules(req):
+    modules = List_of_modules.query.get_or_404(int(json.loads(req)))
+    return jsonify(modules)
+
+
+def getPonUnitData(req):
+    olt = List_of_olt.query.get_or_404(int(json.loads(req)))
+    return jsonify(olt, olt.Type_of_olt)
+
+
+def getKTSdata(req):
+    kts = Data_for_KTS.query.filter_by(cod_name=json.loads(req).upper()).first()
+    return jsonify(kts)
+
+
+def getMAmodulesData(req):
+    modules = ma_add_modules.query.filter_by(cod_name=json.loads(req).upper()).all()
+    return jsonify(modules)
+
+
+def getMAunitStorData(req):
+    ma_units = MA_Units.query.filter_by(cod_name=json.loads(req).upper()).all()
+    return jsonify(ma_units)
+
+
+def getMAunitData(req):
+    units = MA_Units.query.get_or_404(int(json.loads(req)))
+    return jsonify(units, units.modules)
+
+
+def getUDdata(req):
+    ud = Uzel_dostupa.query.get_or_404(int(json.loads(req)))
+    return jsonify(ud)
+
+
+def getAllUDdata(req):
+    ud = Uzel_dostupa.query.order_by(Uzel_dostupa.id).all()
+    return ud
+
+
+def getUDlst(req):
+    ud = Uzel_dostupa.query.get_or_404(int(json.loads(req)))
+    answ ={}
+    for i in ud.cod_name_of_olt:
+        answ[i.id] = i.cod_name_of_olt
+    return jsonify(answ)
+
+
+def getTypeOfOltDAta(req):
+    data =Type_of_olt.query.all()
+    return jsonify(data)
+
+
+def getURdata(req):
+    obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
+    units_list = {}
+    modules_list = {}
+    for un in range(0, len(obj.unit)) :
+        units_list[un] = obj.unit[un]  
+        modules_list[un]= obj.unit[un].modules    
+    return jsonify(obj,units_list,modules_list)
+
+
+def data4newPONunit(req):
     data ={}
-    sock = Olt_sockets.query.all()
-    for s in sock:
-        if s.type_of_olt == req:
-            lst = []
-            for p in s.list_of_modules:
-                lst.append()
-    # return data
+    type = Type_of_olt.query.get_or_404(int(json.loads(req)))
+    for s in type.olt_sockets:
+        lst = []
+        for m in type.type_of_modules:
+            if m.first_socket <= s.socket <= m.last_socket:
+                lst.append(m.type)
+        data[s.socket] = lst
+    return(data)    
 
 
 def get_used_unit_data(id):

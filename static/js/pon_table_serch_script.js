@@ -19,8 +19,6 @@ function serch_olt_tbodies(olt_tbodies){
         !answ && !answ2 ? olt_tbodies[i].closest('tr').style.display = "none" : olt_tbodies[i].closest('tr').removeAttribute("style")
         
     }
-    
-    
     return flag.indexOf(true) > -1 
 }
 function serch_plata_tbodies(btn, plata_tbody){
@@ -48,8 +46,8 @@ function serch_cell_data(tds){
     input = document.getElementById("serch_pon_table");
     filter = input.value.toUpperCase();
     const list_of_words= filter.split(" ")
-    let result = rb1? serch_and(list_of_words, tds):serch_or(list_of_words, tds)
-    return result
+    if (tds[0].querySelector('.form-check-input') && tds[0].querySelector('.form-check-input').checked) return true;
+    else return rb1? serch_and(list_of_words, tds):serch_or(list_of_words, tds)
 }
 function serch_and(list_of_words, tds){
     var flag = [];
@@ -78,7 +76,6 @@ function serch_or(list_of_words, tds){
 
 async function save_main_table_in_file(){
     let list_data =[];
-    
     [].forEach.call(document.getElementsByClassName('for_file_download'), function (row) {
         list_data.push([row.dataset.id, row.dataset.db])
     })
