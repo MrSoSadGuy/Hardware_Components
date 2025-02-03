@@ -239,13 +239,13 @@ async function apply_move_modul(edit_data, db, btn){
 async function add_new_unit(id,tm) {
     let appl_btn = document.getElementById("save_new_unit")
     appl_btn.disabled = true;
-    let table = document.getElementById('table_add_nev_un')  
     let tbody = document.getElementById('t_body_add_new_un')
     let cod = document.getElementById("cod_new_un")
     let IP = document.getElementById("ip_new_un")
     let mesto  = document.getElementById("mecto_new_un")
     clearTbody(tbody)
     const slct = document.getElementById('select_type_unit')
+    slct.removeEventListener('click',async (e) => {})
     while(slct.length>1){slct.remove(1)}
     const data = await fetch_data_2("all",'/get_data_from_db/Type_of_olt',"POST")
     let list_of_data = await data.json();
@@ -256,48 +256,55 @@ async function add_new_unit(id,tm) {
         opt.text = item['type'] 
         slct.add(opt)
     })
-
-    slct.addEventListener("change", async function () {
+    slct.addEventListener("change", async (e) => {
         clearTbody(tbody)
-        let val =this.options[this.selectedIndex].value
+        console.log('111111111111111111')
+        let val =e.target.options[e.target.selectedIndex].value
         if( val !== '0'){
-            appl_btn.disabled = false;
-            list_of_data.forEach(item => {
-                if(item['id'].toString() === val){
-                     cod.value = item['start']+ '**' + '-'
-                        + item['midl'] + tm + item['end']+ '**'
-                }
-            })
-            mesto.value =''
-            IP.value = '192.168.*.*'
-            // appl_btn.disabled = false;
-            const response = await fetch_data_2(this.options[this.selectedIndex].value, '/get_data_from_db/data4newPONunit', "POST")
-            if(response.ok){
-                const data = await response.json()
-                console.log(data)
-                Object.keys(data).forEach(elem => {
-                    var row = tbody.insertRow();
-                    row.insertCell(0).textContent = elem
-                    let sel = document.createElement('select')
-                    for (let i = 0; i < data[elem].length ; i++) {
-                        const opt = document.createElement('option')
-                        opt.text = data[elem][i]
-                        sel.add(opt)
+            if(id !== 13 && id!==14){
+                mesto.value =''
+                IP.value = '192.168.*.*'
+                appl_btn.disabled = false;
+                list_of_data.forEach(item => {
+                    if(item['id'].toString() === val){
+                        cod.value = item['start']+ '**' + '-'
+                            + item['midl'] + tm + item['end']+ '**'
                     }
-                    row.insertCell(1).appendChild(sel)
-                    row.insertCell(2).contentEditable = true
-                    row.insertCell(3).contentEditable = true
-                    row.insertCell(4).contentEditable = true
-                    row.insertCell(0).innerHTML = '<input class="form-check-input" type="checkbox" value="">'
-            })
-        }
-    }
-    else {
-        cod.value=''
-        IP.value =''
-        mesto.value =''
-        appl_btn.disabled = true;   }
-})
+                })}
+                else{
+                    cod.value='Устройство ' + e.target.options[e.target.selectedIndex].text
+                    IP.contentEditable = false
+                    mesto.contentEditable = false
+                    appl_btn.disabled = false;
+                }
+                const response = await fetch_data_2(e.target.options[e.target.selectedIndex].value, '/get_data_from_db/data4newPONunit', "POST")
+                if(response.ok){
+                    const data = await response.json()
+                    console.log(data)
+                    Object.keys(data).forEach(elem => {
+                        var row = tbody.insertRow();
+                        row.insertCell(0).textContent = elem
+                        let sel = document.createElement('select')
+                        for (let i = 0; i < data[elem].length ; i++) {
+                            const opt = document.createElement('option')
+                            opt.text = data[elem][i]
+                            sel.add(opt)
+                        }
+                        row.insertCell(1).appendChild(sel)
+                        row.insertCell(2).contentEditable = true
+                        row.insertCell(3).contentEditable = true
+                        row.insertCell(4).contentEditable = true
+                        row.insertCell(0).innerHTML = '<input class="form-check-input" type="checkbox" value="">'
+                        console.log("🚀 ~ Object.keys ~ row:", row)
+                        })
+                    }
+            }
+            else {
+                cod.value=''
+                IP.value =''
+                mesto.value =''
+                appl_btn.disabled = true;   }
+    })
 }
 
 function clearTbody(tbody){
