@@ -173,7 +173,8 @@ def save_data(db_name):
         'olt_list': save_pon_olt_data,
         'olt_data_2': save_pon_olt_data,
         'Uzel_dostupa': save_ud_data,
-        'add_new_pon_modules': add_new_pon_modules
+        'add_new_pon_modules': add_new_pon_modules,
+        'NewPONnit': addNewPONnit
     }
     if db_name in db_req_lst:
         return db_req_lst.get(db_name)(req_dict, user.FIO)

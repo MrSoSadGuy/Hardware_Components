@@ -217,10 +217,10 @@ async function move_obj_modal(id, db){
         if (target_val !== '0' && socket !== '0'){
             var data = {id: id, target : target_val, socket:socket}
             console.log("🚀 ~ data:", data)
-            apply_move_modul(data, db,  this)}
+            apply_move_modul(data, db)}
         else{liveToast(false,'Выберите объект и плата-место')}
 }}
-async function apply_move_modul(edit_data, db, btn){
+async function apply_move_modul(edit_data, db){
     if (confirm("Переместить устройство?")){
         const data = await fetch_data_2(edit_data, '/save_data/'+ db,'POST');
         if(data.ok){
@@ -230,7 +230,7 @@ async function apply_move_modul(edit_data, db, btn){
             }, 700);
         }
         else {
-            liveToast(false,"Модуль перемещен")
+            liveToast(false,"Ошибка при перемещении")
             console.log("error move  pon modul: " + await data.json());
         }
     }
@@ -239,11 +239,9 @@ async function apply_move_modul(edit_data, db, btn){
 async function add_new_unit(id,tm) {
     let appl_btn = document.getElementById("save_new_unit")
     appl_btn.disabled = true;
-    let tbody = document.getElementById('t_body_add_new_un')
     let cod = document.getElementById("cod_new_un")
     let IP = document.getElementById("ip_new_un")
     let mesto  = document.getElementById("mecto_new_un")
-    clearTbody(tbody)
     const slct = document.getElementById('select_type_unit')
     slct.removeEventListener('click',async (e) => {})
     while(slct.length>1){slct.remove(1)}
@@ -257,14 +255,17 @@ async function add_new_unit(id,tm) {
         slct.add(opt)
     })
     slct.addEventListener("change", async (e) => {
-        clearTbody(tbody)
-        console.log('111111111111111111')
+        cod.value =''
+        IP.value = ''
+        mesto.value =''
         let val =e.target.options[e.target.selectedIndex].value
         if( val !== '0'){
+            IP.readOnly = false;
+            mesto.readOnly = false;
+            cod.readOnly = false;
+            appl_btn.disabled = false;
             if(id !== 13 && id!==14){
-                mesto.value =''
                 IP.value = '192.168.*.*'
-                appl_btn.disabled = false;
                 list_of_data.forEach(item => {
                     if(item['id'].toString() === val){
                         cod.value = item['start']+ '**' + '-'
@@ -273,39 +274,48 @@ async function add_new_unit(id,tm) {
                 })}
                 else{
                     cod.value='Устройство ' + e.target.options[e.target.selectedIndex].text
-                    IP.contentEditable = false
-                    mesto.contentEditable = false
+                    cod.readOnly = false
+                    IP.readOnly = true;
+                    mesto.readOnly = true;
                     appl_btn.disabled = false;
                 }
-                const response = await fetch_data_2(e.target.options[e.target.selectedIndex].value, '/get_data_from_db/data4newPONunit', "POST")
-                if(response.ok){
-                    const data = await response.json()
-                    console.log(data)
-                    Object.keys(data).forEach(elem => {
-                        var row = tbody.insertRow();
-                        row.insertCell(0).textContent = elem
-                        let sel = document.createElement('select')
-                        for (let i = 0; i < data[elem].length ; i++) {
-                            const opt = document.createElement('option')
-                            opt.text = data[elem][i]
-                            sel.add(opt)
-                        }
-                        row.insertCell(1).appendChild(sel)
-                        row.insertCell(2).contentEditable = true
-                        row.insertCell(3).contentEditable = true
-                        row.insertCell(4).contentEditable = true
-                        row.insertCell(0).innerHTML = '<input class="form-check-input" type="checkbox" value="">'
-                        console.log("🚀 ~ Object.keys ~ row:", row)
-                        })
-                    }
-            }
-            else {
-                cod.value=''
-                IP.value =''
-                mesto.value =''
-                appl_btn.disabled = true;   }
+        }
+        else {
+            cod.readOnly = true
+            IP.readOnly = true;
+            mesto.readOnly = true;
+            appl_btn.disabled = true;   }
     })
+    appl_btn.addEventListener('click', ()=>{
+        let data = {
+            'UD': id,
+            "type_of_olt":slct.options[slct.selectedIndex].value,
+            'IP': IP.value,
+            'cod_name_of_olt': cod.value,
+            'mesto': mesto.value
+        }
+        apply_create_unit(data, 'NewPONnit' )
+    })
+    document.getElementById('cl_add_pon_un').onclick =  () => { reload_page() }
 }
+
+async function apply_create_unit(data, db){
+    console.log("🚀 ~ apply_create_unit ~ data:", data)
+    if (confirm("Переместить устройство?")){
+        const response = await fetch_data_2(data, '/save_data/'+ db,'POST');
+        if(response.ok){
+            liveToast(true,"Новое устройство добавлено")
+            setTimeout(function (){document.getElementById('close_mv_mod_btn').click()
+                reload_page()
+            }, 700);
+        }
+        else {
+            liveToast(false,"Ошибка добавления нового устройства")
+            console.error("error move  pon modul: " + await response.json());
+        }
+    }
+}
+
 
 function clearTbody(tbody){
     while (tbody.hasChildNodes()) tbody.removeChild(tbody.firstChild)

@@ -889,7 +889,7 @@
     </div>
 </div>
 <div class="modal fade" id="add_new_unit_modal" data-bs-backdrop="static" tabindex="-1"  aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-l">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" >Добавить новое устройство</h5>
@@ -906,43 +906,33 @@
                                 </select>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-sm">
                             <div class="mb-3">
                                 <label class="col-form-label">Код устройства:</label>
-                                <input type="text"  class="form-control" id="cod_new_un" >
+                                <input type="text" readonly class="form-control" id="cod_new_un" >
                                 </select>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-sm">
                             <div class="mb-3">
                                 <label class="col-form-label">IP адрес:</label>
-                                <input type="text"  class="form-control" id="ip_new_un" >
+                                <input type="text" readonly class="form-control" id="ip_new_un" >
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-sm">
                             <div class="mb-3">
                                 <label class="col-form-label">Место установки:</label>
-                                <input type="text"  class="form-control" id="mecto_new_un" >
+                                <input type="text" readonly class="form-control" id="mecto_new_un" >
                             </div>
                         </div>
                     </div>
-                    </form>
-                    <div class="table-responsive small">
-                        <table class="table table-striped table-sm table-bordered table-sort table-hover" id="table_add_nev_un">
-                            <thead>
-                            <tr>
-                                <th scope="col"></th>
-                                <th scope="col">П/М</th>
-                                <th scope="col">Тип</th>
-                                <th scope="col">Инвентарный номер</th>
-                                <th scope="col">Наименование оборудования</th>
-                                <th scope="col">Заводской номер</th>                               
-                            </tr>
-                            </thead>
-                            <tbody id="t_body_add_new_un"></tbody>
-                        </table>
-                    </div>
-                
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id = "save_new_unit"  data-toggle="tooltip" data-placement="top" title='Сохранить изменения'>

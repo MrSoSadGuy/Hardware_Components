@@ -64,6 +64,21 @@ def add_ma_unit_data(req_dict, name):
         return json.dumps("NOT 'POST' REQUEST")
 
 
+def addNewPONnit(req_dict, name):
+    # un = List_of_olt.query.filter(cod_name_of_olt=req_dict['cod_name_of_olt'])
+    if List_of_olt.query.filter_by(cod_name_of_olt=req_dict['cod_name_of_olt']).all():
+        
+        return jsonify("Умтройство с таким именем уже есть в базе"), 420
+    else:
+        unit = List_of_olt(
+            uzel_id = req_dict['UD'],
+            type_of_olt = req_dict['type_of_olt'],
+            IP = req_dict['IP'],
+            cod_name_of_olt=req_dict['cod_name_of_olt'],
+            row_box_shelf = req_dict['mesto']
+        )
+    return add_data_to_db(unit)
+
 def add_object_for_MA(req_dict, name):
     if request.method == 'POST':
         obj = Objects_ur_lica(cod_name=req_dict["0"].upper().replace(' ','').strip(),

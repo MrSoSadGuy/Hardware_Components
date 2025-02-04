@@ -52,7 +52,7 @@ class List_of_olt(db.Model):
     kts = db.relationship('Data_for_KTS',uselist=False, backref='List_of_olt')
     type_of_olt: int = db.Column(db.Integer, db.ForeignKey('Type_of_olt.id'))
     name: str = db.Column(db.String(100), nullable=True)
-    inv_number: str = db.Column(db.String(20), nullable=False)
+    inv_number: str = db.Column(db.String(20), nullable=True)
     serial_number: str = db.Column(db.String(50), nullable=True)
     note: str = db.Column(db.String(500), nullable=True)
     IP: str = db.Column(db.String(20), nullable=True)
