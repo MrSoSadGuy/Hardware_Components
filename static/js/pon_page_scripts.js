@@ -296,12 +296,12 @@ async function add_new_unit(id,tm) {
         }
         apply_create_unit(data, 'NewPONnit' )
     })
-    document.getElementById('cl_add_pon_un').onclick =  () => { reload_page() }
+    // document.getElementById('cl_add_pon_un').onclick =  () => { reload_page() }
 }
 
 async function apply_create_unit(data, db){
     console.log("🚀 ~ apply_create_unit ~ data:", data)
-    if (confirm("Переместить устройство?")){
+    if (confirm("Добавить новое устройство?")){
         const response = await fetch_data_2(data, '/save_data/'+ db,'POST');
         if(response.ok){
             liveToast(true,"Новое устройство добавлено")
@@ -309,6 +309,7 @@ async function apply_create_unit(data, db){
                 reload_page()
             }, 700);
         }
+        else if(response.status === 420) liveToast(false, await response.json())
         else {
             liveToast(false,"Ошибка добавления нового устройства")
             console.error("error move  pon modul: " + await response.json());

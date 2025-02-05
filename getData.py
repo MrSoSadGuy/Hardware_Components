@@ -2,6 +2,7 @@ from flask import request, json, jsonify
 from app import app
 from models import *
 from pon_models import *
+from saveData import *
 
 
 def get_data_for_jinja():
@@ -164,6 +165,7 @@ def get_kts_data(id):
                 'mesto':olt.kts.mesto,
                 'zavod':olt.kts.zavod 
             }
+    else: addNewKTSdata(olt)
     return data
 
 
