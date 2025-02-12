@@ -266,17 +266,17 @@
             <div class="table-responsive small">
                 <table class="table table-sm table-borderless" id="main_pon_table">
                     {% for u in ud %}
-                    <tbody class="ud_tbody">
+                    <tbody class="ud_tbody block2">
                     <tr>
-                        <td class="h5" width='7%' id="ud-{{ u.number_ud }}-id">{{ u.name }}</td>
+                        <td class="h5 anchor2" width='7%'  id="ud-{{ u.number_ud }}-id">{{ u.name }}</td>
                         <td class="h5">адрес: {{ u.Adress }}</td>
                         <td width='2%'>
-                            <a >
+                            <a style="cursor: pointer;">
                                 <img id="ud_add_un" data-id="{{u.id}}" data-cod="{{u.cod_ud}}"  data-bs-toggle="modal" data-bs-target="#add_new_unit_modal" src = "/static/images/add.svg"/>
                             </a>
                         </td>
                         <td width='2%'>
-                            <a >
+                            <a style="cursor: pointer;">
                                 <img id="ud_settings"  data-id="{{ u.id }}" data-bs-toggle="modal" data-bs-target="#edit_ud_data_modal" src = "/static/images/settings.svg"/>
                             </a>
                         </td>
@@ -287,7 +287,6 @@
                         <td  colspan='4' id="td_for_pon_mod">
                             <table class="table table-sm table-hover table-borderless scale">
                                 <tbody class="shadow_for_the_table olt_tbody">
-
                                 <tr class="shassi_row" data-id="{{ olt.id }}" data-db="List_of_olt">
                                 {% if (olt.id != 73) and (olt.id != 74) %}
                                     {% if olt and olt.type_of_olt == 4 %}
@@ -305,7 +304,7 @@
                                     <td class="h6" style="min-width: 3%; max-width: 9%"> Место: {{ olt.kts.mesto }}</td>
                                     <td class="h6" width='5%'> {{ olt.kts.note }}</td>
                                     <td width='2%'>
-                                        <a >
+                                        <a style="cursor: pointer;">
                                             <img id="ud_add_mad" data-id="{{ olt.id}}" data-bs-toggle="modal" data-bs-target="#add_unit_data_modal" src = "/static/images/add.svg"/>
                                         </a>
                                     </td>
@@ -321,7 +320,7 @@
                                 {% else %}
                                     <td class="h6" width='100%'> {{ olt.cod_name_of_olt }}</td>
                                     <td width='2%'>
-                                        <a >
+                                        <a style="cursor: pointer;">
                                             <img id="shelf_add_mad" data-id="{{ olt.id}}" data-bs-toggle="modal" data-bs-target="#add_shelf_data_modal" src = "/static/images/add.svg"/>
                                         </a>
                                     </td>
@@ -333,7 +332,7 @@
                                             <thead>
                                                 <tr>
                                                     <td width='2%'>
-                                                        <a >
+                                                        <a style="cursor: pointer;">
                                                             <img class="svg" id="colaps_olt" data-status="minus" src = "/static/images/stat_minus_.svg"/>
                                                         </a>
                                                     </td>
@@ -347,7 +346,6 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="plata_tbody">
-
                                             {% for m in olt.list_of_modules|sort(attribute='socket') %}
                                                 <tr class="for_file_download" data-id="{{ m.id }}" data-db="List_of_modules" bgcolor="{{m.color}}">
                                                     <td width='2%' data-id="{{ m.id }}">
@@ -430,6 +428,7 @@
         document.getElementById('favcolor').addEventListener("change", function () {
             console.log(this.value)
             set_custom_bg_color_PON_table(true, this.value)
+            this.value=''
         });
         document.getElementById('defolt_color').addEventListener("click", function () {
             console.log(this.value)
@@ -719,7 +718,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id = "save_kts" onclick="save_kts_data(this.id)" data-toggle="tooltip" data-placement="top" title='Сохранить изменения'>
+                <button type="button" class="btn btn-primary" id = "save_kts"  data-toggle="tooltip" data-placement="top" title='Сохранить изменения'>
                     <i class="bi bi-floppy"></i>
                 </button>
                 <button type="button" class="btn btn-primary" id = "kts"  data-toggle="tooltip" data-placement="top" title='Скачать КТС'>КТС</button>
@@ -965,15 +964,15 @@
     // Заполнение модульного окна данных инвентарного номера
     $('#inventModal').on('show.bs.modal', function (e) {
         $(this).find('form').trigger('reset');
-        const param = $(e.relatedTarget).data('id');
-        var user = {{user_name | tojson}}
-        invent_modal(param, user);
+        let param2 = e.relatedTarget.dataset.id
+        let user = {{user_name | tojson}}
+        invent_modal(param2, user);
     })
     // Заполнить таблицу в модульном окне Соства оборудования
     $('#SostavModal').on('show.bs.modal', function (e) {
         $(this).find('form').trigger('reset');
         var dataPon = $(e.relatedTarget).data('pon')
-        to_fill_sostav_modal(dataPon)})
+        to_fill_sostav_modal(dataPon, e.relatedTarget.closest('tr'))})
 
     // заполнение модульного окна для редактирования записи UNITS  
     $('#edit_row_data_modal').on('show.bs.modal', function (e) {

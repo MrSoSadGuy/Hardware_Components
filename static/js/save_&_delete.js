@@ -294,33 +294,7 @@ async function save_edit_MA_table(tbody ,row) {
         }
     }
 }
-async function save_kts_data() {
-    var kts_data = {
-        UD:document.getElementById("Ud_id").value,
-        cod_name: document.getElementById("PON_id").value,
-        IP: document.getElementById("ip_id").value,
-        OLT:  document.getElementById("olt_id").value,
-        inv_number: document.getElementById("inv_id").value,
-        Serial: document.getElementById("serial_id").value,
-        date_of_production: document.getElementById("date_pr_id").value,
-        date_of_entry: document.getElementById("date_exp_id").value,
-        full_name: document.getElementById("full_name_id").value,
-        mesto: document.getElementById("mesto_id").value,
-        zavod: document.getElementById("zavod_id").value,
-    }
-    console.log(kts_data)
-    if (confirm("Сохранить изменнения?")){
-        const fetch_response = await fetch_data(kts_data,'/save_data/KTS','POST');
-        console.log("🚀 ~ save_edit_buh_data ~ data:", fetch_response)
-        if(fetch_response==="SUCCESS"){
-            liveToast(true,"Данные сохраненны");
-        }
-        else {
-            liveToast(true,"Ошибка сохранения");
-            console.log("error save kts data: " + fetch_response);
-        }
-    }
-}
+
 
 async function storage_reset_tbody(btn_id, stor_id){
     const table_1 = document.getElementById('new_MA_unit_tbody_storage_id')

@@ -1,5 +1,5 @@
 :root {
-    --toast-width: 270px;
+    --toast-width: 320px;
     --toast-border-radius: 0.25rem;
     --toast-theme-default: #fff;
     --toast-theme-primary: #0d6efd;
@@ -21,7 +21,7 @@
   }
   
   .toast {
-    font-size: 0.875rem;
+    font-size: 1.25rem;
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: var(--toast-border-radius);
