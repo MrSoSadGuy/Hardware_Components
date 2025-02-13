@@ -346,7 +346,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="plata_tbody">
-                                            {% for m in olt.list_of_modules|sort(attribute='socket') %}
+                                            {% for m in olt.list_of_modules | sort(attribute = olt.list_of_modules.type_of_modules)|sort(attribute='socket')%}
                                                 <tr class="for_file_download" data-id="{{ m.id }}" data-db="List_of_modules" bgcolor="{{m.color}}">
                                                     <td width='2%' data-id="{{ m.id }}">
                                                         <input class="form-check-input" id="flexCheck_modul{{ m.id }}" type="checkbox"  value="">
@@ -858,7 +858,7 @@
             </div>
             <div class="modal-body">
                     <div class="table-responsive small">
-                        <table class="table table-striped table-sm table-bordered table-sort table-hover" id="table_add_to_shelf">
+                        <table class="table  table-sm table-bordered table-hover" id="table_add_to_shelf">
                             <thead>
                             <tr>
                                 <th scope="col">Тип устройсва</th>

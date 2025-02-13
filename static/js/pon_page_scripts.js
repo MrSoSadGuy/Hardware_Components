@@ -478,6 +478,7 @@ async function add_new_unit_data(id) {
   let ful_data = [];
   document.getElementById('save_new_modules').addEventListener("click", function () {
     const rows = document.getElementById('t_body_add_to_un').rows;
+    console.log("🚀 ~ rows:", rows)
     for (const row of rows) {
       const cells = row.cells;
       const checkbox = cells[0].querySelector('.form-check-input');
@@ -524,11 +525,11 @@ async function shelf_new_modules(id) {
         });
     }
     document.getElementById('save_new_modules_shelf').addEventListener("click", function() {
-        let rows = document.getElementById('t_body_add_to_shelf').rows;
+        let rows = tbody.getElementsByTagName('tr')
         let full_data = []
-        for (let row of rows) {
+        for (let i = 0; i< rows.length;  i++) {
             let row_data ={}
-            let cells = row.cells
+            let cells = rows[i].cells
             let sel = cells[0].querySelector('select')
             let sel2 = cells[1].querySelector('select')
             if (sel.options[sel.selectedIndex].value !== '0'){
@@ -538,16 +539,22 @@ async function shelf_new_modules(id) {
                 row_data['serial'] = cells[3].textContent
                 row_data['inv_number'] = cells[4].textContent
                 full_data.push(row_data)
-                row.remove()
+                if (rows[i].classList.contains('table-danger')){
+                    rows[i].classList.remove('table-danger')
+                }
+                rows[i].classList.add('table-success')
             }
-            console.log(row_data)
+            else rows[i].classList.add('table-danger')
         }
         console.log(full_data)
-        full_data.length > 0? add_new_pon_modules(full_data, this.id): alert('Не введены новые модули для добовления')
+        full_data.length > 0? add_new_pon_modules(full_data): alert('Не введены новые модули для добовления')
+        for (let i = rows.length-1; i >= 0;  i--) {
+            if (rows[i].classList.contains('table-success')) rows[i].remove()
+        }
     })
 }
 
-async function add_new_pon_modules(data, btn_id){
+async function add_new_pon_modules(data){
     if (confirm("Сохранить изменнения?")){
         const response = await fetch_data_2(data,'/save_data/add_new_pon_modules','POST');
         if(response.ok){
