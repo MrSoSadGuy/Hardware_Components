@@ -5,56 +5,65 @@ async function to_fill_sostav_modal(id, un_row) {
         const modules_data = await fetch_data_2(id, '/get_data_from_db/olt_data', "POST");
         if (modules_data.ok) {
             let list_of_modules = await modules_data.json();
-            for (let item in list_of_modules) {
+            console.log("🚀 ~ to_fill_sostav_modal ~ list_of_modules:",list_of_modules)
+            const ordered = Object.keys(list_of_modules)
+                .sort() // Sort the keys alphabetically
+                .reduce((obj, key) => {
+                    obj[key] = list_of_modules[key]; // Rebuild the object with sorted keys
+                    return obj;
+                }, {});
+            // list_of_modules.sort((a,b) => a.socket - b.socket);
+            for (let item in ordered) {
                 let tr = document.createElement('tr');
                 let td = document.createElement('td');
-                td.textContent = item;
+                item !== '-1' ?td.textContent = item : td.textContent ='fun';
                 tr.appendChild(td);
-                for (let i in list_of_modules[item]) {
+                for (let i in ordered[item]) {
                     let td = document.createElement('td');
-                    td.textContent = list_of_modules[item][i];
+                    td.textContent = ordered[item][i];
                     tr.appendChild(td);
                 }
                 tbody.appendChild(tr);
             }
         }
-        const data_for_kts = await fetch_data_2(id, '/get_data_from_db/kts_data_new', "POST");
-        if (data_for_kts.ok) {
-            let kts_data = await data_for_kts.json();
-            console.log(kts_data);
-            document.getElementById("PON_id").value = kts_data['cod_name_of_olt'] ? kts_data['cod_name_of_olt'] : '';
-            document.getElementById("Ud_id").value = kts_data['UD'] ? kts_data['UD'] : '';
-            document.getElementById("ip_id").value = kts_data['IP'] ? kts_data['IP'] : '';
-            document.getElementById("olt_id").value = kts_data['OLT'] ? kts_data['OLT'] : '';
-            document.getElementById("inv_id").value = kts_data['inv_number'] ? kts_data['inv_number'] : '';
-            document.getElementById("serial_id").value = kts_data['Serial'] ? kts_data['Serial'] : '';
-            document.getElementById("date_pr_id").value = kts_data['date_of_production'] ? kts_data['date_of_production'] : '';
-            document.getElementById("date_exp_id").value = kts_data['date_of_entry'] ? kts_data['date_of_entry'] : '';
-            document.getElementById("full_name_id").value = kts_data['full_name'] ? kts_data['full_name'] : '';
-            document.getElementById("mesto_id").value = kts_data['mesto'] ? kts_data['mesto'] : '';
-            document.getElementById("zavod_id").value = kts_data['zavod'] ? kts_data['zavod'] : '';
+        const getData = await fetch_data_2(id, '/get_data_from_db/kts_data_new', "POST");
+        if (getData.ok) {
+            let unit_data= await getData.json();
+            console.log("🚀 ~ to_fill_sostav_modal ~ unit_data:", unit_data)
+            document.getElementById("PON_id").value = unit_data[0]['cod_name_of_olt'] ? unit_data[0]['cod_name_of_olt'] : '';
+            document.getElementById("Ud_id").value = unit_data[1] ? unit_data[1] : '';
+            document.getElementById("ip_id").value = unit_data[0]['IP'] ? unit_data[0]['IP'] : '';
+            document.getElementById("olt_id").value = unit_data[0]['OLT'] ? unit_data[0]['OLT'] : '';
+            document.getElementById("inv_id").value = unit_data[0]['inv_number'] ? unit_data[0]['inv_number'] : '';
+            document.getElementById("serial_id").value = unit_data[0]['serial_number'] ? unit_data[0]['serial_number'] : '';
+            document.getElementById("date_pr_id").value = unit_data[0]['date_of_production'] ? unit_data[0]['date_of_production'] : '';
+            document.getElementById("date_exp_id").value = unit_data[0]['date_of_entry'] ? unit_data[0]['date_of_entry'] : '';
+            document.getElementById("full_name_id").value = unit_data[0]['full_name'] ? unit_data[0]['full_name'] : '';
+            document.getElementById("mesto_id").value = unit_data[0]['row_box_shelf'] ? unit_data[0]['row_box_shelf'] : '';
+            document.getElementById("zavod_id").value = unit_data[0]['zavod'] ? unit_data[0]['zavod'] : '';
         }
         document.getElementById('kts').onclick = () => { downloadFile('kts', id); }
         document.getElementById('sostav').onclick = () => { downloadFile('sostav', id); }
     } catch (error) {
         console.error("Error in to_fill_sostav_modal:", error);
     }
-    document.getElementById('save_kts').onclick= () => {save_kts_data(un_row)}
+    document.getElementById('save_kts').onclick= () => {save_kts_data(id, un_row)}
 
 }
 
-async function save_kts_data(un_row) {
+async function save_kts_data(id, un_row) {
     var kts_data = {
+        id: id,
         UD:document.getElementById("Ud_id").value,
-        cod_name: document.getElementById("PON_id").value,
+        cod_name_of_olt: document.getElementById("PON_id").value,
         IP: document.getElementById("ip_id").value,
         OLT:  document.getElementById("olt_id").value,
         inv_number: document.getElementById("inv_id").value,
-        Serial: document.getElementById("serial_id").value,
+        serial_number: document.getElementById("serial_id").value,
         date_of_production: document.getElementById("date_pr_id").value,
         date_of_entry: document.getElementById("date_exp_id").value,
         full_name: document.getElementById("full_name_id").value,
-        mesto: document.getElementById("mesto_id").value,
+        row_box_shelf: document.getElementById("mesto_id").value,
         zavod: document.getElementById("zavod_id").value,
     }
     console.log(kts_data)
@@ -65,18 +74,18 @@ async function save_kts_data(un_row) {
             liveToast(true,"Данные сохраненны");
             let cells = un_row.getElementsByTagName('td');
             cells[0].textContent='OLT#'+kts_data.OLT;
-            cells[1].querySelector('a').innerHTML = kts_data['cod_name'];
+            cells[1].querySelector('a').innerHTML = kts_data['cod_name_of_olt'];
             cells[2].textContent=kts_data['full_name'];
-            cells[3].textContent='s/n: '+kts_data['Serial'];
+            cells[3].textContent='s/n: '+kts_data['serial_number'];
             cells[4].querySelector('a').innerHTML = kts_data['inv_number'];
             cells[4].querySelector('a').dataset.id = kts_data['inv_number'];
             cells[5].textContent='IP: '+kts_data['IP'];
-            cells[6].textContent='Место: '+kts_data['mesto'];
+            cells[6].textContent='Место: '+kts_data['row_box_shelf'];
             
         }
         else {
-            liveToast(true,"Ошибка сохранения");
-            console.log("error save kts data: " + fetch_response);
+            liveToast(false,"Ошибка сохранения");
+            console.log("error save kts data: " + await fetch_response.json());
         }
         
     }
@@ -177,23 +186,23 @@ async function save_edit_data_pon(db, id ,row_index) {
         if(data.ok){
             liveToast(true, "Данные сохранены")
             var oCells = row_index.getElementsByTagName('td');
-            if(db!=="olt_list"){
-                oCells[3].textContent = document.getElementById("edit_Name_id").value;
-                oCells[5].querySelector('a').innerHTML = document.getElementById("edit_Inv_id").value;
-                oCells[5].querySelector('a').dataset.id = document.getElementById("edit_Inv_id").value;
-                oCells[4].textContent = document.getElementById("edit_Serial_id").value;
-                oCells[6].textContent = document.getElementById("unit_note_id").value;}
-            else {
-                oCells[1].querySelector('a').innerHTML = document.getElementById("edit_Cod_id").value;
-                oCells[2].textContent = document.getElementById("edit_Name_id").value;
-                oCells[3].textContent = document.getElementById("edit_IP_id").value;
-                oCells[4].textContent = document.getElementById("edit_Serial_id").value;
-                oCells[5].querySelector('a').innerHTML = document.getElementById("edit_Inv_id").value;
-                oCells[5].querySelector('a').dataset.id = document.getElementById("edit_Inv_id").value;
-                oCells[6].textContent = document.getElementById("edit_Riad_id").value;
-                oCells[7].textContent = document.getElementById("unit_note_id").value;
-            }
-        }
+            // if(db!=="olt_list"){
+            oCells[3].textContent = document.getElementById("edit_Name_id").value;
+            oCells[5].querySelector('a').innerHTML = document.getElementById("edit_Inv_id").value;
+            oCells[5].querySelector('a').dataset.id = document.getElementById("edit_Inv_id").value;
+            oCells[4].textContent = document.getElementById("edit_Serial_id").value;
+            oCells[6].textContent = document.getElementById("unit_note_id").value;}
+            // else {
+            //     oCells[1].querySelector('a').innerHTML = document.getElementById("edit_Cod_id").value;
+            //     oCells[2].textContent = document.getElementById("edit_Name_id").value;
+            //     oCells[3].textContent = document.getElementById("edit_IP_id").value;
+            //     oCells[4].textContent = document.getElementById("edit_Serial_id").value;
+            //     oCells[5].querySelector('a').innerHTML = document.getElementById("edit_Inv_id").value;
+            //     oCells[5].querySelector('a').dataset.id = document.getElementById("edit_Inv_id").value;
+            //     oCells[6].textContent = document.getElementById("edit_Riad_id").value;
+            //     oCells[7].textContent = document.getElementById("unit_note_id").value;
+            // }
+        // }
         else {
             liveToast(false,"Ошибка сохранения")
             console.log("error save edit modul data: " + await data.json());
@@ -251,7 +260,7 @@ async function move_obj_modal(id, db){
         for(i in list_of_data[target][1]){
             const opt = document.createElement('option')
             opt.value = i
-            opt.text = list_of_data[target][1][i]
+            list_of_data[target][1][i] === -1 ? opt.text = 'fun' : opt.text = list_of_data[target][1][i]
             slct_sock.add(opt)
         }
     });
@@ -441,13 +450,14 @@ async function add_new_unit_data(id) {
     Object.keys(data).forEach((elem) => {
       // Create a new row and insert the key value as the first cell
       const row = tbody.insertRow();
-      row.insertCell(0).textContent = elem;
+      row.insertCell(0).textContent = elem !=='-1' ? elem : 'fun';
 
       if (data[elem][0]) {
         // For rows where the first element is truthy.
         console.log(data[elem]);
         // Insert remaining cells with data values (starting from index 1)
         for (let i = 1; i < data[elem].length; i++) {
+
           row.insertCell(i).textContent = data[elem][i];
         }
         // Prepend a disabled and checked checkbox cell at the beginning

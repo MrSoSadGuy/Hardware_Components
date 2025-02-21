@@ -55,19 +55,19 @@ def create_file_sostav(id):
 
 
 def create_file_KTS(id):
-    kts = get_kts_data(id)
+    kts = List_of_olt.query.get_or_404(id)
     # kts = Data_for_KTS.query.filter_by(cod_name=name_PON).first()
     user = Users.query.get(current_user.get_id())
     book = openpyxl.load_workbook('files for download\КТС_шаблон.xlsx')
     sheet = book.active
-    sheet['A3'] = kts['full_name']
-    sheet['A4'] = kts['cod_name_of_olt']
-    sheet['A8'] = kts['UD'] + ", " + kts['mesto'] + ", ip: " + kts['IP']
-    sheet['E15'] = kts['zavod']
-    sheet['L18'] = kts['date_of_production']
-    sheet['G21'] = kts['Serial']
-    sheet['L24'] = kts['inv_number']
-    sheet['L27'] = kts['date_of_entry']
+    sheet['A3'] = kts.full_name
+    sheet['A4'] = kts.cod_name_of_olt
+    sheet['A8'] = kts.Uzel_dostupa.name + ' ' + kts.Uzel_dostupa.Adress + ", " + kts.row_box_shelf + ", ip: " + kts.IP
+    sheet['E15'] = kts.zavod
+    sheet['L18'] = kts.date_of_production
+    sheet['G21'] = kts.serial_number
+    sheet['L24'] = kts.inv_number
+    sheet['L27'] = kts.date_of_entry
     sheet['L30'] = str(datetime.now().strftime("%d/%m/%Y"))
     sheet['J39'] = user.FIO
     book.save("files for download\КТС.xlsx")

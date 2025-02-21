@@ -134,7 +134,7 @@ def get_data_from_db(db_name):
         'olt_data_3': get_used_unit_data,
         'olt_data_4': get_data_for_new_mod,
         'kts_data':getKTSdata,
-        'kts_data_new':get_kts_data,
+        'kts_data_new':get_unit_data,
         'ma_add_modules':  getMAmodulesData,
         'MA_Unit_stor': getMAunitStorData,
         'MA_Units': getMAunitData,
@@ -159,7 +159,7 @@ def save_data(db_name):
     user = Users.query.filter_by(id=current_user.get_id()).first()
     print(str(datetime.now()) +': '+ user.FIO + " запрос на внесение изменений или добавление новых записей -- ", db_name, req_dict)
     db_req_lst = {
-        'KTS':save_kts_data,
+        'KTS':save_pon_olt_data,
         'sostav': save_sostav_data,
         'Buhuchet': save_buhuchet_data,
         'ma_add_modules_edited': save_ma_add_modules,

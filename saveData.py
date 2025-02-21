@@ -122,35 +122,35 @@ def add_ma_add_modules(req_dict, name):
         return json.dumps("NOT 'POST' REQUEST")
 
 
-def save_kts_data(req_dict, name):
-    kts_data = Data_for_KTS.query.all()
-    if request.method == 'POST':
-        for kts in kts_data:
-            if kts.cod_name == req_dict["cod_name"].strip().upper():
-                kts.UD = req_dict["UD"].strip()
-                kts.IP = req_dict["IP"].strip()
-                kts.OLT = req_dict["OLT"].strip()
-                kts.inv_number = req_dict["inv_number"].strip()
-                kts.Serial = req_dict["Serial"].strip()
-                kts.date_of_production = req_dict["date_of_production"].strip()
-                kts.date_of_entry = req_dict["date_of_entry"].strip()
-                kts.full_name = req_dict["full_name"].strip()
-                kts.mesto = req_dict["mesto"].strip()
-                kts.zavod = req_dict["zavod"].strip()
-                return save_data_to_db()
-        kts_data = Data_for_KTS(cod_name=req_dict["cod_name"].strip().upper(),
-                                IP=req_dict["IP"].strip(),
-                                OLT=req_dict["OLT"].strip(),
-                                inv_number=req_dict["inv_number"].strip(),
-                                Serial=req_dict["Serial"].strip(),
-                                date_of_production=req_dict["date_of_production"].strip(),
-                                date_of_entry=req_dict["date_of_entry"].strip(),
-                                full_name=req_dict["full_name"].strip(),
-                                mesto=req_dict["mesto"].strip(),
-                                zavod=req_dict["zavod"].strip())
-        return add_data_to_db(kts_data)
-    else:
-        return json.dumps("NOT 'POST' REQUEST")
+# def save_kts_data(req_dict, name):
+#     kts_data = Data_for_KTS.query.all()
+#     if request.method == 'POST':
+#         for kts in kts_data:
+#             if kts.cod_name == req_dict["cod_name"].strip().upper():
+#                 kts.UD = req_dict["UD"].strip()
+#                 kts.IP = req_dict["IP"].strip()
+#                 kts.OLT = req_dict["OLT"].strip()
+#                 kts.inv_number = req_dict["inv_number"].strip()
+#                 kts.Serial = req_dict["Serial"].strip()
+#                 kts.date_of_production = req_dict["date_of_production"].strip()
+#                 kts.date_of_entry = req_dict["date_of_entry"].strip()
+#                 kts.full_name = req_dict["full_name"].strip()
+#                 kts.mesto = req_dict["mesto"].strip()
+#                 kts.zavod = req_dict["zavod"].strip()
+#                 return save_data_to_db()
+#         kts_data = Data_for_KTS(cod_name=req_dict["cod_name"].strip().upper(),
+#                                 IP=req_dict["IP"].strip(),
+#                                 OLT=req_dict["OLT"].strip(),
+#                                 inv_number=req_dict["inv_number"].strip(),
+#                                 Serial=req_dict["Serial"].strip(),
+#                                 date_of_production=req_dict["date_of_production"].strip(),
+#                                 date_of_entry=req_dict["date_of_entry"].strip(),
+#                                 full_name=req_dict["full_name"].strip(),
+#                                 mesto=req_dict["mesto"].strip(),
+#                                 zavod=req_dict["zavod"].strip())
+#         return add_data_to_db(kts_data)
+#     else:
+#         return json.dumps("NOT 'POST' REQUEST")
 
 
 def save_buhuchet_data(req_dict, name):
@@ -254,11 +254,16 @@ def save_pon_olt_data(req_dict, name):
         olt.uzel_id = req_dict["uzel_id"] if "uzel_id" in req_dict else olt.uzel_id
         olt.cod_name_of_olt = req_dict["cod_name_of_olt"] if req_dict["cod_name_of_olt"] else olt.cod_name_of_olt
         olt.name = req_dict["name"] if "name" in req_dict else olt.name
-        olt.serial_number = req_dict["serial"] if "serial" in req_dict else olt.serial_number
+        olt.serial_number = req_dict["serial_number"] if "serial_number" in req_dict else olt.serial_number
         olt.note = req_dict["note"] if "note" in req_dict else olt.note
         olt.inv_number = req_dict["inv_number"] if "inv_number" in req_dict else olt.inv_number
-        olt.kts.IP = req_dict["IP"] if "IP" in req_dict else olt.kts.IP
-        olt.kts.row_box_shelf = req_dict["riad"] if "riad" in req_dict else  olt.kts.mesto
+        olt.IP = req_dict["IP"] if "IP" in req_dict else olt.IP
+        olt.OLT= req_dict["OLT"] if "OLT" in req_dict else olt.OLT
+        olt.full_name= req_dict["full_name"] if "full_name" in req_dict else olt.full_name
+        olt.zavod= req_dict["zavod"] if "zavod" in req_dict else olt.zavod
+        olt.date_of_production= req_dict["date_of_production"] if "date_of_production" in req_dict else olt.date_of_production
+        olt.date_of_entry= req_dict["date_of_entry"] if "date_of_entry" in req_dict else olt.date_of_entry
+        olt.row_box_shelf = req_dict["row_box_shelf"] if "row_box_shelf" in req_dict else  olt.row_box_shelf
         olt.editor = name
         olt.kts.editor = name
         olt.last_date_edit = datetime.now()

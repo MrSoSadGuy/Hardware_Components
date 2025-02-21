@@ -292,17 +292,17 @@
                                     {% if olt and olt.type_of_olt == 4 %}
                                         <td class="h6" style="min-width: 3%; max-width: 5%"> NE </td>
                                     {% elif olt  %}
-                                    <td class="h6" style="min-width: 3%; max-width: 5%"> OLT#{{ olt.kts.OLT }}</td>
+                                    <td class="h6" style="min-width: 3%; max-width: 5%"> OLT#{{ olt.OLT }}</td>
                                     {% else %}
                                         <td class="h6" style="min-width: 3%; max-width: 5%">  </td>
                                     {% endif %}
                                     <td class="h6" style="min-width: 7%; max-width: 12%"><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-pon ="{{ olt.id }}" > {{ olt.cod_name_of_olt }}</a></td>
-                                    <td class="h6" style="min-width: 15%; max-width: 25%"> {{ olt.kts.full_name }}</td>
+                                    <td class="h6" style="min-width: 15%; max-width: 25%"> {{ olt.full_name }}</td>
                                     <td class="h6" width='18%'>s/n: {{ olt.serial_number }}</td>
                                     <td class="h6" width='15%'>инв.№:  <a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-id = "{{ olt.inv_number }}" >{{ olt.inv_number }}</a></td>
-                                    <td class="h6" width='10%'> IP: {{ olt.kts.IP }}</td>
-                                    <td class="h6" style="min-width: 3%; max-width: 9%"> Место: {{ olt.kts.mesto }}</td>
-                                    <td class="h6" width='5%'> {{ olt.kts.note }}</td>
+                                    <td class="h6" width='10%'> IP: {{ olt.IP }}</td>
+                                    <td class="h6" style="min-width: 3%; max-width: 9%"> Место: {{ olt.row_box_shelf }}</td>
+                                    <td class="h6" width='5%'> {{ olt.note }}</td>
                                     <td width='2%'>
                                         <a style="cursor: pointer;">
                                             <img id="ud_add_mad" data-id="{{ olt.id}}" data-bs-toggle="modal" data-bs-target="#add_unit_data_modal" src = "/static/images/add.svg"/>
@@ -351,10 +351,9 @@
                                                     <td width='2%' data-id="{{ m.id }}">
                                                         <input class="form-check-input" id="flexCheck_modul{{ m.id }}" type="checkbox"  value="">
                                                     </td>
-                                                    {% if m.Olt_sockets.socket == -1 and 'OL' in olt.cod_name_of_olt %}
+                                                    {% if m.Olt_sockets.socket == -1  %}
                                                     <td > fun</td>
-                                                    {% elif m.Olt_sockets.socket == 0 and 'UL' in olt.cod_name_of_olt %}
-                                                    <td > fun</td>
+                                                    
                                                     {% else %}
                                                     <td > {{ m.Olt_sockets.socket }}</td>
                                                     {% endif %}
@@ -644,7 +643,7 @@
                             <div class="col-sm">
                                 <div class="mb-3">
                                     <label class="col-form-label">Устройство:</label>
-                                    <input type="text" readonly class="form-control" id="PON_id" >
+                                    <input type="text"  class="form-control" id="PON_id" >
                                 </div>
                             </div>
                             <div class="col-sm">
@@ -729,7 +728,7 @@
     </div>
 </div>
 <div class="modal fade" id="move_obj_Modal"  data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable ">
         <div class="modal-content">
             <div class="modal-header">
             <h1 class="modal-title fs-5" >Перемещение</h1>
@@ -745,6 +744,8 @@
                                 </select>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-sm">
                             <div class="mb-3">
                                 <select class="form-select" aria-label="Default select example" id = 'select_socket' disabled>
@@ -752,7 +753,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div>        
                 </div>
             </div>
             <div class="modal-footer">

@@ -147,26 +147,28 @@ def data_for_empty_sockets(key,olt, type_of_modules):
     return data
 
 
-def get_kts_data(id):
-    olt = List_of_olt.query.get_or_404(int(id))
-    data={'cod_name_of_olt': olt.cod_name_of_olt,
-        'Serial': olt.serial_number,
-        'inv_number': olt.inv_number}
-    if olt.kts:
-        data={  'cod_name_of_olt': olt.cod_name_of_olt,
-                'Serial': olt.serial_number,
-                'inv_number': olt.inv_number,
-                'UD': olt.kts.UD,
-                'IP':olt.kts.IP,
-                'OLT':olt.kts.OLT,
-                'date_of_production':olt.kts.date_of_production,
-                'date_of_entry':olt.kts.date_of_entry,
-                'full_name':olt.kts.full_name,
-                'mesto':olt.kts.mesto,
-                'zavod':olt.kts.zavod 
-            }
-    else: addNewKTSdata(olt)
-    return data
+def get_unit_data(id):
+    unit = List_of_olt.query.get_or_404(int(json.loads(id)))
+    
+    print(unit, unit.Uzel_dostupa.name + ' ' + unit.Uzel_dostupa.Adress)
+    # data={'cod_name_of_olt': olt.cod_name_of_olt,
+    #     'Serial': olt.serial_number,
+    #     'inv_number': olt.inv_number}
+    # if olt.kts:
+    #     data={  'cod_name_of_olt': olt.cod_name_of_olt,
+    #             'Serial': olt.serial_number,
+    #             'inv_number': olt.inv_number,
+    #             'UD': olt.kts.UD,
+    #             'IP':olt.kts.IP,
+    #             'OLT':olt.kts.OLT,
+    #             'date_of_production':olt.kts.date_of_production,
+    #             'date_of_entry':olt.kts.date_of_entry,
+    #             'full_name':olt.kts.full_name,
+    #             'mesto':olt.kts.mesto,
+    #             'zavod':olt.kts.zavod 
+    #         }
+    # else: addNewKTSdata(olt)
+    return jsonify(unit, unit.Uzel_dostupa.name + ' ' + unit.Uzel_dostupa.Adress)
 
 
 def get_data_for_move(req):
