@@ -16,7 +16,7 @@ async function to_fill_sostav_modal(id, un_row) {
             for (let item in ordered) {
                 let tr = document.createElement('tr');
                 let td = document.createElement('td');
-                item !== '-1' ?td.textContent = item : td.textContent ='fun';
+                item !== '-1' ?td.textContent = item : td.textContent ='fan';
                 tr.appendChild(td);
                 for (let i in ordered[item]) {
                     let td = document.createElement('td');
@@ -260,7 +260,7 @@ async function move_obj_modal(id, db){
         for(i in list_of_data[target][1]){
             const opt = document.createElement('option')
             opt.value = i
-            list_of_data[target][1][i] === -1 ? opt.text = 'fun' : opt.text = list_of_data[target][1][i]
+            list_of_data[target][1][i] === -1 ? opt.text = 'fan' : opt.text = list_of_data[target][1][i]
             slct_sock.add(opt)
         }
     });
@@ -450,7 +450,7 @@ async function add_new_unit_data(id) {
     Object.keys(data).forEach((elem) => {
       // Create a new row and insert the key value as the first cell
       const row = tbody.insertRow();
-      row.insertCell(0).textContent = elem !=='-1' ? elem : 'fun';
+      row.insertCell(0).textContent = elem !=='-1' ? elem : 'fan';
 
       if (data[elem][0]) {
         // For rows where the first element is truthy.
