@@ -103,6 +103,7 @@ def getTypeOfOltDAta(req):
 
 def getURdata(req):
     obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
+    u = obj.unit
     units_list = {}
     modules_list = {}
     for un in range(0, len(obj.unit)) :

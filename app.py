@@ -1,12 +1,16 @@
+import os
 from flask import Flask
 from flask_login import LoginManager
 from models import db
+from dotenv import load_dotenv
 from waitress import serve
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.exceptions import NotFound
 
 app = Flask(__name__)
-app.secret_key = 'some secret salt'
+load_dotenv()
+# app.secret_key = 'some secret salt'
+app.secret_key = os.getenv('KEY')
 # app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///sostav_PON.db'
 app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///GOM_ZUES_STAN_GRP_BD.db'
 

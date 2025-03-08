@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from dataclasses import dataclass
 from datetime import datetime
 
+from sqlalchemy.orm import backref
+
 db = SQLAlchemy()
 
 @dataclass
@@ -43,7 +45,8 @@ class Objects_ur_lica(db.Model):
     date = db.Column(db.DateTime, default=datetime.utcnow)
     editor = db.Column(db.String(20), nullable=True)
     last_date_edit = db.Column(db.DateTime, nullable=True)
-    unit = db.relationship('MA_Units', backref='object')
+    unit = db.relationship('MA_Units', backref=backref('object'), order_by='MA_Units.type_equipment.desc()')
+    # unit = db.relationship('MA_Units', backref='object')
     install_date: str = db.Column(db.String(20), nullable=True)
 
     def __repr__(self):

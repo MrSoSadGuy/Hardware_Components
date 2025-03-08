@@ -8,7 +8,7 @@
 
     <title>Оборудование</title>
     <link rel="shortcut icon" href="../static/images/jruby.svg">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../static/bootstrap-icons-1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../static/bootstrap.css">
     <link rel="stylesheet" href="../static/custom_style.css">
     <link rel="stylesheet" href="../static/toast.css">
@@ -192,7 +192,14 @@
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <button class="btn btn-primary btn-lg" data-bs-target="#add_new_modal" data-bs-toggle="modal"
                             type="button">
-                        <i class="bi bi-plus-square-fill"></i> 
+                        <i class="bi bi-download"></i>
+<!--                        <svg class="bi" width="32" height="32" fill="currentColor">-->
+<!--                            <use src="/static/images/plus-square-fill.svg"/>-->
+<!--                        </svg>-->
+<!--                        <a class="bi bi-plus-square-fill">-->
+<!--                            <img src="/static/images/plus-square-fill.svg" alt="add">-->
+<!--                        </a>-->
+
                     </button>
                     <button class="btn btn-primary btn-lg" onclick="save_main_table_in_file()" type="button">
                         <i class="bi bi-download"></i> Сохранить в Excel
@@ -299,7 +306,7 @@
                                     <td class="h6" style="min-width: 7%; max-width: 12%"><a href="" data-bs-toggle="modal" data-bs-target="#SostavModal"  data-pon ="{{ olt.id }}" > {{ olt.cod_name_of_olt }}</a></td>
                                     <td class="h6" style="min-width: 15%; max-width: 25%"> {{ olt.full_name }}</td>
                                     <td class="h6" width='18%'>s/n: {{ olt.serial_number }}</td>
-                                    <td class="h6" width='15%'>инв.№:  <a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-id = "{{ olt.inv_number }}" >{{ olt.inv_number }}</a></td>
+                                    <td class="h6" >инв.№:  <a href="" data-bs-toggle="modal" data-bs-target="#inventModal"  data-id = "{{ olt.inv_number }}" >{{ olt.inv_number }}</a></td>
                                     <td class="h6" width='10%'> IP: {{ olt.IP }}</td>
                                     <td class="h6" style="min-width: 3%; max-width: 9%"> Место: {{ olt.row_box_shelf }}</td>
                                     <td class="h6" width='5%'> {{ olt.note }}</td>
