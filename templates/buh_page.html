@@ -1,10 +1,252 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+
+{% block title%}Оборудование{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/for_serch_scripts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/for_buh_data_page_scripts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bad_scripts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/save_&_delete.js') }}"></script>
+{% endblock %}
+{% block DOMloadscripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.getElementById('buh_data_tbody')
+    const tbodies = table.getElementsByTagName('table');
+    document.getElementById('number_of_records').innerHTML= 'Записей отображено: ' + tbodies.length ;
+    const sel = document.getElementById("select_mol_id2");
+    for (i=0; i<sel.options.length; i++) {
+      if (sel.options[i].textContent === JSON.parse(localStorage.getItem("selected_mol_name"))){sel.options[i].selected = true}
+    }
+    if (JSON.parse(localStorage.getItem("selected_mol_name")) !== "Все записи"){hide_table_rows(JSON.parse(localStorage.getItem("selected_mol_name")))}
+  });
+</script>
+{% endblock %}
+{% block sidebar%} <div class="col bg-dark-subtle" ></div>{% endblock %}
+{% block MainClass%} <main class="col-8"> {% endblock %}
+{% block tableName %}<h1 class="h2">Бухгалтерские данные</h1>{% endblock %}
+{% block bigBtns%}
+  <button type="button" class="btn btn-primary btn-lg"  data-bs-toggle="modal" data-bs-target="#add_new_inv_number_Modal" data-toggle="tooltip" data-placement="bottom" title="Окно добавления новых записей" >
+    <i class="bi bi-plus-square-fill"></i>  Добавить</button>
+  <button type="button" class="btn btn-primary btn-lg" onclick="save_buh_data_table_in_file()" data-toggle="tooltip" data-placement="bottom" title="Скачать файл с текущими данными">
+    <i class="bi bi-download"></i> Сохранить в Excel</button>
+{% endblock %}
+  {% block search %}
+  <input  class ="input_for_serch shadow_for_the_table"  type="text" id="Input_for_buh_data_serch" onkeyup="buh_data_table_serch()"
+          placeholder="Поиск по инвентарному номеру..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" >
+  {% endblock %}
+  {% block delChecked%}
+  <div class="col">
+    <a href = "" id="delete_checked">Удалить отмеченные</a>
+  </div>
+  {% endblock %}
+  {%block select_mol%}
+  <div class="col" >
+    <select class="form-select" aria-label="Default select example" id = 'select_mol_id2'>
+      <option value="0">Все записи</option>
+      {% for mol in mols %}
+      <option value="{{ mol.id }}">{{ mol.full_name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {%endblock%}
+  {% block mainTable%}
+  <table class="table table-sm " id="buh_data_table">
+    <tbody class="table-condensed " id="buh_data_tbody">
+    <tr><td id="td_for_buh_data_tables">
+      {% for buh in buh_data %}
+
+      <table  class="table table-sm table-bordered table-hover borderd_table "  id = "inv_number_id_{{buh.id}}" bgcolor = "{{ buh.color }}">
+        <tbody class="shadow_for_the_table">
+        <tr>
+          <td width = '2%'>
+
+            <input class="form-check-input" type="checkbox" value="" id="flexCheck_{{ buh.id }}">
+
+          </td>
+          <td width = '18%'>Инв. №:  <a href="" data-bs-toggle="modal" data-bs-target="#inventModal" data-id = "{{ buh.id }}" data-inv = "{{ buh.inv_number }}" >{{ buh.inv_number }}</a></td>
+          <td >{{ buh.name }}</td>
+          <td width = '18%'>МОЛ: {{ buh.list_of_MOLs.full_name }}</td>
+        </tr>
+        <tr>
+          <td class="multiline" colspan = '3'>Характеристика: {{ buh.charracter }}</td>
+          <td>Примечание: {{ buh.note }}</td>
+        </tr>
+
+        </tbody>
+
+      </table>
+
+      {% endfor %}
+    </td></tr>
+    </tbody>
+  </table>
+  {% endblock %}
+  {% block sidecolum_right%}<div class="col bg-dark-subtle" ></div>{% endblock %}
+  {% block addScripts%}
+  <script type="text/javascript">
+    document.getElementById('select_mol_id2').addEventListener("change", function() {
+      target_name = this.options[this.selectedIndex].textContent
+      localStorage.setItem("selected_mol_name",JSON.stringify(target_name));
+      reload_page()
+    });
+    document.getElementById('flexCheck_main').addEventListener("change", function() {
+      if (this.checked) {
+
+        check_all_visible(true)
+      } else {
+        check_all_visible(false);
+      }
+    });
+    document.getElementById('flexSwitchCheckChecked').addEventListener("change", function() {
+      if (this.checked) {
+
+        show_checked(true)
+      } else {
+        show_checked(false);
+      }
+    });
+    document.getElementById('favcolor').addEventListener("change", function() {
+      console.log(this.value)
+      set_custom_bg_color(true,this.value)
+    });
+    document.getElementById('defolt_color').addEventListener("click", function() {
+      console.log(this.value)
+      set_custom_bg_color(false)
+    });
+    document.getElementById('delete_checked').addEventListener("click", function(e) {
+      e.preventDefault();
+      let table = document.getElementById('buh_data_tbody');
+      let tbodies = table.getElementsByTagName('table');
+      if(confirm('Удалить выбранные данные?')){
+        for(var i = 0; i < tbodies.length; i++){
+          tds = tbodies[i].getElementsByTagName('td');
+          if(tds[0].querySelector('.form-check-input').checked===true){
+            delete_table_list('BuhUch',tds[1].querySelector('a').dataset.id)
+          }
+        }
+      }
+
+    });
+  </script>
+  {% endblock %}
+  {% block modals%}
+  <div class="modal fade" id="add_new_inv_number_Modal" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="AddNewUnits">Добавление новых устройств   </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-sm " id="buh_data_table2">
+            <tbody class="table-condensed " >
+            <tr><td id ="td_for_new_table">
+              <table class="table table-sm table-bordered table-hover borderd_table" id = "new_inv_namber_table">
+                <tbody >
+                <tr>
+                  <td width = '18%' contenteditable><i>Инвентарный номер</i></td>
+                  <td contenteditable><i>Краткое описание</i></td>
+                  <td width = '18%' >{{ user_name }} </td>
+                </tr>
+                <tr>
+                  <td contenteditable colspan = '3'><i>Характеристика</i></td>
+                </tr>
+                </tbody>
+              </table>
+            </td></tr>
+            </tbody>
+          </table>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="button_add_new_row" onclick="add_new_table('td_for_new_table',this.name)" data-toggle="tooltip" data-placement="top" title="Добавить строку">
+            <i class="bi bi-plus-lg"></i>
+          </button>
+          <button type="button" class="btn btn-primary" id="button_del_row" onclick="del_new_table('td_for_new_table')" data-toggle="tooltip" data-placement="top" title="Удалить строку">
+            <i class="bi bi-dash-lg"></i>
+          </button>
+          <button type="button" class="btn btn-primary" id="button_for_save_new_units" onclick="add_new_inv_numbers('td_for_new_table', this.id)" data-toggle="tooltip" data-placement="top" title="Добавить данные на сервер">Сохранить</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="reload_page()" >Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="inventModal" data-bs-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="inventModalLabel">Карточка устройства</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <label class="col-form-label" id="id_buh"></label>
+            <div class="container">
+              <div class="row">
+                <div class="col-sm">
+                  <div class="mb-3">
+                    <label class="col-form-label">Инвентарный номер:</label>
+                    <input type="text" readonly class="form-control" name="name" id = "In_num">
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <div class="mb-3">
+                    <label class="col-form-label">МОЛ:</label>
+
+                    <select class="form-select" aria-label="Default select example" id = 'select_mol_id'>
+                      {% for mol in mols %}
+                      <option value="{{ mol.id }}">{{ mol.full_name }}</option>
+                      {% endfor %}
+
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="col-form-label">Краткое описание:</label>
+              <input type="text"  class="form-control" id="description_id">
+            </div>
+            <div class="mb-3">
+              <label  class="col-form-label">Характеристика:</label>
+              <textarea  class="form-control" id="char_id" cols="30" rows="7"></textarea>
+            </div>
+            <div class="mb-3">
+              <label  class="col-form-label">Примечание:</label>
+              <textarea  class="form-control" id="note_id" cols="30" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+
+          <button type="button" class="btn btn-primary" id = "button_for_save_edit_buh_data" onclick="save_edit_buh_data()" data-toggle="tooltip" data-placement="top" title="Сохранить изменения">Сохранить</button>
+          <button type="button" class="btn btn-primary" id="button_for_delete_inv_number" data-toggle="tooltip" data-placement="top" title="Удалить запись">Удалить</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id = 'close_btn_id'>Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+  {% block modalScripts%}
+  <script type="text/javascript">
+    $('#inventModal').on('show.bs.modal', function (e) {
+      $(this).find('form').trigger('reset');
+      invent_modal(e.relatedTarget.dataset.inv);
+      console.log("🚀 ~ e.relatedTarget.data('id'):", $(e.relatedTarget).data('id'))
+      document.getElementById('button_for_delete_inv_number').setAttribute('class',"btn btn-primary");
+      document.getElementById('button_for_delete_inv_number').onclick = function (){delete_table('BuhUch', $(e.relatedTarget).data('id'),this.id)};
+
+    })
+    $('#Change_pass').on('show.bs.modal', function (e) {
+      $(this).find('form').trigger('reset');
+      document.getElementById("raport_chang_pass").textContent = ""
+    })
+    document.getElementById('new_inv_namber_table').addEventListener('click', (e) => {
+      if (e.target.tagName === "I"){e.target.remove()}
+    });
+
+    document.getElementById('button_add_new_row').setAttribute('name','{{ user_name | tojson }}');
+
+  </script>
+  {% endblock %}

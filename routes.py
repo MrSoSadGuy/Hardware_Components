@@ -20,14 +20,14 @@ def index():
 
 @app.route('/login')
 def login():
+    app.logger.info("login page accessed")
     return render_template("login.html")
 
 
 @app.route('/logout')
 @login_required
 def logout():
-    user = Users.query.get_or_404(current_user.get_id())
-    print(str(datetime.now())+": Пользователь "+user.FIO+" вышел")
+    app.logger.info("user logout")
     logout_user()
     return redirect(url_for('login'), 301)
 
@@ -41,15 +41,18 @@ def login_page():
     if (login != "") and (password != ""):
         user = Users.query.filter_by(login=login).scalar()
         if user is None:
+            app.logger.warning(f'login: {login} - incorrect')
             return json.dumps('Логин введен неправильно!')
         else:
             if check_password_hash(user.password, password):
                 login_user(user)
-                print(str(datetime.now())+": Пользователь "+user.FIO+" вошел")
+                app.logger.info(f"user: {login} login")
                 return json.dumps('SUCCESS')
             else:
+                app.logger.warning('f"user: {login} - password incorrect')
                 return json.dumps('Пароль введен неправильно!')
     else:
+        app.logger.warning('empty inputs')
         return json.dumps('Не заполнены  поля логина или пароля')
 
 
@@ -65,10 +68,13 @@ def change_password():
     if check_password_hash(user.password, old_pass):
         if new_pass == new_pass_2:
             user.password = generate_password_hash(new_pass)
-            return save_data_to_db()
+            result = save_data_to_db()
+            app.logger.info(f"user: {user.login} changed password : {result}")
+            return result
         else:
             return jsonify("Новые пароли не совпадают")
     else:
+        app.logger.warning(f'user: {user.login} - old password incorrect')
         return jsonify("Старый пароль введен не верно")
 
 
@@ -80,17 +86,6 @@ def main():
     return render_template("start_page.html", user_name=user_name)
 
 
-@app.route('/pon_units')
-@login_required
-def pon_page():
-    units = Unit.query.order_by(Unit.name_PON).all()
-    kts_data = Data_for_KTS.query.all()
-    user = Users.query.get_or_404(current_user.get_id())
-    user_name = user.FIO
-    mols = MOLs.query.all()
-    return render_template("index.html", units=units, user_name=user_name, kts_data=kts_data, mols = mols)
-
-
 @app.route('/pon_units_new')
 @login_required
 def pon_page_new():
@@ -98,6 +93,7 @@ def pon_page_new():
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
     mols = MOLs.query.all()
+    app.logger.info("pon_page accessed")
     return render_template("pon_page.html", ud=ud, user_name=user_name,  mols = mols)
 
 @app.route('/multiple_access')
@@ -107,7 +103,8 @@ def ma_page():
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
     mols = MOLs.query.all()
-    return render_template("MA_page.html",  user_name=user_name, new_obj_list=new_obj_list, mols = mols )
+    app.logger.info("ma_page accessed")
+    return render_template("ma_page.html",  user_name=user_name, new_obj_list=new_obj_list, mols = mols )
 
 
 @app.route('/buh_data')
@@ -117,54 +114,49 @@ def buh_data_page():
     mols = MOLs.query.all()
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
-    return render_template("buh_data.html",  user_name=user_name, buh_data = buh_data, mols = mols)
+    app.logger.info("buh_page accessed")
+    return render_template("buh_page.html",  user_name=user_name, buh_data = buh_data, mols = mols)
 
-
-@app.route('/get_data_from_db/<db_name>', methods=['GET', 'POST'])
+@app.route('/get_data/<db_name>/<req>', methods=['GET'])
 @login_required
-def get_data_from_db(db_name):
-    req = request.form['json']
+def get_data(db_name,req):
     user = Users.query.filter_by(id=current_user.get_id()).first()
-    print(str(datetime.now())+': '+ user.FIO + " запрос на получение данных -- ", db_name, json.loads(req))
+
+    app.logger.info(f'user: {user.login} get data from db -- , {db_name}, {req}')
     db_req_lst = {
-        'BuhUch':getBuhUchData,
-        'olt_data': get_data_for_sostav,
-        'list_of_modules': getLstMudules,
-        'olt_data_2': getPonUnitData,
-        'olt_data_3': get_used_unit_data,
-        'olt_data_4': get_data_for_new_mod,
-        'kts_data':getKTSdata,
-        'kts_data_new':get_unit_data,
-        'ma_add_modules':  getMAmodulesData,
-        'MA_Unit_stor': getMAunitStorData,
-        'MA_Units': getMAunitData,
-        'Uzel_dostupa': getUDdata,
-        'Uzel_dostupa_all':getAllUDdata,
-        # 'Uzel_dostupa_lst':getUDlst,
-        'MA_Units_to_usage': get_data_for_select,
-        'ma_add_modules_to_usage': get_data_for_select,
-        'list_of_modules_move': get_data_for_move,
-        'Type_of_olt': getTypeOfOltDAta,
-        'data4newPONunit':data4newPONunit,
-        'Objects_ur_lica': getURdata
+        #Многопртовики
+                'Objects_ur_lica': getURdata,
+                'MA_Units': getMAunitData,
+                'MA_Units_to_usage': get_data_for_ma_un_select,
+                'ma_add_modules_to_usage': get_data_for_ma_mod_select,
+                'MA_Unit_type': getMAunitype,
+                'MA_module_type': getMAmodtype,
+        #PON
+                'Uzel_dostupa': getUDdata,
+                'Uzel_dostupa_all':getAllUDdata,
+                'kts_data_new':get_unit_data,
+                'Type_of_olt': getTypeOfOltDAta,
+                'olt_data': get_data_for_sostav,
+                'olt_data_2': getPonUnitData,
+                'olt_data_3': get_used_unit_data,
+                'olt_data_4': get_data_for_new_mod,
+                'list_of_modules': getLstMudules,
+                'list_of_modules_move': get_data_for_move,
+        'BuhUch':getBuhUchData
     }
     if db_name in db_req_lst:
         return db_req_lst.get(db_name)(req)
 
-
-@app.route('/save_data/<db_name>', methods=['GET', 'POST'])
+@app.route('/save_data/<req>', methods=['POST'])
 @login_required
-def save_data(db_name):
-    req_dict = json.loads(request.form['json'])
+def save_data(req):
+    data = json.loads(request.form['json'])
     user = Users.query.filter_by(id=current_user.get_id()).first()
-    print(str(datetime.now()) +': '+ user.FIO + " запрос на внесение изменений или добавление новых записей -- ", db_name, req_dict)
     db_req_lst = {
         'KTS':save_pon_olt_data,
-        'sostav': save_sostav_data,
         'Buhuchet': save_buhuchet_data,
         'ma_add_modules_edited': save_ma_add_modules,
         'MA_Units_edited': save_ma_unit_data,
-        'Unit': add_new_unit,
         'MA_Unit': add_ma_unit_data,
         'ma_add_modules': add_ma_add_modules,
         'Object_ur_lica': add_object_for_MA,
@@ -176,46 +168,49 @@ def save_data(db_name):
         'add_new_pon_modules': add_new_pon_modules,
         'NewPONnit': addNewPONnit
     }
-    if db_name in db_req_lst:
-        return db_req_lst.get(db_name)(req_dict, user.FIO)
+    if req in db_req_lst:
+        result = db_req_lst.get(req)(data, user.login)
+        app.logger.info(f'user: {user.login} -- save data to db -- db_req: {req}, data: {str(data)}, result: {str(result)}')
+        return result
     
 
-@app.route('/delete_row/<db_name>', methods=['GET', 'POST'])
+@app.route('/delete_data/<db_name>', methods=['POST'])
 @login_required
-def delete_row(db_name):
+def delete_data(db_name):
+    user = Users.query.filter_by(id=current_user.get_id()).first()
     name = request.form['json']
     id = json.loads(name)["id"]
-    user = Users.query.filter_by(id=current_user.get_id()).first()
-    print(str(datetime.now()) +': '+ user.FIO + " запрос на удаление -- ", db_name, name)
     db_req_lst = {
         "ma_add_modules": delMAmodules,
-        "Unit":delUnit,
         "BuhUch":delBuhdata,
         "MA_Units":delMAunit,
         "Objects_ur_lica":delUrObject,
+        'List_of_OLT': delPONunit,
         'List_of_modules': delPONmodul,
         'Uzel_dostupa':delUD
     }
     if db_name in db_req_lst:
-        return db_req_lst.get(db_name)(id)
+        result = db_req_lst.get(db_name)(id)
+        app.logger.info(f'user: {user.login} -- delete data from db -- db_req: {db_name}, data: {str(id)}, result: {str(result)}')
+        return result
 
 
 @app.route('/change_color/<db_name>', methods=['GET', 'POST'])
 @login_required
 def change_color(db_name):
+    user = Users.query.filter_by(id=current_user.get_id()).first()
     name = request.form['json']
-    print(name)
     id = json.loads(name)["id"]
     color = json.loads(name)["color"]
-    print('id: '+id,', color: '+color) 
     db_req_lst = {
-        "Units":saveColorUnits,
         "BuhUch":saveColorBuhData,
         "Objects_ur_lica":saveColorMAunits,
         'List_of_modules':saveColorPONmodul
     }
     if db_name in db_req_lst:
-        return db_req_lst.get(db_name)(id, color)
+        result = db_req_lst.get(db_name)(id, color)
+        app.logger.info(f'user: {user.Login} -- change row color -- db_req: {db_name}, data: {str(id)}, result: {str(result)}')
+        return result
     
 
 @app.route('/download/<file>/<name_PON>', methods=['GET', 'POST'])
@@ -259,4 +254,4 @@ def buh_table_data():
 def buh_table_data_download():
     path = 'files for download/Бухгалтерские данные.xlsx'
     return send_file(path, as_attachment=True)
-    
+

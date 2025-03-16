@@ -1,10 +1,220 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  <meta content="width=device-width,initial-scale=1,shrink-to-fit=no" name="viewport">
+  <meta content="#f8f9fa" name="theme-color">
+  <title>{% block title%}{% endblock %}</title>
+  {% block links %} {% endblock %}
+  <link rel="shortcut icon" href="../static/images/jruby.svg">
+  <link rel="stylesheet" href="../static/bootstrap-icons-1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="../static/bootstrap.css">
+  <link rel="stylesheet" href="../static/custom_style.css">
+  <link rel="stylesheet" href="../static/toast.css">
+  {% block scripts %} {% endblock %}
+  <script src="{{ url_for('static', filename='js/library/bootstrap.bundle.js') }}"></script>
+  <script type=text/javascript src="{{ url_for('static', filename='js/library/jquery-3.7.1.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bad_scripts.js') }}"></script>
+  <script src="../static/js/library/toast.min.js"></script>
+  <script src="../static/js/invNum.js"></script>
+  <script src="{{ url_for('static', filename='js/library/table-sort.js') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.documentElement.setAttribute('data-bs-theme', JSON.parse(localStorage.getItem("colar_thema")))
+    });
+  </script>
+  {% block DOMloadscripts %}{% endblock %}
+
+
 </head>
 <body>
-$END$
+
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal" data-bs-backdrop="static" id="Change_pass"
+     role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Изменить пароль</h5>
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <input class="form-control" id="old_pass_id" placeholder="Старый пароль" type="password">
+        </div>
+        <div class="mb-3">
+          <input class="form-control" id="new_pass_id" placeholder="Новый пароль, не менее 6 символов"
+                 type="password">
+        </div>
+        <div class="mb-3">
+          <input class="form-control" id="new_pass_2_id" placeholder="Новый пароль повторно" type="password">
+        </div>
+        <div class="mb-3">
+          <label class="col-form-label" id="raport_chang_pass"></label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="change_password();" type="button">Изменить пароль</button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Отмена</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script type="text/javascript">
+  //        Всплывающие подсказки
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+
+
+<header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+
+  <div class="d-grid gap-2 d-md-flex ">
+    <div class="float-end">
+      <a aria-controls="offcanvasWithBothOptions" class="icon-link" data-bs-target="#offcanvasWithBothOptions"
+         data-bs-toggle="offcanvas" href="" style="display: inline-block;" id= "btn_offcanvas">
+        <i class="bi bi-list h2 castom-white"></i>
+      </a></div>
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Гомельский ЗУЭС - Станционная группа</a>
+
+  </div>
+  <li class="nav-item dropdown nav justify-content-end">
+    <a aria-expanded="false" class="nav-link dropdown-toggle text-white nav justify-content-end" data-bs-toggle="dropdown"
+       href="#" role="button">{{ user_name }}</a>
+    <ul class="dropdown-menu dropdown-menu-end">
+      <li><a class="dropdown-item" href="#" id="switch_to_dark_mod">Тема</a></li>
+      <li>
+        <hr class="dropdown-divider">
+      </li>
+      <li><a class="dropdown-item" data-bs-target="#Change_pass" data-bs-toggle="modal" href="#">Изменить
+        пароль</a></li>
+      <li>
+        <hr class="dropdown-divider">
+      </li>
+      <li><a class="dropdown-item" href="/logout">Выйти</a></li>
+    </ul>
+  </li>
+</header>
+<script type="text/javascript">
+  document.getElementById('switch_to_dark_mod').addEventListener('click', () => {
+    if (document.documentElement.getAttribute('data-bs-theme') === 'dark') {
+      document.documentElement.setAttribute('data-bs-theme', 'light')
+      localStorage.setItem("colar_thema", JSON.stringify('light'));
+    } else {
+      document.documentElement.setAttribute('data-bs-theme', 'dark')
+      localStorage.setItem("colar_thema", JSON.stringify('dark'));
+    }
+  })
+</script>
+<div aria-labelledby="offcanvasWithBothOptionsLabel" class="offcanvas offcanvas-start" data-bs-scroll="true" id="offcanvasWithBothOptions"
+     tabindex="-1">
+  <div class="offcanvas-header">
+  </div>
+  <div class="offcanvas-body">
+    <form>
+      <div class="d-grid gap-3">
+        <button class="btn btn-primary" formaction="/pon_units_new" type="submit">Оборудование PON</button>
+        <button class="btn btn-primary" formaction="/multiple_access" type="submit">Многопортовые устройства</button>
+        <button class="btn btn-primary" formaction="/buh_data" type="submit">Бухгалтерские данные</button>
+        <button class="btn btn-primary" disabled formaction="/other_property" type="submit">Прочее имущество
+        </button>
+<!--        <button class="btn btn-primary"  type="submit" formaction="/pon_units">PON(old)</button>-->
+      </div>
+    </form>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="row ">
+    {% block sidebar %} {% endblock %}
+    {% block MainClass%} {% endblock %}
+
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom" id="remove-border-bottom">
+        {% block tableName %} {% endblock %}
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          {% block bigBtns%}{% endblock %}
+        </div>
+      </div>
+      <div class="table-responsive small">
+        <div class="container-fluid" id = 'fixed_test'>
+          <div class="form-check form-check-inline">
+            <input checked class="form-check-input" id="inlineRadio1" name="radio_serch" type="radio"
+                   value="option1">
+            <label class="form-check-label" for="inlineRadio1">Поиск "И"</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" id="inlineRadio2" name="radio_serch" type="radio"
+                   value="option2">
+            <label class="form-check-label" for="inlineRadio2">Поиск "ИЛИ"</label>
+          </div>
+          {% block search %}{% endblock %}
+
+          <div class="row">
+            <div class="col-md-auto" id="add_fun_block">
+              <div class="row row-cols-auto">
+                <div class="col text-start">
+                  <div class="form-check">
+                    <input class="form-check-input" id="flexCheck_main" type="checkbox" value="">
+                    <label class="form-check-label">Отметить все</label>
+                  </div>
+                </div>
+                <div class="col text-start">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" id="flexSwitchCheckChecked" role="switch"
+                           type="checkbox">
+                    <label class="form-check-label" for="flexSwitchCheckChecked">Отоброзить
+                      отмеченные</label>
+                  </div>
+                </div>
+                <div class="col div-change-clr">
+                  <input class="btn-change-clr" data-placement="bottom" data-toggle="tooltip" id="favcolor"
+                         list="colors" title="Выделить цветом" type="color"
+                         value="#83b3fb"/>
+                  <datalist id="colors">
+                    <option label="table-primary" value="#83b3fa">
+                    <option label="table-info" value="#ace6f3">
+                    <option label="table-success" value="#87ddb6">
+                    <option label="table-danger" value="#f5abb1">
+                    <option label="table-warning" value="#f7e098">
+                  </datalist>
+                </div>
+                <div class="col div-change-clr">
+                  <input class='btn-change-clr' data-placement="bottom" data-toggle="tooltip"
+                         id="defolt_color" title="Убрать выделение" type="button"/>
+                </div>
+                {% block delChecked%}{% endblock %}
+
+              </div>
+            </div>
+            <div class="col">
+              <div class="row">
+                {%block select_mol%}{%endblock%}
+                <div class="col text-end">
+
+                  <i id='number_of_records'> </i>
+                  {% block hideColumns%}{% endblock %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      {% block mainTable%}{% endblock %}
+
+    </main>
+    {% block sidecolum_right%} {% endblock %}
+
+  </div>
+
+ {% block addScripts%}{% endblock %}
+</div>
+
+{% block modals%}{% endblock %}
+{% block modalScripts%} {% endblock %}
+
+
 </body>
-</html>
+

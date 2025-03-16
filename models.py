@@ -7,25 +7,25 @@ from sqlalchemy.orm import backref
 
 db = SQLAlchemy()
 
-@dataclass
-class Unit(db.Model):
-    id:int = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    ud_punkt:str = db.Column(db.String(100), nullable=False)
-    name_PON:str = db.Column(db.String(100), nullable=False)
-    name_unit:str = db.Column(db.String(100), nullable=False)
-    inv_number:str = db.Column(db.String(100), nullable=True)
-    serial_number:str = db.Column(db.String(100), nullable=True)
-    row_mesto:str = db.Column(db.String(100), nullable=True)
-    plata_mesto:str = db.Column(db.String(100), nullable=True)
-    creator = db.Column(db.String(20), nullable=True)
-    note:str = db.Column(db.String(500), nullable=True)
-    color: str = db.Column(db.String(20), nullable=True)
-    date = db.Column(db.DateTime, default=datetime.utcnow)
-    editor = db.Column(db.String(20), nullable=True)
-    last_date_edit = db.Column(db.DateTime, nullable=True)
-
-    def __repr__(self):
-        return '<Unit %r>' % self.id
+# @dataclass
+# class Unit(db.Model):
+#     id:int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     ud_punkt:str = db.Column(db.String(100), nullable=False)
+#     name_PON:str = db.Column(db.String(100), nullable=False)
+#     name_unit:str = db.Column(db.String(100), nullable=False)
+#     inv_number:str = db.Column(db.String(100), nullable=True)
+#     serial_number:str = db.Column(db.String(100), nullable=True)
+#     row_mesto:str = db.Column(db.String(100), nullable=True)
+#     plata_mesto:str = db.Column(db.String(100), nullable=True)
+#     creator = db.Column(db.String(20), nullable=True)
+#     note:str = db.Column(db.String(500), nullable=True)
+#     color: str = db.Column(db.String(20), nullable=True)
+#     date = db.Column(db.DateTime, default=datetime.utcnow)
+#     editor = db.Column(db.String(20), nullable=True)
+#     last_date_edit = db.Column(db.DateTime, nullable=True)
+#
+#     def __repr__(self):
+#         return '<Unit %r>' % self.id
 
 
 @dataclass
@@ -83,6 +83,7 @@ class type_of_ma_units(db.Model):
     type: str = db.Column(db.String(50), nullable=False, unique=True)
     units = db.relationship('MA_Units', backref='type_of_ma_units')
     modules = db.relationship('type_of_ma_modules', backref='type_of_ma_units2')
+    hide: int = db.Column(db.Integer)
 
     def __repr__(self):
         return '<type_of_ma_units %r>' % self.id
@@ -97,6 +98,7 @@ class type_of_ma_modules(db.Model):
     type: str = db.Column(db.String(50), nullable=False, unique=True)
     type_of_ma_units: str = db.Column(db.String(50), db.ForeignKey('type_of_ma_units.type'))
     modules = db.relationship('ma_add_modules', backref='type_of_ma_modules')
+    hide: int = db.Column(db.Integer)
 
     def __repr__(self):
         return '<type_of_ma_modules %r>' % self.id

@@ -44,9 +44,11 @@ def get_data_for_new_mod(req):
 
 
 def getBuhUchData(req):
-    buh = BuhUch.query.filter_by(inv_number=json.loads(req)).first()
-    return jsonify(buh)
 
+    req = req.replace('+','/')
+    print(req,type(req))
+    buh = BuhUch.query.filter_by(inv_number=req).first()
+    return jsonify(buh) if buh is not None else (jsonify(buh),404)
 
 def getLstMudules(req):
     modules = List_of_modules.query.get_or_404(int(json.loads(req)))
@@ -101,15 +103,29 @@ def getTypeOfOltDAta(req):
     return jsonify(data)
 
 
+def getMAunitype(req):
+    data =type_of_ma_units.query.filter_by(hide=0).all()
+    return jsonify(data)
+
+
+def getMAmodtype(req):
+    data =type_of_ma_modules.query.filter_by(hide=0).all()
+    return jsonify(data)
+
+
 def getURdata(req):
     obj = Objects_ur_lica.query.get_or_404(int(json.loads(req)))
     u = obj.unit
     units_list = {}
+    un_type = {}
     modules_list = {}
+    mod_type = {}
     for un in range(0, len(obj.unit)) :
-        units_list[un] = obj.unit[un]  
-        modules_list[un]= obj.unit[un].modules    
-    return jsonify(obj,units_list,modules_list)
+        units_list[un] = obj.unit[un]
+        mod_type[un] = obj.unit[un].type_of_ma_units.modules
+        modules_list[un]= obj.unit[un].modules
+        un_type[un] = obj.unit[un].type_of_ma_units
+    return jsonify(obj,units_list,modules_list,un_type,mod_type)
 
 
 def data4newPONunit(req):
@@ -200,28 +216,31 @@ def get_data_for_sostav(id):
     return data_list
 
 
-def get_data_for_select(db, id):
+def get_data_for_ma_un_select(id):
     response =[]
-    if db=='MA_Units':
-        obj = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
-        for ob in obj:
-            if len(ob.unit) == 0:
-                response.append(ob) 
-    if db == 'ma_add_modules':
-        modules = ma_add_modules.query.get_or_404(id)        
-        for unit in modules.type_of_ma_modules.type_of_ma_units2.units:
-            if modules.type_of_ma_modules.type_of_ma_units2.sockets > len(unit.modules):
-                unit_modules = {}
-                if unit.object.cod_name == "СКЛАД" or unit.object.cod_name == "ЗИП" or unit.object.cod_name == "РЕМОНТ":
-                    unit_data = {'id': unit.id, 'cod_name': "Склад-"+str(unit.id)}
+    obj = Objects_ur_lica.query.order_by(Objects_ur_lica.id).all()
+    for ob in obj:
+        if len(ob.unit) == 0:
+            response.append(ob)
+    return response
+
+
+def get_data_for_ma_mod_select(id):
+    response =[]
+    modules = ma_add_modules.query.get_or_404(id)
+    for unit in modules.type_of_ma_modules.type_of_ma_units2.units:
+        if modules.type_of_ma_modules.type_of_ma_units2.sockets > len(unit.modules):
+            unit_modules = {}
+            if unit.object.cod_name == "СКЛАД" or unit.object.cod_name == "ЗИП" or unit.object.cod_name == "РЕМОНТ":
+                unit_data = {'id': unit.id, 'cod_name': "Устройство - "+str(unit.id), 'address':unit.object.cod_name }
+            else:
+                unit_data = {'id': unit.id, 'cod_name': unit.object.cod_name, 'address':unit.object.address}
+            for m in unit.modules:
+                if m.type_of_ma_modules.type not in unit_modules:
+                    unit_modules[m.type_of_ma_modules.type] = 1
                 else:
-                    unit_data = {'id': unit.id, 'cod_name': unit.object.cod_name}    
-                for m in unit.modules:
-                    if m.type_of_ma_modules.type not in unit_modules:
-                        unit_modules[m.type_of_ma_modules.type] = 1
-                    else:
-                        unit_modules[m.type_of_ma_modules.type] += 1
-                    unit_data['data'] = unit_modules
-                if (modules.type_of_ma_modules.type not in unit_modules) or (modules.type_of_ma_modules.max_number > unit_modules[modules.type_of_ma_modules.type]):
-                    response.append(unit_data.copy())
-    return response      
+                    unit_modules[m.type_of_ma_modules.type] += 1
+                unit_data['data'] = unit_modules
+            if (modules.type_of_ma_modules.type not in unit_modules) or (modules.type_of_ma_modules.max_number > unit_modules[modules.type_of_ma_modules.type]):
+                response.append(unit_data.copy())
+    return response

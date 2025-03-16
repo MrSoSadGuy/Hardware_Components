@@ -19,9 +19,9 @@ def delMAmodules(id):
     return delete_data_from_db(db_obj)
 
 
-def delUnit(id):
-    db_obj = Unit.query.get_or_404(int(id))
-    return delete_data_from_db(db_obj)
+# def delUnit(id):
+#     db_obj = Unit.query.get_or_404(int(id))
+#     return delete_data_from_db(db_obj)
 
 
 def delBuhdata(id):
@@ -34,6 +34,7 @@ def delMAunit(id):
     if len(db_obj.modules) > 0:
         for modules in db_obj.modules:
             delete_data_from_db(modules)
+    return delete_data_from_db(db_obj)
             
             
 def delUrObject(id):
@@ -45,6 +46,13 @@ def delUrObject(id):
 def delPONmodul(id):
     db_obj = List_of_modules.query.get_or_404(int(id))
     return delete_data_from_db(db_obj)
+
+
+def delPONunit(id):
+    db_obj = List_of_olt.query.get_or_404(int(id))
+    if len(db_obj.list_of_modules) > 0:
+        return jsonify("В устройстве установлены модули!!!! \n Переместите их на склад, или демонтируйте"), 420
+    else: return delete_data_from_db(db_obj)
 
 def delUD(id):
     db_obj = Uzel_dostupa.query.get_or_404(int(id))

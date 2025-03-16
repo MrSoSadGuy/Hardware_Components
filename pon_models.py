@@ -11,7 +11,7 @@ class Uzel_dostupa(db.Model):
     cod_ud: str = db.Column(db.String(10), nullable=False)
     number_ud: str = db.Column(db.String(10), nullable=False)
     Adress: str = db.Column(db.String(100), nullable=False)
-    name: str = db.Column(db.String(20), nullable=False)
+    name: str = db.Column(db.String(20), nullable=False, unique=True)
     cod_name_of_olt = db.relationship('List_of_olt', backref='Uzel_dostupa')
 
     def __repr__(self):
@@ -66,7 +66,7 @@ class List_of_olt(db.Model):
     add_date = db.Column(db.DateTime, default=datetime.utcnow)
     name_who_edit = db.Column(db.String(20), nullable=True)
     edit_date = db.Column(db.DateTime, nullable=True)
-    list_of_modules = db.relationship('List_of_modules', backref='List_of_olt', lazy='dynamic')
+    list_of_modules = db.relationship('List_of_modules', backref='List_of_olt')
 
     def __repr__(self):
         return '<List_of_olt %r>' % self.id

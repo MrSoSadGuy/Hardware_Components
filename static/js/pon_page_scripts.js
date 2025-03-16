@@ -1,11 +1,29 @@
+const get_data = {
+   1 :'Uzel_dostupa',
+   2 :'Uzel_dostupa_all',
+   3 :'kts_data_new',
+   4 :'Type_of_olt',
+   5 :'olt_data',
+   6 :'olt_data_2',
+   7 :'olt_data_3',
+   8 :'olt_data_4',
+   9 :'list_of_modules',
+   10 :'list_of_modules_move'
+}
+
+
 async function to_fill_sostav_modal(id, un_row) {
+    let tbody = document.getElementById("t_sostav_body");
+    let delBtn = document.getElementById('del_pon_unit')
     try {
-        let tbody = document.getElementById("t_sostav_body");
+
         clearTbody(tbody);
-        const modules_data = await fetch_data_2(id, '/get_data_from_db/olt_data', "POST");
+        const modules_data = await fetch_data_get(id, get_data[5]);
         if (modules_data.ok) {
             let list_of_modules = await modules_data.json();
             console.log("🚀 ~ to_fill_sostav_modal ~ list_of_modules:",list_of_modules)
+            console.log(Object.keys(list_of_modules).length)
+            Object.keys(list_of_modules).length > 0? delBtn.disabled = true: delBtn.disabled = false
             const ordered = Object.keys(list_of_modules)
                 .sort() // Sort the keys alphabetically
                 .reduce((obj, key) => {
@@ -26,7 +44,7 @@ async function to_fill_sostav_modal(id, un_row) {
                 tbody.appendChild(tr);
             }
         }
-        const getData = await fetch_data_2(id, '/get_data_from_db/kts_data_new', "POST");
+        const getData = await fetch_data_get(id, get_data[3]);
         if (getData.ok) {
             let unit_data= await getData.json();
             console.log("🚀 ~ to_fill_sostav_modal ~ unit_data:", unit_data)
@@ -48,6 +66,21 @@ async function to_fill_sostav_modal(id, un_row) {
         console.error("Error in to_fill_sostav_modal:", error);
     }
     document.getElementById('save_kts').onclick= () => {save_kts_data(id, un_row)}
+    delBtn.onclick= async ()=>{let resp = await deletePONdata(id,'List_of_OLT')
+                            if(resp.ok){
+                                liveToast(true, "Устройство удаленно!")
+                                setTimeout(reload_page, 800)
+                            }
+                            else if (resp.status === 420){
+                                alert(await resp.json())
+                                liveToast(false, "Ошибка удаления")
+                                alert(await resp.json())
+                            }
+                            else {
+                                liveToast(false, "Ошибка удаления")
+                                console.log('delPonData error - '+ await resp.json())
+                            }
+    }
 
 }
 
@@ -68,7 +101,7 @@ async function save_kts_data(id, un_row) {
     }
     console.log(kts_data)
     if (confirm("Сохранить изменнения?")){
-        const fetch_response = await fetch_data_2(kts_data,'/save_data/KTS','POST');
+        const fetch_response = await fetch_data_post(kts_data,'KTS',1);
         console.log("🚀 ~ save_edit_buh_data ~ data:", fetch_response)
         if(fetch_response.ok){
             liveToast(true,"Данные сохраненны");
@@ -91,39 +124,27 @@ async function save_kts_data(id, un_row) {
     }
 }
 
-async function to_fill_ud_edit_modal(id, row) {
-    document.getElementById('button_for_save_edit_ud').setAttribute("class", "btn btn-primary");
-    document.getElementById('button_for_delete_ud').setAttribute("class", "btn btn-primary");
-    const data = await fetch_data_2(id,'/get_data_from_db/Uzel_dostupa',"POST");
-    if(data.ok){
-        let db_data = await data.json();
-        console.log(db_data);
-        document.getElementById("edit_ud_Name_id").value = db_data.name;
-        document.getElementById("edit_ud_adr_id").value = db_data.Adress;
-        document.getElementById("edit_ud_cod_id").value = db_data.cod_ud;
-        document.getElementById('button_for_save_edit_ud').onclick =  ()=>{save_edit_ud_data('Uzel_dostupa', id ,row)}
-        document.getElementById('button_for_delete_ud').onclick = async ()=>{
-            let resp = await deletePONdata(id, 'Uzel_dostupa')
-            console.log("🚀 ~ resp:", resp.status)
-            if(resp.ok){
-                liveToast(true, "Объект удален")
-                row.remove()
-                setTimeout(function (){document.getElementById('btn_cls_edit_mod').click()}, 800)
-            }
-            else if (resp.status === 420){
-                alert(await resp.json())
-                liveToast(false, "Ошибка удаления")
-            }
-            else {
-                liveToast(false, "Ошибка удаления")
-                console.log('delPonData error - '+ await resp.json())
-            }
-    }
-}
-}
+// async function to_fill_ud_edit_modal(id, row) {
+//     document.getElementById('button_for_save_edit_ud').setAttribute("class", "btn btn-primary");
+//     document.getElementById('button_for_delete_ud').setAttribute("class", "btn btn-primary");
+//     const data = await fetch_data_get(id,get_data[1]);
+//     if(data.ok){
+//         let db_data = await data.json();
+//         console.log(db_data);
+//         document.getElementById("edit_ud_Name_id").value = db_data.name;
+//         document.getElementById("edit_ud_adr_id").value = db_data.Adress;
+//         document.getElementById("edit_ud_cod_id").value = db_data.cod_ud;
+//         document.getElementById('button_for_save_edit_ud').onclick =  ()=>{save_edit_ud_data('Uzel_dostupa', id ,row)}
+//         document.getElementById('button_for_delete_ud').onclick =  ()=>{del_ud(id)
+//
+// }
+// }}
+
+
+
 
 async function to_fill_edit_modal(id, db, row) {
-    const data = await fetch_data_2(id,'/get_data_from_db/'+db,"POST");
+    const data = await fetch_data_get(id,get_data[9]);
     if(data.ok){
         let db_data = await data.json();
         console.log(db_data);
@@ -146,31 +167,10 @@ async function to_fill_edit_modal(id, db, row) {
 async function deletePONdata(id, db){
     if (confirm("Удалить запись?")){
         var id_val = {id: id}
-        const response = await fetch_data_2(id_val,'/delete_row/' + db, 'POST');
-        return response       
+        return await fetch_data_post(id_val, db, 2)
 }}
 
-async function save_edit_ud_data(db, id ,row_index) {
-    var edited_row = {
-        id: id,
-        name: document.getElementById("edit_ud_Name_id").value,
-        Adress: document.getElementById("edit_ud_adr_id").value,
-        cod_ud: document.getElementById("edit_ud_cod_id").value,
-    }
-    if(confirm("Сохранить изменнения?")){
-        const data = await fetch_data_2(edited_row,'/save_data/'+db, 'POST');
-        if(data.ok){
-            liveToast(true,"Данные сохранены")
-            var oCells = row_index.getElementsByTagName('td');
-            oCells[0].textContent = document.getElementById("edit_ud_Name_id").value;
-            oCells[1].textContent = document.getElementById("edit_ud_adr_id").value;
-        }
-        else{
-            liveToast(false,"Ошибка сохранения")
-            console.log("error save edit UD data: " + await data.json());
-        }
-    }
-}
+
 
 async function save_edit_data_pon(db, id ,row_index) {
     var edited_row = {
@@ -181,28 +181,16 @@ async function save_edit_data_pon(db, id ,row_index) {
         note: document.getElementById("unit_note_id").value,
     }
     if (confirm("Сохранить изменнения?")){
-        const data = await fetch_data_2(edited_row,'/save_data/'+db, 'POST');
+        const data = await fetch_data_post(edited_row,db, 1);
         console.log(data.ok);
         if(data.ok){
             liveToast(true, "Данные сохранены")
             var oCells = row_index.getElementsByTagName('td');
-            // if(db!=="olt_list"){
             oCells[3].textContent = document.getElementById("edit_Name_id").value;
             oCells[5].querySelector('a').innerHTML = document.getElementById("edit_Inv_id").value;
             oCells[5].querySelector('a').dataset.id = document.getElementById("edit_Inv_id").value;
             oCells[4].textContent = document.getElementById("edit_Serial_id").value;
             oCells[6].textContent = document.getElementById("unit_note_id").value;}
-            // else {
-            //     oCells[1].querySelector('a').innerHTML = document.getElementById("edit_Cod_id").value;
-            //     oCells[2].textContent = document.getElementById("edit_Name_id").value;
-            //     oCells[3].textContent = document.getElementById("edit_IP_id").value;
-            //     oCells[4].textContent = document.getElementById("edit_Serial_id").value;
-            //     oCells[5].querySelector('a').innerHTML = document.getElementById("edit_Inv_id").value;
-            //     oCells[5].querySelector('a').dataset.id = document.getElementById("edit_Inv_id").value;
-            //     oCells[6].textContent = document.getElementById("edit_Riad_id").value;
-            //     oCells[7].textContent = document.getElementById("unit_note_id").value;
-            // }
-        // }
         else {
             liveToast(false,"Ошибка сохранения")
             console.log("error save edit modul data: " + await data.json());
@@ -237,12 +225,12 @@ function colaps_btn_chng(btn, status){
     }
 }
 
-async function move_obj_modal(id, db){
+async function move_modul_modal(id){
     const slct_unit = document.getElementById('select_unit')
     const slct_sock = document.getElementById('select_socket')
     slct_sock.disabled = true;
     while(slct_unit.length>1){slct_unit.remove(1)}
-    const data = await fetch_data_2(id,'/get_data_from_db/'+db+'_move',"POST")
+    const data = await fetch_data_get(id,get_data[10])
     let list_of_data = await data.json();
     console.log("🚀 ~ move_obj_modal ~ list_of_data:", list_of_data)
     let target, target_val, sockets
@@ -257,7 +245,7 @@ async function move_obj_modal(id, db){
         this.options[this.selectedIndex].value === '0' ? slct_sock.disabled = true : slct_sock.disabled = false;
         target = this.options[this.selectedIndex].textContent
         target_val = this.options[this.selectedIndex].value
-        for(i in list_of_data[target][1]){
+        for(let i in list_of_data[target][1]){
             const opt = document.createElement('option')
             opt.value = i
             list_of_data[target][1][i] === -1 ? opt.text = 'fan' : opt.text = list_of_data[target][1][i]
@@ -270,12 +258,12 @@ async function move_obj_modal(id, db){
         if (target_val !== '0' && socket !== '0'){
             var data = {id: id, target : target_val, socket:socket}
             console.log("🚀 ~ data:", data)
-            apply_move_modul(data, db)}
+            apply_move_modul(data, 'list_of_modules')}
         else{liveToast(false,'Выберите объект и плата-место')}
 }}
 async function apply_move_modul(edit_data, db){
     if (confirm("Переместить устройство?")){
-        const data = await fetch_data_2(edit_data, '/save_data/'+ db,'POST');
+        const data = await fetch_data_post(edit_data, db,1);
         if(data.ok){
             liveToast(true,"Модуль перемещен")
             setTimeout(function (){document.getElementById('close_mv_mod_btn').click()
@@ -298,7 +286,7 @@ async function add_new_unit(id,tm) {
     const slct = document.getElementById('select_type_unit')
     slct.removeEventListener('click',async (e) => {})
     while(slct.length>1){slct.remove(1)}
-    const data = await fetch_data_2("all",'/get_data_from_db/Type_of_olt',"POST")
+    const data = await fetch_data_get("all",get_data[4])
     let list_of_data = await data.json();
     list_of_data.forEach(item => {
         console.log("🚀 ~ Object.keys ~ item:", item)
@@ -355,7 +343,7 @@ async function add_new_unit(id,tm) {
 async function apply_create_unit(data, db){
     console.log("🚀 ~ apply_create_unit ~ data:", data)
     if (confirm("Добавить новое устройство?")){
-        const response = await fetch_data_2(data, '/save_data/'+ db,'POST');
+        const response = await fetch_data_post(data, db,1);
         if(response.ok){
             liveToast(true,"Новое устройство добавлено")
             setTimeout(function (){document.getElementById('close_mv_mod_btn').click()
@@ -370,26 +358,165 @@ async function apply_create_unit(data, db){
     }
 }
 
-
 function clearTbody(tbody){
     while (tbody.hasChildNodes()) tbody.removeChild(tbody.firstChild)
 }
-// function create_new_ud(){}
-// async function select_units(id, slct_unit) {
-//     slct_unit.disabled = false
-//     const data1 = await fetch_data_2(id,'/get_data_from_db/Uzel_dostupa_lst',"POST")
-//     let list_of_data1 = await data1.json();
-//     console.log(list_of_data1)
 
-//         Object.keys(list_of_data1).forEach(item => {
-//             const opt = document.createElement('option')
-//             opt.value = item
-//             opt.text = list_of_data1[item]
-//             slct_unit.add(opt)
-//         })
-// }
 
-async function move_olt_modal(id, db) {
+async function settings_obj_data(qualifiedName){
+    document.getElementById('form_settings_obj_data').innerHTML= ud_settings_html
+    let save_btn = document.getElementById("save_ud_data")
+    let del_btn = document.getElementById("del_ud_data")
+    save_btn.disabled = true;
+    del_btn.disabled = true;
+    let lst_obj = document.getElementById('list_of_obj');
+
+    const response = await fetch_data_get('all',get_data[2])
+    const data = await response.json();
+    Object.keys(data).forEach(item => {
+        const li = document.createElement('li')
+        li.value = item;
+        li.textContent = data[item]['name'];
+        lst_obj.appendChild(li);
+    })
+
+    let links = document.querySelectorAll('#div_of_obj ul li');
+    links.forEach(function (element) {
+        element.addEventListener('click', function (e) {
+            links.forEach(function (element) {
+                element.classList.remove('active');
+            });
+            document.getElementById("ud_name").removeAttribute('style')
+            this.classList.add('active');
+            fill_inputs(this.value);
+        });
+    });
+    let id
+    function fill_inputs(key){
+        save_btn.disabled = false;
+        if(key!==999){
+            id = data[key]['id']
+            del_btn.disabled = false;
+            document.getElementById('ud_name').value = data[key]['name'];
+            document.getElementById('ud_address').value = data[key]['Adress'];
+            document.getElementById('ud_tm_num').value = data[key]['number_ud'];
+            document.getElementById('ud_tm_cod').value = data[key]['cod_ud'];
+        }
+        else {
+            id = 0
+            del_btn.disabled = true;
+            document.getElementById('ud_name').value = '';
+            document.getElementById('ud_address').value = '';
+            document.getElementById('ud_tm_num').value = '';
+            document.getElementById('ud_tm_cod').value = '';
+        }
+
+    }
+    save_btn.onclick = function () {
+        document.getElementById("ud_name").value !==''? save_edit_ud_data('Uzel_dostupa', id ):
+            // document.getElementById("ud_name").styl
+            document.getElementById("ud_name").setAttribute('style', 'border-color:red')
+        }
+    del_btn.onclick = function (){del_ud(id)}
+    // lst_obj.addEventListener('click')
+}
+async function settings_unit_data(qualifiedName){
+    document.getElementById('form_settings_obj_data').innerHTML= unit_settings_html
+    let save_btn = document.getElementById("save_ud_data")
+    let del_btn = document.getElementById("del_ud_data")
+    save_btn.disabled = true;
+    del_btn.disabled = true;
+    let lst_obj = document.getElementById('list_of_obj');
+
+    const response = await fetch_data_get('all',get_data[4])
+    const data = await response.json();
+    Object.keys(data).forEach(item => {
+        const li = document.createElement('li')
+        li.value = item;
+        li.textContent = data[item]['type'];
+        lst_obj.appendChild(li);
+    })
+
+    let links = document.querySelectorAll('#div_of_obj ul li');
+    links.forEach(function (element) {
+        element.addEventListener('click', function (e) {
+            links.forEach(function (element) {
+                element.classList.remove('active');
+            });
+            document.getElementById("un_name").removeAttribute('style')
+            this.classList.add('active');
+            fill_inputs(this.value);
+        });
+    });
+    let id
+    function fill_inputs(key){
+        save_btn.disabled = false;
+        if(key!==999){
+            id = data[key]['id']
+            del_btn.disabled = false;
+            document.getElementById('un_name').value = data[key]['type'];
+            document.getElementById('un_start').value = data[key]['start'];
+            document.getElementById('un_end').value = data[key]['end'];
+
+        }
+        else {
+            id = 0
+            del_btn.disabled = true;
+            document.getElementById('un_name').value = '';
+            document.getElementById('un_start').value = '';
+            document.getElementById('un_end').value = '';
+        }
+
+    }
+    save_btn.onclick = function () {
+        document.getElementById("ud_name").value !==''? save_edit_ud_data('Uzel_dostupa', id ):
+            // document.getElementById("ud_name").styl
+            document.getElementById("ud_name").setAttribute('style', 'border-color:red')
+        }
+    del_btn.onclick = function (){del_ud(id)}
+    // lst_obj.addEventListener('click')
+}
+
+async function save_edit_ud_data(db, id) {
+    var edited_row = {
+        id: id,
+        name: document.getElementById("ud_name").value,
+        Adress: document.getElementById("ud_address").value,
+        number_ud: document.getElementById("ud_tm_num").value,
+        cod_ud: document.getElementById("ud_tm_cod").value,
+
+    }
+    if(confirm("Сохранить изменнения?")){
+        const data = await fetch_data_post(edited_row,db, 1);
+        if(data.ok){
+            liveToast(true,"Данные сохранены")
+            await settings_obj_data()
+        }
+        else{
+            liveToast(false,"Ошибка сохранения")
+            console.log("error save edit UD data: " + await data.json());
+        }
+    }
+}
+
+async function del_ud(id){
+    let resp = await deletePONdata(id, 'Uzel_dostupa')
+    console.log("🚀 ~ resp:", resp.status)
+    if(resp.ok){
+        liveToast(true, "Объект удален")
+        await settings_obj_data()
+    }
+    else if (resp.status === 420){
+        alert(await resp.json())
+        liveToast(false, "Ошибка удаления")
+    }
+    else {
+        liveToast(false, "Ошибка удаления")
+        console.log('delPonData error - '+ await resp.json())
+    }
+}
+
+async function move_olt_modal(id) {
     let appl_btn = document.getElementById("apply_move_olt_btn")
     let cod = document.getElementById("cod_to_mv")
     let IP = document.getElementById("new_IP")
@@ -397,8 +524,8 @@ async function move_olt_modal(id, db) {
     appl_btn.disabled = true;
     const slct_ud = document.getElementById('select_ud')
     while(slct_ud.length>1){slct_ud.remove(1)}
-    const ud_data = await fetch_data_2("all",'/get_data_from_db/Uzel_dostupa_all',"POST")
-    const olt_data = await fetch_data_2(id,'/get_data_from_db/olt_data_2',"POST")
+    const ud_data = await fetch_data_get("all",get_data[2])
+    const olt_data = await fetch_data_get(id,get_data[6])
     let list_of_data = await ud_data.json();
     let olt = await olt_data.json();
     list_of_data.forEach(item => {
@@ -440,8 +567,7 @@ async function add_new_unit_data(id) {
 
   const tbody = document.getElementById("t_body_add_to_un");
   clearTbody(tbody);
-
-  const response = await fetch_data_2(id, '/get_data_from_db/olt_data_3', 'POST');
+  const response = await fetch_data_get(id, get_data[7]);
   if (response.ok) {
     const data = await response.json();
     console.log("🚀 ~ add_new_unit_data ~ data:", data);
@@ -520,7 +646,7 @@ async function shelf_new_modules(id) {
     document.getElementById('cl_new_pon_mod').addEventListener('click',reload_page)
     const tbody = document.getElementById('t_body_add_to_shelf');
     clearTbody(tbody)
-    let response = await fetch_data_2(id, '/get_data_from_db/olt_data_4', 'POST')
+    let response = await fetch_data_get(id, get_data[8])
     let data
     if (response.ok){
         data = await response.json()
@@ -566,7 +692,7 @@ async function shelf_new_modules(id) {
 
 async function add_new_pon_modules(data){
     if (confirm("Сохранить изменнения?")){
-        const response = await fetch_data_2(data,'/save_data/add_new_pon_modules','POST');
+        const response = await fetch_data_post(data,'add_new_pon_modules',1);
         if(response.ok){
             liveToast(true, "Данные добавлены успешно")
         }
@@ -609,17 +735,17 @@ function add_select_menu(row, data){
     })
 }
 
-function show_checked_main_table(status){
-    let table = document.getElementById('tbody_main_table');
-    let tr = table.getElementsByTagName('tr');
-    for(var i = 0; i < tr.length; i++){
-        tds = tr[i].getElementsByTagName('td');
-        if(tds[0].querySelector('.form-check-input').checked===false){
-            status ? tr[i].style.display = "none": tr[i].removeAttribute("style");
-        }
-    }
-    number_of_records_main_table();
-}
+// function show_checked_main_table(status){
+//     let table = document.getElementById('tbody_main_table');
+//     let tr = table.getElementsByTagName('tr');
+//     for(var i = 0; i < tr.length; i++){
+//         tds = tr[i].getElementsByTagName('td');
+//         if(tds[0].querySelector('.form-check-input').checked===false){
+//             status ? tr[i].style.display = "none": tr[i].removeAttribute("style");
+//         }
+//     }
+//     number_of_records_main_table();
+// }
 
 function serechRowsWithCheckInputs(){
     let data = [];
@@ -713,3 +839,100 @@ function hidePONunit(){
         ud.length === units.length? ud_tb.style.display = "none":ud_tb.removeAttribute("style");
     });
 }
+const ud_settings_html = ' <div class="row_ud_data">\n' +
+    '\n' +
+    '                            <div id="div_of_obj"  class="rounded bg-secondary-subtle">\n' +
+    '                                <ul  id="list_of_obj">\n' +
+    '                                <li value = 999 >Новый</li>\n' +
+    '                                </ul>\n' +
+    '                            </div>\n' +
+    '\n' +
+    '                            <div class="rounded bg-secondary-subtle" id="col-ud-data">\n' +
+    '                                <div class="row">\n' +
+    '                                    <label for="ud_name">Название объекта связи <i>(уникальное)</i></label>\n' +
+    '                                    <input type="text" class="ud_data" id="ud_name" style="box-sizing: border-box">\n' +
+    '                                </div>\n' +
+    '                                <div class="row">\n' +
+    '                                    <label for="ud_address">Адрес объекта связи</label>\n' +
+    '                                    <input type="text" class="ud_data" id="ud_address" style="box-sizing: border-box">\n' +
+    '                                </div>\n' +
+    '                                <div class="row">\n' +
+    '                                    <div class="col">\n' +
+    '                                        <label for="ud_tm_cod">района обслуживания СПД <i>(A5GM \'XX\' -)</i></label>\n' +
+    '                                        <input type="text" class="ud_data" id="ud_tm_num" placeholder="XX" style="width: 100%">\n' +
+    '                                    </div>\n' +
+    '                                    <div class="col">\n' +
+    '                                        <label for="ud_tm_cod">Идентификатор выноса <i>(-A \'XXX\' UL01)</i></label>\n' +
+    '                                        <input type="text" class="ud_data" id="ud_tm_cod" placeholder="XXX" style="width: 100%">\n' +
+    '                                    </div>\n' +
+    '\n' +
+    '                                </div>\n' +
+    '                                <div class="row">\n' +
+    '                                    <div class="col-sm custom-footer" >\n' +
+    '\n' +
+    '\n' +
+    '                                        <button type="button" class="btn btn-primary" id = "save_ud_data"  data-toggle="tooltip" data-placement="top" title=\'Сохранить изменения\'>\n' +
+    '                                            <i class="bi bi-floppy"></i>\n' +
+    '                                        </button>\n' +
+    '                                        <button type="button" class="btn btn-primary" id = "del_ud_data"  data-toggle="tooltip" data-placement="top" title=\'Удалить устройство\'>\n' +
+    '                                            <i class="bi bi-trash3"></i>\n' +
+    '                                        </button>\n' +
+    '\n' +
+    '                                    </div>\n' +
+    '                                </div>\n' +
+    '\n' +
+    '\n' +
+    '                            </div>\n' +
+    '                        </div>'
+const unit_settings_html = ' <div class="row_ud_data">\n' +
+    '\n' +
+    '                            <div id="div_of_obj"  class="rounded bg-secondary-subtle">\n' +
+    '                                <ul  id="list_of_obj">\n' +
+    '                                <li value = 999 >Новый</li>\n' +
+    '                                </ul>\n' +
+    '                            </div>\n' +
+    '\n' +
+    '                            <div class="rounded bg-secondary-subtle" id="col-ud-data">\n' +
+    '                                <div class="row">\n' +
+    '                                    <label for="ud_name">Название устройства: <i>(уникальное)</i></label>\n' +
+    '                                    <input type="text" class="ud_data" id="un_name" style="box-sizing: border-box">\n' +
+    '                                </div>\n' +
+    '                                <div class="row">\n' +
+    '                                    <div class="col">\n' +
+    '                                    <label for="ud_address">Признак сети:</label>\n' +
+    '                                    <input type="text" class="ud_data" id="un_start" style="width: 100%">\n' +
+    '                                    </div>\n' +
+    '                                    <div class="col">\n' +
+    '                                    <label for="ud_address">Тип оборудования:</label>\n' +
+    '                                    <input type="text" class="ud_data" id="un_end" style="width: 100%">\n' +
+    '                                    </div>\n' +
+    '                                </div>\n' +
+    '                                <div class="row">\n' +
+    '                                        <label for="ud_tm_cod">Диапазон мест для установки плат:</label>\n' +
+    '                                    <div class="col">\n' +
+    '                                        <input type="text" class="ud_data" id="ud_tm_cod" style="width: 10%"\n' +
+    '                                        <input type="text" class="ud_data" id="ud_tm_cod2" style="width: 10%"\n' +
+
+    '                                    </div>\n' +
+    '                                    <div class="col">\n' +
+    '                                        <input type="text" class="ud_data" id="ud_tm_cod" style="width: 10%"\n' +
+    '                                    </div>\n' +
+    '\n' +
+    '                                </div>\n' +
+    '                                <div class="row">\n' +
+    '                                    <div class="col-sm custom-footer" >\n' +
+    '\n' +
+    '\n' +
+    '                                        <button type="button" class="btn btn-primary" id = "save_ud_data"  data-toggle="tooltip" data-placement="top" title=\'Сохранить изменения\'>\n' +
+    '                                            <i class="bi bi-floppy"></i>\n' +
+    '                                        </button>\n' +
+    '                                        <button type="button" class="btn btn-primary" id = "del_ud_data"  data-toggle="tooltip" data-placement="top" title=\'Удалить устройство\'>\n' +
+    '                                            <i class="bi bi-trash3"></i>\n' +
+    '                                        </button>\n' +
+    '\n' +
+    '                                    </div>\n' +
+    '                                </div>\n' +
+    '\n' +
+    '\n' +
+    '                            </div>\n' +
+    '                        </div>'

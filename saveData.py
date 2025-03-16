@@ -9,10 +9,9 @@ def add_data_to_db(data):
         app.app_context()
         db.session.add(data)
         db.session.commit()
-        print("SUCCESS")
-        return jsonify("SUCCESS")
+        return "SUCCESS"
     except Exception as err:
-        print(f"Unexpected {err=}, {type(err)=}")
+        app.logger.exception(f"Unexpected {err=}, {type(err)=}")
         return json.dumps(f"Unexpected {err=}, {type(err)=}")
 
 
@@ -20,31 +19,30 @@ def save_data_to_db():
     try:
         app.app_context()
         db.session.commit()
-        print("SUCCESS")
-        return jsonify("SUCCESS")
+        return "SUCCESS"
     except Exception as err:
-        print(f"Unexpected {err=}, {type(err)=}")
+        app.logger.exception(f"Unexpected {err=}, {type(err)=}")
         return json.dumps(f"Unexpected {err=}, {type(err)=}")
 
 
 
 
 
-def add_new_unit(req_dict, name):
-    if request.method == 'POST':
-        unit = Unit(ud_punkt=req_dict["0"],
-                    name_PON=req_dict["1"].upper().replace(' ',''),
-                    name_unit=req_dict["2"],
-                    inv_number=req_dict["3"],
-                    serial_number=req_dict["4"],
-                    row_mesto=req_dict["5"],
-                    plata_mesto=req_dict["6"],
-                    color='',
-                    note="",
-                    creator=name)
-        return add_data_to_db(unit)
-    else:
-        return json.dumps("NOT 'POST' REQUEST")
+# def add_new_unit(req_dict, name):
+#     if request.method == 'POST':
+#         unit = Unit(ud_punkt=req_dict["0"],
+#                     name_PON=req_dict["1"].upper().replace(' ',''),
+#                     name_unit=req_dict["2"],
+#                     inv_number=req_dict["3"],
+#                     serial_number=req_dict["4"],
+#                     row_mesto=req_dict["5"],
+#                     plata_mesto=req_dict["6"],
+#                     color='',
+#                     note="",
+#                     creator=name)
+#         return add_data_to_db(unit)
+#     else:
+#         return json.dumps("NOT 'POST' REQUEST")
 
 
 def add_ma_unit_data(req_dict, name):
@@ -109,7 +107,6 @@ def add_ma_add_modules(req_dict, name):
     if request.method == 'POST':
         print(req_dict["0"].upper().replace(' ',''))
         type = type_of_ma_modules.query.filter_by(type = req_dict["0"].upper().replace(' ','').strip()).first_or_404()
-        print(type)
         ma_modules = ma_add_modules(ma_unit_id = req_dict["add_p"],
                                     type=req_dict["0"].upper().replace(' ','').strip(),
                                     type_id = type.id,
@@ -181,22 +178,22 @@ def save_buhuchet_data(req_dict, name):
         return json.dumps("NOT 'POST' REQUEST")
 
 
-def save_sostav_data(req_dict, name):
-    unit = Unit.query.get_or_404(int(req_dict["id"]))
-    if request.method == 'POST':
-        unit.ud_punkt = req_dict["ud_punkt"]
-        unit.name_PON = req_dict["name_PON"]
-        unit.name_unit = req_dict["name_unit"]
-        unit.inv_number = req_dict["inv_number"]
-        unit.serial_number = req_dict["serial_number"]
-        unit.row_mesto = req_dict["row_mesto"]
-        unit.plata_mesto = req_dict["plata_mesto"]
-        unit.note = req_dict["note"]
-        unit.editor = name
-        unit.last_date_edit = datetime.now()
-        return save_data_to_db()
-    else:
-        return json.dumps("NOT 'POST' REQUEST")
+# def save_sostav_data(req_dict, name):
+#     unit = Unit.query.get_or_404(int(req_dict["id"]))
+#     if request.method == 'POST':
+#         unit.ud_punkt = req_dict["ud_punkt"]
+#         unit.name_PON = req_dict["name_PON"]
+#         unit.name_unit = req_dict["name_unit"]
+#         unit.inv_number = req_dict["inv_number"]
+#         unit.serial_number = req_dict["serial_number"]
+#         unit.row_mesto = req_dict["row_mesto"]
+#         unit.plata_mesto = req_dict["plata_mesto"]
+#         unit.note = req_dict["note"]
+#         unit.editor = name
+#         unit.last_date_edit = datetime.now()
+#         return save_data_to_db()
+#     else:
+#         return json.dumps("NOT 'POST' REQUEST")
 
 
 def add_new_pon_modules(req_dict, name):
@@ -249,7 +246,6 @@ def save_pon_olt_data(req_dict, name):
     print(req_dict)
     olt = List_of_olt.query.get_or_404(int(req_dict["id"]))
     print(olt.cod_name_of_olt)
-    print(olt.kts)
     if request.method == 'POST':
         olt.uzel_id = req_dict["uzel_id"] if "uzel_id" in req_dict else olt.uzel_id
         olt.cod_name_of_olt = req_dict["cod_name_of_olt"] if req_dict["cod_name_of_olt"] else olt.cod_name_of_olt
@@ -265,9 +261,7 @@ def save_pon_olt_data(req_dict, name):
         olt.date_of_entry= req_dict["date_of_entry"] if "date_of_entry" in req_dict else olt.date_of_entry
         olt.row_box_shelf = req_dict["row_box_shelf"] if "row_box_shelf" in req_dict else  olt.row_box_shelf
         olt.editor = name
-        olt.kts.editor = name
         olt.last_date_edit = datetime.now()
-        olt.kts.last_date_edit = datetime.now()
         save_data_to_db()
         return save_data_to_db()
     else:
@@ -275,14 +269,17 @@ def save_pon_olt_data(req_dict, name):
 
 def save_ud_data(req_dict, user):
     print(req_dict)
-    ud = Uzel_dostupa.query.get_or_404(int(req_dict["id"]))
-    if request.method == 'POST':
-        ud.cod_ud = req_dict["cod_ud"]
-        ud.Adress = req_dict["Adress"]
-        ud.name = req_dict["name"]
-        return save_data_to_db()
+    if int(req_dict["id"])!=0:
+        ud = Uzel_dostupa.query.get_or_404(int(req_dict["id"]))
+        if request.method == 'POST':
+            ud.cod_ud = req_dict["cod_ud"]
+            ud.number_ud = req_dict["number_ud"]
+            ud.Adress = req_dict["Adress"]
+            ud.name = req_dict["name"]
+            return save_data_to_db()
     else:
-        return json.dumps("NOT 'POST' REQUEST")
+        ud = Uzel_dostupa(cod_ud=req_dict['cod_ud'],number_ud=req_dict['number_ud'],Adress=req_dict['Adress'],name=req_dict['name'])
+        return add_data_to_db(ud)
 
 
 
@@ -342,8 +339,8 @@ def save_object_for_MA(req_dict, name):
         return json.dumps("NOT 'POST' REQUEST")
     
     
-def saveColorUnits(id, color):
-    return saveColor(Unit.query.get_or_404(int(id)), color)
+# def saveColorUnits(id, color):
+#     return saveColor(Unit.query.get_or_404(int(id)), color)
     
     
 def saveColorBuhData(id, color):

@@ -39,7 +39,7 @@ function del_row(tbody_id) {
 
 async function save_color_in_db(db_table, id, color){
     const data = {id: id, color: color}
-    const fetch_color = await fetch_data(data, "change_color/"+db_table,'POST')
+    const fetch_color = await fetch_data_2(data, "change_color/"+db_table,'POST')
     console.log("🚀 ~ save_color_in_db ~ data:", data)
 }
 
