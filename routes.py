@@ -90,6 +90,7 @@ def main():
 @login_required
 def pon_page_new():
     ud = Uzel_dostupa.query.order_by(Uzel_dostupa.id).all()
+    print(ud)
     user = Users.query.get_or_404(current_user.get_id())
     user_name = user.FIO
     mols = MOLs.query.all()

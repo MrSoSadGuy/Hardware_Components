@@ -363,7 +363,10 @@ function clearTbody(tbody){
 }
 
 
-async function settings_obj_data(qualifiedName){
+async function settings_obj_data(ev){
+    let id
+    let act_sel = localStorage.getItem('pon_obj_setting_select') ? localStorage.getItem('pon_obj_setting_select'): 1
+    breadcrumbs(ev)
     document.getElementById('form_settings_obj_data').innerHTML= ud_settings_html
     let save_btn = document.getElementById("save_ud_data")
     let del_btn = document.getElementById("del_ud_data")
@@ -377,6 +380,11 @@ async function settings_obj_data(qualifiedName){
         const li = document.createElement('li')
         li.value = item;
         li.textContent = data[item]['name'];
+        if(item === act_sel) {
+            li.classList.add('active')
+            fill_inputs(item);
+        }
+        
         lst_obj.appendChild(li);
     })
 
@@ -388,10 +396,11 @@ async function settings_obj_data(qualifiedName){
             });
             document.getElementById("ud_name").removeAttribute('style')
             this.classList.add('active');
+            localStorage.setItem('pon_obj_setting_select',this.value)
             fill_inputs(this.value);
         });
     });
-    let id
+    
     function fill_inputs(key){
         save_btn.disabled = false;
         if(key!==999){
@@ -420,21 +429,37 @@ async function settings_obj_data(qualifiedName){
     del_btn.onclick = function (){del_ud(id)}
     // lst_obj.addEventListener('click')
 }
-async function settings_unit_data(qualifiedName){
+
+function breadcrumbs(ev){
+    let act_br = document.querySelectorAll('.breadcrumb-item') 
+    console.log("🚀 ~ breadcrumbs ~ act_br:", act_br[ev])
+    for(let item of act_br) {
+        console.log(item)
+        item.innerHTML='<a href="#">'+item.textContent+'</a>'
+        item.classList.remove('active')
+    }
+    act_br[ev].classList.add('active')
+    act_br[ev].innerHTML = act_br[ev].textContent
+}
+
+async function settings_unit_data(ev){
+    let act_sel = localStorage.getItem('pon_un_setting_select') ? localStorage.getItem('pon_un_setting_select'): 1
+    breadcrumbs(ev)
     document.getElementById('form_settings_obj_data').innerHTML= unit_settings_html
     let save_btn = document.getElementById("save_ud_data")
     let del_btn = document.getElementById("del_ud_data")
     save_btn.disabled = true;
     del_btn.disabled = true;
     let lst_obj = document.getElementById('list_of_obj');
-
     const response = await fetch_data_get('all',get_data[4])
     const data = await response.json();
     console.log("🚀 ~ settings_unit_data ~ data:", data)
     Object.keys(data[0]).forEach(item => {
         const li = document.createElement('li')
         li.value = item;
+        li.dataset.id = data[0][item]['id'];
         li.textContent = data[0][item]['type'];
+        if(item === act_sel) li.classList.add('active')
         lst_obj.appendChild(li);
     })
 
@@ -446,6 +471,7 @@ async function settings_unit_data(qualifiedName){
             });
             document.getElementById("un_name").removeAttribute('style')
             this.classList.add('active');
+            localStorage.setItem('pon_un_setting_select',this.value)
             fill_inputs(this.value);
         });
     });
@@ -500,7 +526,7 @@ async function save_edit_ud_data(db, id) {
         const data = await fetch_data_post(edited_row,db, 1);
         if(data.ok){
             liveToast(true,"Данные сохранены")
-            await settings_obj_data()
+            await settings_obj_data(0)
         }
         else{
             liveToast(false,"Ошибка сохранения")

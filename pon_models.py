@@ -9,10 +9,12 @@ class Uzel_dostupa(db.Model):
     __tablename__ = "Uzel_dostupa"
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     cod_ud: str = db.Column(db.String(10), nullable=False)
-    number_ud: str = db.Column(db.String(10), nullable=False)
+    number_ud: str = db.Column(db.String(10), nullable=False) #надо убрать
     Adress: str = db.Column(db.String(100), nullable=False)
     name: str = db.Column(db.String(20), nullable=False, unique=True)
+    node_attr: int = db.Column(db.Integer, db.ForeignKey('Node_attribute.id'))
     cod_name_of_olt = db.relationship('List_of_olt', backref='Uzel_dostupa')
+    net_section: int = db.Column(db.Integer, db.ForeignKey('Network_section.id'))
 
     def __repr__(self):
         return '<Uzel_dostupa %r>' % self.id
@@ -83,6 +85,7 @@ class Type_of_olt(db.Model):
     list_of_olt = db.relationship('List_of_olt', backref='Type_of_olt', lazy='dynamic')
     type_of_modules = db.relationship('Type_of_modules', backref='Type_of_olt', lazy='dynamic')
     olt_sockets = db.relationship('Olt_sockets', backref='Type_of_olt', lazy='dynamic')
+    equip_name: int = db.Column(db.Integer, db.ForeignKey('Equipment_name.id'))
 
     def __repr__(self):
         return '<type_of_ma_modules %r>' % self.id
@@ -134,3 +137,46 @@ class Type_of_modules(db.Model):
 
     def __repr__(self):
         return '<Type_of_modules %r>' % self.id
+
+
+@dataclass
+class Network_attribute(db.Model):
+    __tablename__ = "Network_attribute"
+    id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    cod: str = db.Column(db.String(10), nullable=False)
+    name: str = db.Column(db.String(100), nullable=False, unique=True)
+    Equipment_name = db.relationship('Equipment_name', backref='network_attribute')
+
+    def __repr__(self):
+        return '<network_attribute %r>' % self.id
+
+class Network_section(db.Model):
+    __tablename__ = "Network_section"
+    id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    cod: str = db.Column(db.String(10), nullable=False)
+    name: str = db.Column(db.String(100), nullable=False, unique=True)
+    ud = db.relationship('Uzel_dostupa', backref='Network_section')
+
+    def __repr__(self):
+        return '<network_attribute %r>' % self.id
+
+
+class Node_attribute(db.Model):
+    __tablename__ = "Node_attribute"
+    id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    cod: str = db.Column(db.String(10), nullable=False)
+    name: str = db.Column(db.String(100), nullable=False, unique=True)
+    Uzel_dostupa = db.relationship('Uzel_dostupa', backref='network_attribute')
+
+    def __repr__(self):
+        return '<network_attribute %r>' % self.id
+
+class Equipment_name(db.Model):
+    __tablename__ = "Equipment_name"
+    id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    cod: str = db.Column(db.String(10), nullable=False)
+    name: str = db.Column(db.String(100), nullable=False, unique=True)
+    Network_attribute:str = db.Column(db.Integer, db.ForeignKey('Network_attribute.id'))
+    type_unit = db.relationship('Type_of_olt', backref='Equipment_name')
+    def __repr__(self):
+        return '<network_attribute %r>' % self.id

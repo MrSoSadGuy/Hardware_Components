@@ -7,7 +7,7 @@
         <script src="{{ url_for('static', filename='js/bad_scripts.js') }}"></script>
         <script src="{{ url_for('static', filename='js/save_&_delete.js') }}"></script>
         <script src="{{ url_for('static', filename='js/pon_table_serch_script.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/for_ma_units_page_scripts.js') }}"></script>
+        {# <script src="{{ url_for('static', filename='js/for_ma_units_page_scripts.js') }}"></script> #}
     {% endblock %}
 
 
@@ -715,8 +715,8 @@
                 <div class="modal-body">
                     <nav aria-label="breadcrumb" >
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item active" onclick="settings_obj_data();">Объекты</li>
-                            <li class="breadcrumb-item"  onclick="settings_unit_data();"><a href="#">Устройства</a></li>
+                            <li class="breadcrumb-item active" onclick="settings_obj_data(0);">Объекты</li>
+                            <li class="breadcrumb-item"  onclick="settings_unit_data(1);"><a href="#">Устройства</a></li>
                         </ol>
                     </nav><br>
                     <form id="form_settings_obj_data">
@@ -734,8 +734,7 @@
 {% block modalScripts%}
 <script>
     $('#setings_modal').on('show.bs.modal', function (e) {
-
-        settings_obj_data()
+        settings_obj_data(0)
     })
     $('#add_new_unit_modal').on('show.bs.modal', function (e) {
         $(this).find('form').trigger('reset');
