@@ -137,18 +137,17 @@
                 color: #ffffff;
             }
             #div_of_obj{
-                top: 45px;
-                /*left: 8px;*/
-                /*right: 8px;*/
+                align-items: center;
                 width: 15%;
-                align-self: center;
-                display: flex;
+                display: inline-block;
+                vertical-align: top;
 
             }
             #div_of_obj ul{
                 align-items: start;
                 text-align: start;
                 display: grid;
+                padding: 1rem;
                 /*border: #1a1d20 1px solid;*/
 
             }
@@ -197,12 +196,11 @@
             }
             .ud_data{
                 left: 200px;
-                padding: 8px 12px;
+                padding: 8px 9px;
                 display: block;
                 margin: 10px 0;
                 border: 1px solid #ccc;
                 border-radius: 4px;
-                /*width: 100%;*/
                 box-sizing: border-box;
             }
 

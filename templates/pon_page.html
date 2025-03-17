@@ -734,8 +734,8 @@
 {% block modalScripts%}
 <script>
     $('#setings_modal').on('show.bs.modal', function (e) {
-        // $(this).find('form').trigger('reset');
-        // settings_obj_data()
+
+        settings_obj_data()
     })
     $('#add_new_unit_modal').on('show.bs.modal', function (e) {
         $(this).find('form').trigger('reset');

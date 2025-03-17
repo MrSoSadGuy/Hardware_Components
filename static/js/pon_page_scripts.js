@@ -430,10 +430,11 @@ async function settings_unit_data(qualifiedName){
 
     const response = await fetch_data_get('all',get_data[4])
     const data = await response.json();
-    Object.keys(data).forEach(item => {
+    console.log("🚀 ~ settings_unit_data ~ data:", data)
+    Object.keys(data[0]).forEach(item => {
         const li = document.createElement('li')
         li.value = item;
-        li.textContent = data[item]['type'];
+        li.textContent = data[0][item]['type'];
         lst_obj.appendChild(li);
     })
 
@@ -452,11 +453,20 @@ async function settings_unit_data(qualifiedName){
     function fill_inputs(key){
         save_btn.disabled = false;
         if(key!==999){
-            id = data[key]['id']
+            id = data[0][key]['id']
             del_btn.disabled = false;
-            document.getElementById('un_name').value = data[key]['type'];
-            document.getElementById('un_start').value = data[key]['start'];
-            document.getElementById('un_end').value = data[key]['end'];
+            document.getElementById('un_name').value = data[0][key]['type'];
+            document.getElementById('un_start').value = data[0][key]['start'];
+            document.getElementById('un_end').value = data[0][key]['end'];
+            let lst = []
+            Object.keys(data[1]).forEach(item => {
+                if(data[1][item]['socket']===-1){}
+                else if(data[1][item]['type_of_olt'] === id){lst.push(data[1][item]['socket'])}
+                
+            })
+            document.getElementById('socket_start').value = Math.min(...lst)
+            document.getElementById('socket_end').value = Math.max(...lst)
+
 
         }
         else {
@@ -735,17 +745,6 @@ function add_select_menu(row, data){
     })
 }
 
-// function show_checked_main_table(status){
-//     let table = document.getElementById('tbody_main_table');
-//     let tr = table.getElementsByTagName('tr');
-//     for(var i = 0; i < tr.length; i++){
-//         tds = tr[i].getElementsByTagName('td');
-//         if(tds[0].querySelector('.form-check-input').checked===false){
-//             status ? tr[i].style.display = "none": tr[i].removeAttribute("style");
-//         }
-//     }
-//     number_of_records_main_table();
-// }
 
 function serechRowsWithCheckInputs(){
     let data = [];
@@ -908,16 +907,13 @@ const unit_settings_html = ' <div class="row_ud_data">\n' +
     '                                    </div>\n' +
     '                                </div>\n' +
     '                                <div class="row">\n' +
-    '                                        <label for="ud_tm_cod">Диапазон мест для установки плат:</label>\n' +
-    '                                    <div class="col">\n' +
-    '                                        <input type="text" class="ud_data" id="ud_tm_cod" style="width: 10%"\n' +
-    '                                        <input type="text" class="ud_data" id="ud_tm_cod2" style="width: 10%"\n' +
-
+ 
+    '                                    <div style = "display:flex;gap:1rem;align-items:baseline" >\n' +
+    '                                        <label for="ud_tm_cod">Диапазон мест для установки плат: </label>\n' +
+    '                                        <input type="number" class="ud_data" id="socket_start" style="width:7%">\n' +
+    '                                        <label for="ud_tm_cod"> - </label>\n' +
+    '                                        <input type="number" class="ud_data" id="socket_end" style="width:7%">\n' +
     '                                    </div>\n' +
-    '                                    <div class="col">\n' +
-    '                                        <input type="text" class="ud_data" id="ud_tm_cod" style="width: 10%"\n' +
-    '                                    </div>\n' +
-    '\n' +
     '                                </div>\n' +
     '                                <div class="row">\n' +
     '                                    <div class="col-sm custom-footer" >\n' +

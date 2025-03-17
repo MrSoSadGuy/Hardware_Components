@@ -100,7 +100,8 @@ def getUDlst(req):
 
 def getTypeOfOltDAta(req):
     data =Type_of_olt.query.all()
-    return jsonify(data)
+    soc = Olt_sockets.query.all()
+    return jsonify(data, soc)
 
 
 def getMAunitype(req):
