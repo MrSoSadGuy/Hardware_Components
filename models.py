@@ -168,6 +168,8 @@ class Users (db.Model, UserMixin):
 
     def __repr__(self):
         return '<Users %r>' % self.id
+    def __unicode__(self):
+        return self.username
     
 
 

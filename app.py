@@ -2,13 +2,13 @@ import os
 import logging
 from flask import Flask, has_request_context
 from flask_login import LoginManager
-from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
 from models import db, Users
 from dotenv import load_dotenv
 from waitress import serve
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.exceptions import NotFound
+from admin import admin
+
 
 # using custom formatter to inject contextual data into logging
 class RequestFormatter(logging.Formatter):
@@ -38,9 +38,8 @@ handler.setFormatter(formatter)
 app.logger.handlers.clear()
 app.logger.addHandler(handler)
 
-db.init_app(app)
-admin = Admin()
 admin.init_app(app)
+db.init_app(app)
 manager = LoginManager(app)
 app.app_context().push()
 db.create_all()
@@ -48,7 +47,7 @@ db.create_all()
 from routes import *
 from models import *
 
-admin.add_view(ModelView(MOLs, db.session))
+
 
 @manager.user_loader
 def load_user(user_id):

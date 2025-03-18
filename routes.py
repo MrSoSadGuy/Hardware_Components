@@ -10,6 +10,10 @@ from getData import *
 from dwnlData import *
 
 
+
+
+
+
 @app.route('/')
 def index():
     if current_user.is_authenticated:
@@ -30,6 +34,12 @@ def logout():
     app.logger.info("user logout")
     logout_user()
     return redirect(url_for('login'), 301)
+
+
+@app.route('/admin')
+@login_required
+def admin():
+    return redirect(url_for('admin'), 301)
 
 
 @app.route('/login/check_user', methods=['GET', 'POST'])
