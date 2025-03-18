@@ -15,6 +15,7 @@ class Uzel_dostupa(db.Model):
     node_attr: int = db.Column(db.Integer, db.ForeignKey('Node_attribute.id'))
     cod_name_of_olt = db.relationship('List_of_olt', backref='Uzel_dostupa')
     net_section: int = db.Column(db.Integer, db.ForeignKey('Network_section.id'))
+    hide: int = db.Column(db.Integer)
 
     def __repr__(self):
         return '<Uzel_dostupa %r>' % self.id

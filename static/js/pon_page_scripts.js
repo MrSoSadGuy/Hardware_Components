@@ -376,7 +376,9 @@ async function settings_obj_data(ev){
 
     const response = await fetch_data_get('all',get_data[2])
     const data = await response.json();
+    console.log("🚀 ~ settings_obj_data ~ data:", data)
     Object.keys(data).forEach(item => {
+        if(data[item]['hide'] === 1) return;
         const li = document.createElement('li')
         li.value = item;
         li.textContent = data[item]['name'];

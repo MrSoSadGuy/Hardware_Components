@@ -278,7 +278,7 @@ def save_ud_data(req_dict, user):
             ud.name = req_dict["name"]
             return save_data_to_db()
     else:
-        ud = Uzel_dostupa(cod_ud=req_dict['cod_ud'],number_ud=req_dict['number_ud'],Adress=req_dict['Adress'],name=req_dict['name'])
+        ud = Uzel_dostupa(cod_ud=req_dict['cod_ud'],number_ud=req_dict['number_ud'],Adress=req_dict['Adress'],name=req_dict['name'], hide=0)
         return add_data_to_db(ud)
 
 
