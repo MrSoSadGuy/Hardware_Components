@@ -114,14 +114,19 @@
   <div class="offcanvas-header">
   </div>
   <div class="offcanvas-body">
-    <form>
+    <form class="d-grid gap-3">
       <div class="d-grid gap-3">
         <button class="btn btn-primary" formaction="/pon_units_new" type="submit">Оборудование PON</button>
         <button class="btn btn-primary" formaction="/multiple_access" type="submit">Многопортовые устройства</button>
         <button class="btn btn-primary" formaction="/buh_data" type="submit">Бухгалтерские данные</button>
         <button class="btn btn-primary" disabled formaction="/other_property" type="submit">Прочее имущество
         </button>
-<!--        <button class="btn btn-primary"  type="submit" formaction="/pon_units">PON(old)</button>-->
+        
+      </div>
+      <div  class="d-grid" >
+        {% if current_user.has_role('admin')%}
+        <button class="btn btn-primary"  type="submit" formaction="/admin">Админ-панель</button>
+        {% endif %}
       </div>
     </form>
   </div>

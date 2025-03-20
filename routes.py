@@ -1,4 +1,4 @@
-from flask import render_template, request, json, send_file, jsonify, redirect, url_for                                                                  
+from flask import render_template, request, json, send_file, jsonify, redirect, url_for ,make_response                                                                 
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import app
@@ -8,6 +8,7 @@ from delData import *
 from pon_models import *
 from getData import *
 from dwnlData import *
+from admin import auth_role
 
 
 
@@ -36,10 +37,10 @@ def logout():
     return redirect(url_for('login'), 301)
 
 
-@app.route('/admin')
-@login_required
-def admin():
-    return redirect(url_for('admin'), 301)
+# @app.route('/admin')
+# @login_required
+# def admin():
+#     return redirect(url_for('admin'), 301)
 
 
 @app.route('/login/check_user', methods=['GET', 'POST'])
@@ -68,6 +69,7 @@ def login_page():
 
 @app.route('/change_password', methods=['GET', 'POST'])
 @login_required
+@auth_role(['admin','user'])
 def change_password():
     request_new_pass = request.form['json']
     old_pass = str(json.loads(request_new_pass)["old_pass"])
@@ -98,6 +100,7 @@ def main():
 
 @app.route('/pon_units_new')
 @login_required
+@auth_role(['admin','user','viewer'])
 def pon_page_new():
     ud = Uzel_dostupa.query.order_by(Uzel_dostupa.id).all()
     print(ud)
@@ -109,6 +112,7 @@ def pon_page_new():
 
 @app.route('/multiple_access')
 @login_required
+@auth_role(['admin','user','viewer'])
 def ma_page():
     new_obj_list = get_data_for_jinja()
     user = Users.query.get_or_404(current_user.get_id())
@@ -120,6 +124,7 @@ def ma_page():
 
 @app.route('/buh_data')
 @login_required
+@auth_role(['admin','user','viewer'])
 def buh_data_page():
     buh_data = BuhUch.query.all()
     mols = MOLs.query.all()
@@ -130,6 +135,7 @@ def buh_data_page():
 
 @app.route('/get_data/<db_name>/<req>', methods=['GET'])
 @login_required
+@auth_role(['admin','user','viewer'])
 def get_data(db_name,req):
     user = Users.query.filter_by(id=current_user.get_id()).first()
 
@@ -160,6 +166,7 @@ def get_data(db_name,req):
 
 @app.route('/save_data/<req>', methods=['POST'])
 @login_required
+@auth_role(['admin','user'])
 def save_data(req):
     data = json.loads(request.form['json'])
     user = Users.query.filter_by(id=current_user.get_id()).first()
@@ -187,6 +194,7 @@ def save_data(req):
 
 @app.route('/delete_data/<db_name>', methods=['POST'])
 @login_required
+@auth_role(['admin','user'])
 def delete_data(db_name):
     user = Users.query.filter_by(id=current_user.get_id()).first()
     name = request.form['json']
@@ -208,6 +216,7 @@ def delete_data(db_name):
 
 @app.route('/change_color/<db_name>', methods=['GET', 'POST'])
 @login_required
+@auth_role(['admin','user'])
 def change_color(db_name):
     user = Users.query.filter_by(id=current_user.get_id()).first()
     name = request.form['json']
@@ -226,6 +235,7 @@ def change_color(db_name):
 
 @app.route('/download/<file>/<name_PON>', methods=['GET', 'POST'])
 @login_required
+@auth_role(['admin','user'])
 def downloadFile(name_PON, file):
     path = ""
     if file == "kts":
@@ -237,6 +247,7 @@ def downloadFile(name_PON, file):
 
 @app.route('/main_table_data', methods=['GET', 'POST'])
 @login_required
+@auth_role(['admin','user'])
 def main_table_data():
     name = request.form['json']
     list_data = json.loads(name)
@@ -253,6 +264,7 @@ def main_table_data_download():
 
 @app.route('/buh_table_data', methods=['GET', 'POST'])
 @login_required
+@auth_role(['admin','user'])
 def buh_table_data():
     name = request.form['json']
     list_data = json.loads(name)
