@@ -8,6 +8,7 @@ from waitress import serve
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.exceptions import NotFound
 from admin import admin
+from flask_migrate import Migrate
 
 
 # using custom formatter to inject contextual data into logging
@@ -40,6 +41,7 @@ app.logger.addHandler(handler)
 
 admin.init_app(app)
 db.init_app(app)
+migrate = Migrate(app, db)
 manager = LoginManager(app)
 app.app_context().push()
 db.create_all()

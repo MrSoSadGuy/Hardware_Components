@@ -165,12 +165,32 @@ class Users (db.Model, UserMixin):
     login = db.Column(db.String(128), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
     FIO = db.Column(db.String(50), nullable=False)
-
+    roles = db.relationship("Role", secondary="user_roles", back_populates="users")
     def __repr__(self):
         return '<Users %r>' % self.id
-    def __unicode__(self):
-        return self.username
-    
+    def has_role(self, role):
+        return bool(
+            Role.query
+            .join(Role.users)
+            .filter(Users.id == self.id)
+            .filter(Role.slug == role)
+            .count() == 1
+        )
 
+class Role(db.Model):
+    __tablename__ = "roles"
 
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(36), nullable=False, unique=True)
+    slug = db.Column(db.String(36), nullable=False, unique=True)
+    description = db.Column(db.String(100), nullable=False)
+
+    users = db.relationship("Users", secondary="user_roles", back_populates="roles")    
+    def __repr__(self):
+        return self.name
+
+class UserRole(db.Model):
+    __tablename__ = "user_roles"
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    role_id = db.Column(db.Integer, db.ForeignKey("roles.id"), primary_key=True)
 
