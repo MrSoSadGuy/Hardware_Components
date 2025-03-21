@@ -31,32 +31,41 @@
 <body>
 
 <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal" data-bs-backdrop="static" id="Change_pass"
-     role="dialog" tabindex="-1">
+    role="dialog" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Изменить пароль</h5>
         <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
       </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <input class="form-control" id="old_pass_id" placeholder="Старый пароль" type="password">
-        </div>
-        <div class="mb-3">
-          <input class="form-control" id="new_pass_id" placeholder="Новый пароль, не менее 6 символов"
-                 type="password">
-        </div>
-        <div class="mb-3">
-          <input class="form-control" id="new_pass_2_id" placeholder="Новый пароль повторно" type="password">
-        </div>
-        <div class="mb-3">
-          <label class="col-form-label" id="raport_chang_pass"></label>
-        </div>
-      </div>
+        <form method="POST" action="{{ url_for('change_password') }}">
+          <div class="modal-body">
+            <div class="mb-3">
+                {# {{ form.csrf_token }} #}
+                {% if form.oldpass.errors %}
+                    {% for error in form.oldpass.errors %}
+                      <span style="color:red;">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                {{ form.oldpass(size=20, placeholder='Введите старый пароль...') }}
+            </div>
+            <div class="mb-3">
+              {{ form.newpass(placeholder="Введите новый пароль...") }}
+            </div>
+            <div class="mb-3">
+              {{ form.password(placeholder="Новый пароль повторно...") }}
+            </div>
+            {# <div class="mb-3">
+              <label class="col-form-label" id="raport_chang_pass"></label>
+            </div> #}
+          </div>
+        </form>
       <div class="modal-footer">
-        <button class="btn btn-primary" onclick="change_password();" type="button">Изменить пароль</button>
+          {{ form.submit(class="btn btn-primary") }}
+        {# <button class="btn btn-primary" onclick="change_password();" type="button">Изменить пароль</button> #}
         <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Отмена</button>
       </div>
+      
     </div>
   </div>
 </div>

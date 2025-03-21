@@ -9,7 +9,7 @@ from pon_models import *
 from getData import *
 from dwnlData import *
 from admin import auth_role
-from forms import LoginForm
+from forms import *
 
 
 
@@ -26,16 +26,20 @@ def index():
 @app.route('/login', methods=["GET", "POST"])
 def login():
     app.logger.info("login page accessed")
-    form = LoginForm()
+    form = LoginForm(request.form)
     if form.validate_on_submit():
-        print(form.login.data)
-        print(form.password.data)
         user = Users.query.filter_by(login = form.login.data).scalar()
+        if user is None:
+            form.login.errors.append("Не верное имя пользователя!")
+            app.logger.warning(f'login: {login} - incorrect')
+        if user is not None and not user.verify_password(form.password.data):
+            form.password.errors.append("Не верный пароль!")
+            app.logger.warning('f"user: {login} - password incorrect')
         if user is not None and user.verify_password(form.password.data):
             login_user(user)
-            return redirect(url_for('main'))
+            return redirect(url_for('main'))      
     return render_template(
-        "login2.html",
+        "login.html",
         form=form,
         template="form-template"
     )
@@ -60,51 +64,71 @@ def logout():
 #     return redirect(url_for('admin'), 301)
 
 
-@app.route('/login/check_user', methods=['GET', 'POST'])
-def login_page():
-    req = request.form['json']
-    login_data = json.loads(req)
-    login = login_data['login']
-    password = login_data['password']
-    if (login != "") and (password != ""):
-        user = Users.query.filter_by(login=login).scalar()
-        if user is None:
-            app.logger.warning(f'login: {login} - incorrect')
-            return json.dumps('Логин введен неправильно!')
-        else:
-            if check_password_hash(user.password, password):
-                login_user(user)
-                app.logger.info(f"user: {login} login")
-                return json.dumps('SUCCESS')
-            else:
-                app.logger.warning('f"user: {login} - password incorrect')
-                return json.dumps('Пароль введен неправильно!')
-    else:
-        app.logger.warning('empty inputs')
-        return json.dumps('Не заполнены  поля логина или пароля')
+# @app.route('/login/check_user', methods=['GET', 'POST'])
+# def login_page():
+#     req = request.form['json']
+#     login_data = json.loads(req)
+#     login = login_data['login']
+#     password = login_data['password']
+#     if (login != "") and (password != ""):
+#         user = Users.query.filter_by(login=login).scalar()
+#         if user is None:
+#             app.logger.warning(f'login: {login} - incorrect')
+#             return json.dumps('Логин введен неправильно!')
+#         else:
+#             if check_password_hash(user.password, password):
+#                 login_user(user)
+#                 app.logger.info(f"user: {login} login")
+#                 return json.dumps('SUCCESS')
+#             else:
+#                 app.logger.warning('f"user: {login} - password incorrect')
+#                 return json.dumps('Пароль введен неправильно!')
+#     else:
+#         app.logger.warning('empty inputs')
+#         return json.dumps('Не заполнены  поля логина или пароля')
 
 
 @app.route('/change_password', methods=['GET', 'POST'])
 @login_required
 @auth_role(['admin','user'])
 def change_password():
-    request_new_pass = request.form['json']
-    old_pass = str(json.loads(request_new_pass)["old_pass"])
-    new_pass = str(json.loads(request_new_pass)["new_pass"])
-    new_pass_2 = str(json.loads(request_new_pass)["new_pass_2"])
-    user = Users.query.get_or_404(current_user.get_id())
-    print(user.FIO)
-    if check_password_hash(user.password, old_pass):
-        if new_pass == new_pass_2:
-            user.password = generate_password_hash(new_pass)
-            result = save_data_to_db()
-            app.logger.info(f"user: {user.login} changed password : {result}")
-            return result
+    form = ChangePassForm(request.form)
+    print(current_user.FIO)
+    if form.validate_on_submit():
+        if current_user.verify_password(form.password.data):
+            current_user.password_hash = generate_password_hash(form.newpass.data)
+            save_data_to_db()
+            # return redirect(url_for('main'))
         else:
-            return jsonify("Новые пароли не совпадают")
-    else:
-        app.logger.warning(f'user: {user.login} - old password incorrect')
-        return jsonify("Старый пароль введен не верно")
+            form.oldpass.errors.append("Не верный пароль")
+
+    return render_template(
+        # "login.html",
+        form=form,
+        template="form-template"
+    )
+
+# @app.route('/change_password', methods=['GET', 'POST'])
+# @login_required
+# @auth_role(['admin','user'])
+# def change_password():
+#     request_new_pass = request.form['json']
+#     old_pass = str(json.loads(request_new_pass)["old_pass"])
+#     new_pass = str(json.loads(request_new_pass)["new_pass"])
+#     new_pass_2 = str(json.loads(request_new_pass)["new_pass_2"])
+#     user = Users.query.get_or_404(current_user.get_id())
+#     print(user.FIO)
+#     if check_password_hash(user.password, old_pass):
+#         if new_pass == new_pass_2:
+#             user.password = generate_password_hash(new_pass)
+#             result = save_data_to_db()
+#             app.logger.info(f"user: {user.login} changed password : {result}")
+#             return result
+#         else:
+#             return jsonify("Новые пароли не совпадают")
+#     else:
+#         app.logger.warning(f'user: {user.login} - old password incorrect')
+#         return jsonify("Старый пароль введен не верно")
 
 
 @app.route('/main')

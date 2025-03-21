@@ -9,21 +9,21 @@ from functools import wraps
 
 admin = Admin( name='Admin', template_mode='bootstrap3')
 class AdminModelView(ModelView):
-    form_columns = ['login', 'password','FIO', 'roles']
+    form_columns = ['login', 'password_hash','FIO', 'roles']
     def is_accessible(self):
         return current_user.is_authenticated and current_user.has_role('admin')
     
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('login'), 301)
     
-    # def on_model_change(self, form, model, is_created):
-    #     if is_created:
-    #         model.password = generate_password_hash(model.password)
-    #     # else:
-    #     #     model.password = generate_password_hash(model.password)
-    #     super(AdminModelView, self).on_model_change(form, model, is_created)
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            model.password_hash = generate_password_hash(model.password_hash)
+        # else:
+        #     model.password = generate_password_hash(model.password)
+        super(AdminModelView, self).on_model_change(form, model, is_created)
     
-# admin.add_view(AdminModelView(Users, db.session))
+admin.add_view(AdminModelView(Users, db.session))
 
 def auth_role(role):
     def wrapper(fn):

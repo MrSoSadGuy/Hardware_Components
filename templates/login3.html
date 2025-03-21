@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Авторизация</title>
+    <link rel="shortcut icon" href="../static/images/jruby.svg">
+    <!---Custom CSS File--->
+    <link rel="stylesheet" href="../static/style_login_page.css">
+    <script>
+        function login(){
+            login_data = {login: document.getElementById("login").value, password: document.getElementById("password").value};
+            console.log(login_data)
+            var data = new FormData();
+            data.append( "json", JSON.stringify( login_data) );
+            fetch("/login/check_user",
+            {
+                method: "POST",
+                body: data
+            })
+            .then(function(res){ return res.json(); })
+            .then(function(data){
+                console.log(data)
+                if (data === "SUCCESS"){
+                    window.location.replace("/main");
+                }
+                else {
+                    document.getElementById("login_error").textContent = data
+                    console.log(data)
+                }
+             })
+            }
+    </script>
+
+
+</head>
+<body>
+  <div class="container">
+    <input type="checkbox" id="check">
+    <div class="login form">
+      <header>Учет оборудования</header>
+        <input type="text" id="login" placeholder="Введите свой Логин...">
+        <input type="password" id="password" placeholder="Введите свой пароль...">
+        <a id="login_error"></a>
+        <input type="button" class="button" value="Войти" id="btn_login" onclick="login()">
+    </div>
+  </div>
+    <script>
+        document.querySelector('#password').addEventListener('keypress', function (e) {
+             if (e.key === 'Enter') {
+            document.getElementById("btn_login").click();
+        }
+        });
+    </script>
+</body>
+</html>
