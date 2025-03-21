@@ -16,14 +16,14 @@ class AdminModelView(ModelView):
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('login'), 301)
     
-    def on_model_change(self, form, model, is_created):
-        if is_created:
-            model.password = generate_password_hash(model.password)
-        # else:
-        #     model.password = generate_password_hash(model.password)
-        super(AdminModelView, self).on_model_change(form, model, is_created)
+    # def on_model_change(self, form, model, is_created):
+    #     if is_created:
+    #         model.password = generate_password_hash(model.password)
+    #     # else:
+    #     #     model.password = generate_password_hash(model.password)
+    #     super(AdminModelView, self).on_model_change(form, model, is_created)
     
-admin.add_view(AdminModelView(Users, db.session))
+# admin.add_view(AdminModelView(Users, db.session))
 
 def auth_role(role):
     def wrapper(fn):

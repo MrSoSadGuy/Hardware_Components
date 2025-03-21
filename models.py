@@ -2,7 +2,7 @@ from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from dataclasses import dataclass
 from datetime import datetime
-
+from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.orm import backref
 
 
@@ -163,7 +163,7 @@ class MOLs(db.Model):
 class Users (db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(128), nullable=False, unique=True)
-    password = db.Column(db.String(255), nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
     FIO = db.Column(db.String(50), nullable=False)
     roles = db.relationship("Role", secondary="user_roles", back_populates="users")
     def __repr__(self):
@@ -176,6 +176,16 @@ class Users (db.Model, UserMixin):
             .filter(Role.slug == role)
             .count() == 1
         )
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 class Role(db.Model):
     __tablename__ = "roles"

@@ -9,7 +9,7 @@ from pon_models import *
 from getData import *
 from dwnlData import *
 from admin import auth_role
-
+from forms import LoginForm
 
 
 
@@ -23,10 +23,27 @@ def index():
         return redirect(url_for('login'))
 
 
-@app.route('/login')
+@app.route('/login', methods=["GET", "POST"])
 def login():
     app.logger.info("login page accessed")
-    return render_template("login.html")
+    form = LoginForm()
+    if form.validate_on_submit():
+        print(form.login.data)
+        print(form.password.data)
+        user = Users.query.filter_by(login = form.login.data).scalar()
+        if user is not None and user.verify_password(form.password.data):
+            login_user(user)
+            return redirect(url_for('main'))
+    return render_template(
+        "login2.html",
+        form=form,
+        template="form-template"
+    )
+
+# @app.route('/login')
+# def login():
+#     app.logger.info("login page accessed")
+#     return render_template("login.html")
 
 
 @app.route('/logout')
